@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 
-# Default working directory name
 DEFAULT_WD = "workingdir"
+DEFAULT_STATI = ["OK"]
 
 def get_working_directory():
     """Get or create the working directory"""
@@ -40,12 +40,13 @@ def digest_file(json_file):
     working_dir = get_working_directory()
     config = Configuration(
         file_data_in=json_file, 
-        folder_data_out=working_dir)
+        folder_data_out=working_dir,
+        only_with_status=DEFAULT_STATI)
     util = Utils(config)
     formulas = util.read_formulas_from_json()
-    util.write_to_excel(formulas)
+    out_file = util.write_to_excel(formulas)
     
-    click.echo(f"Processed {json_file} and saved results to {csv_file_path}")
+    click.echo(f"Processed {json_file} and saved results to {out_file}")
 
 @cli.command(name="visualize")
 @click.argument("csv_file", type=click.Path(exists=True))

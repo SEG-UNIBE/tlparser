@@ -58,6 +58,7 @@ class Utils:
         prefix = self.extract_filename_without_suffix(self.config.file_data_in)
         out = os.path.join(self.config.folder_data_out, f'{prefix}_{self.get_unique_filename()}.xlsx')
         workbook.save(out)
+        return out
 
     @staticmethod
     def flatten_dict(d, parent_key='', sep='.'):
@@ -65,7 +66,7 @@ class Utils:
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
             if isinstance(v, dict):
-                items.extend(Helper.flatten_dict(v, new_key, sep=sep).items())
+                items.extend(Utils.flatten_dict(v, new_key, sep=sep).items())
             else:
                 items.append((new_key, v))
         return dict(items)
