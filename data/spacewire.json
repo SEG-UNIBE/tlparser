@@ -3514,7 +3514,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.(((LinkDisabled) \\to \\nex(ErrorReset \\ state)) \\vee (Disconnect \\to \\nex (ErrorReset \\ state)) \\vee  ((Parity \\ Error) \\to \\nex (ErrorReset \\ state)) \\vee ((ESC \\ Error) \\to \\nex (ErroeReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) \\ received) \\to \\nex (ErrorReset \\ state)) \\vee (\\Diamond y. (Ready \\ state) \\wedge y - x = 12.8 \\mu s))$ ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3563,7 +3563,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.((reset \\ strobe \\ signal) \\to \\Diamond y. (reset \\ data \\ signal) \\wedge y - x \\leq 500 \\ ns)$ ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3612,7 +3612,7 @@
       {
         "type": "TPTL",
         "f_latex": "$ \\Box x.(\\neg(data \\ transmitted)\\mathcal{S} y. \\newline (((Data \\vee Strobe) \\ transmitted) \\wedge x-y = 727 \\ ns)\\to (disconnet))$ ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3661,7 +3661,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x. (((packet \\ started)\\wedge \\neg(packet \\ ended) \\wedge (\\neg(data \\ sent)\\mathcal{S} y. (last \\ data \\ sent) \\newline \\wedge x-y \\geq time-out \\ period))\\to (packet \\ stuck))$  ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3710,7 +3710,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x. (((Started \\ state) \\to \\Diamond y.(ErrorReset \\ state) \\wedge y-x \\leq 14.33 \\mu s)) , \\newline \\Box x. ((Connecting \\ state) \\to (\\Diamond y. \\neg(FCT \\ received) \\wedge y-x \\leq 14.33 \\mu s))\\to (ErrorReset \\ state)))$ ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3744,9 +3744,9 @@
       },
       {
         "type": "MTL_bounded",
-        "f_code": "$\\Box(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond_{12.8 \\mu s} (ErrorReset \\ state))$",
+        "f_latex": "$\\Box(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond_{12.8 \\mu s} (ErrorReset \\ state))$",
         "f_code": "G(((LinkDisabled_asserted) --> X(Error_Reset_state)) or ((disconnect) --> X (ErrorReset_state)) or ((parity_error) --> X (ErrorReset_state)) or ((ESC_error) --> X(ErrorReset_state)) or (((enable_asserted) and (one_FCT_sent) and (one_FCT_received) ) --> X(Run_state)) or (((NChar_received) or (broadcast_code_received)) --> X(ErrorReset_state)) or ((Connecting_state) --> F (ErrorReset_state))) ",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -3758,8 +3758,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "$\\Box x.(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcat \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond y. (ErrorReset \\ state) \\wedge y-x=12.8 \\mu s)$ ",
-        "f_code": "xxxxxx",
+        "f_latex": "$\\Box x.(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond y. (ErrorReset \\ state) \\wedge y-x=12.8 \\mu s)$ ",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3795,7 +3795,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ FCT \\ sent) \\wedge (one \\ FCT \\ received) ) \\to \\nex(Run \\ state)) \\vee (((NChar \\ received) \\vee (broadcast \\ code \\ received)) \\to \\nex(ErrorReset \\ state)) \\vee ((Connecting \\ state) \\to \\Diamond_{12.8 \\mu s} (ErrorReset \\ state)))$",
         "f_code": "G(((LinkDisabled_asserted) --> X(Error_Reset_state)) or ((disconnect) --> X (ErrorReset_state)) or ((parity_error) --> X(ErrorReset_state)) or ((ESC_error) --> X(ErrorReset_state)) or (((enable_asserted) and (one_FCT_sent) and (one_FCT_received) ) --> X(Run_state)) or (((NChar_received) or (broadcast_code_received)) --> X(ErrorReset_state)) or ((Connecting_state) --> F (ErrorReset_state)))",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -3808,7 +3808,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ FCT \\ sent) \\wedge (one \\ FCT \\ received) ) \\to \\nex(Run \\ state)) \\vee (((NChar \\ received) \\vee (broadcast \\ code \\ received)) \\to \\nex(ErrorReset \\ state)) \\vee ((Connecting \\ state) \\to \\Diamond y. (ErrorReset \\ state) \\wedge y-x=12.8 \\mu s))$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3844,7 +3844,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time$",
         "f_code": "G((interrupt_mode) --> ((send_interrupt_code_A) --> F (sent_interrupt_code_A))) and t >= maximum_propagation_time",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -3857,7 +3857,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.((interrupt \\ mode) \\to ((send \\ interuupt \\ code \\ A) \\to \\Diamond y. (sent \\ interrupt \\ code \\ A) \\wedge y-x \\geq maximum \\ propagation \\ time))$ ",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3893,7 +3893,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond_I (interrupt \\ code \\ sent) \\to (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out$",
         "f_code": "G((interrupt_mode) --> ((interrupt_code_sent) --> F (interrupt_code_sent) --> (new_interrupt_code_discard) ))and I == corresponding_interrupt_timeout",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -3906,7 +3906,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x .((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond y. ((interrupt \\ code \\ sent) \\wedge (y - x = corresponding \\ interrupt \\ time-out)) \\to (new \\ interrupt \\ code \\ discard) ) )$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3942,7 +3942,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time$ ",
         "f_code": "Gx((interrupt_ack_mode) --> ((send_interrupt_code_A) --> F (sent_interrupt_code_A))) and t >= maximum_propagation_time",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -3955,7 +3955,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond y. (sent \\ interrupt \\ code \\ A) \\wedge y-x \\geq maximum \\ propagation \\ time))$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -3991,7 +3991,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0,t)} (interrupt \\newline  acknowlrdgement)), \\newline t \\geq propagation \\ interrupt \\ code \\ time$",
         "f_code": "G((interrupt_code_arriving) --> F(interrupt_acknowledgement))and t >= propagation_interrupt_code_time",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -4004,7 +4004,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.((interrupt \\ code \\ arriving) \\to \\newline \\Diamond y. ((interrupt \\ acknowlrdgement) \\newline \\wedge y-x  \\geq propagation \\ interrupt \\ code \\ time))$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -4040,7 +4040,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0, t)} (interrupt \\ ack) \\ generated), \\newline t \\leq max interrupt \\ ack \\ time$",
         "f_code": "G((interrupt_code_arriving) --> F (interrupt_ack_generated) and t <= max interrupt_ack_time",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -4053,7 +4053,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.((interrupt \\ code \\ arriving) \\to \\Diamond y. ((interrupt \\ ack \\ generated)\\wedge y-x \\leq max interrupt \\ ack \\ time))$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -4089,7 +4089,7 @@
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ code \\ received) \\to \\newline (\\neg \\Diamond_{(0,t)} (interrupt \\ ack \\ received) \\newline \\to (Discard \\ interrupt \\ ack \\ code))), \\newline t = corresponding \\ interrupt \\ time-out  $",
         "f_code": "G((interrupt_code_received) --> ((not  F (interrupt_ack_received)) --> (Discard_interrupt_ack_code))) and t == corresponding_interrupt_timeout ",
-        "projection": "yes",
+        "projection": "",
         "reasoning": "bounded diamond"
       },
       {
@@ -4102,7 +4102,7 @@
       {
         "type": "TPTL",
         "f_latex": "$\\Box x.(((interrupt \\ code \\ received) \\to \\Diamond y. ((interrupt \\ ack \\ received) \\wedge y-x \\geq corresponding \\ interrupt \\ time-out )) \\to (Discard \\ interrupt \\ ack \\ code)))$",
-        "f_code": "xxxxxx",
+        "f_code": "",
         "projection": "yes",
         "reasoning": ""
       },
@@ -4136,8 +4136,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4150,8 +4150,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4159,7 +4159,7 @@
         "type": "STL",
         "f_latex": "$\\Box((reset \\vee disconnect)\\to \\newline \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))$",
         "f_code": "G((reset or disconnect)--> X ( 9<= S_data_(t)<= 11))",
-        "projection": "yes",
+        "projection": "",
         "reasoning": ""
       }
     ]
@@ -4185,8 +4185,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4199,8 +4199,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4208,7 +4208,7 @@
         "type": "STL",
         "f_latex": "$\\Box((\\  9\\leq S_{data} (t)\\leq 11) \\  \\newline \\until \\ (set \\ different \\ rate))$",
         "f_code": "G(( 9 <= S_data_(t) <= 11) U (set_different_rate))",
-        "projection": "yes",
+        "projection": "",
         "reasoning": ""
       }
     ]
@@ -4234,8 +4234,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4248,8 +4248,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "unknown",
         "reasoning": ""
       },
@@ -4257,14 +4257,14 @@
         "type": "STL",
         "f_latex": " $\\Box((state: \\ Run) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline  x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate$ ",
         "f_code": " G((state_Run) --> ( S_data_(t) := |x| or S_data_(t) == |y|) and not(S_data_(t) == |x| and S_data_(t) == |y|)), and x==initial_data_signaling_rate and y==intended_data_signaling_rate ",
-        "projection": "yes",
+        "projection": "",
         "reasoning": ""
       }
     ]
   },
   {
     "id": 5001,
-    "status": "OK",
+    "status": "TBD",
     "text": "Received characters and control codes shall be passed to the data link layer in the order in which they are received.",
     "logics": [
       {
@@ -4283,8 +4283,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "no",
         "reasoning": ""
       },
@@ -4297,8 +4297,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "no",
         "reasoning": ""
       },
@@ -4313,7 +4313,7 @@
   },
   {
     "id": 5002,
-    "status": "OK",
+    "status": "TBD",
     "text": "If the host system tries to send an interrupt acknowledgement too soon after a corresponding interrupt code has been received, i.e. before the interrupt code has propagated across the entire network, the result is indeterminate for that specific interrupt. The new interrupt acknowledgement code that the node sends can either be discarded by a router, or repeatedly propagated through the network if the network has circular connections.",
     "logics": [
       {
@@ -4332,8 +4332,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "no",
         "reasoning": ""
       },
@@ -4346,8 +4346,8 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "",
+        "f_code": "",
         "projection": "no",
         "reasoning": ""
       },
