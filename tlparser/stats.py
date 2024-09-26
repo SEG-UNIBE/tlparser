@@ -42,15 +42,15 @@ class Stats:
         self.AST_height = 0
         self.ap = set()  # Atomic propositions (e.g., 'x > 5')
 
-        # Replace comparison operators
-        self.cops, self.formula_parsable = self.analyse_comparison_ops(self.formula_raw)
-        
-        # Parse the formula
-        p = CTLS.Parser()
-        self.formula_parsed = p(self.formula_parsable)
-        self.analyze_formula(self.formula_parsed)
-
-        self.agg = self.update_aggregates()
+        if len(self.formula_raw) > 0:
+            # Replace comparison operators
+            self.cops, self.formula_parsable = self.analyse_comparison_ops(self.formula_raw)
+            
+            # Parse the formula
+            p = CTLS.Parser()
+            self.formula_parsed = p(self.formula_parsable)
+            self.analyze_formula(self.formula_parsed)
+            self.agg = self.update_aggregates()
 
     def analyse_comparison_ops(self, formula_str):
         # Patterns for comparison operators
