@@ -6,6 +6,9 @@ import shutil
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from tlparser.config import Configuration
+from tlparser.utils import Utils
+
 # Default working directory name
 DEFAULT_WD = "workingdir"
 
@@ -35,20 +38,12 @@ def cli():
 def digest_file(json_file):
     """Processes the JSON file and outputs a CSV"""
     working_dir = get_working_directory()
-
-    # Load JSON data
-    with open(json_file, 'r') as f:
-        data = json.load(f)
-    
-    # Process the data (Example: convert all key-value pairs to rows)
-    csv_file_path = os.path.join(working_dir, "results.csv")
-    
-    with open(csv_file_path, 'w', newline='') as csvfile:
-        csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(["key", "value"])  # Assuming a simple key-value JSON
-        
-        for key, value in data.items():
-            csv_writer.writerow([key, value])
+    config = Configuration(
+        file_data_in=json_file, 
+        folder_data_out=working_dir)
+    util = Utils(config)
+    formulas = util.read_formulas_from_json()
+    util.write_to_excel(formulas)
     
     click.echo(f"Processed {json_file} and saved results to {csv_file_path}")
 
