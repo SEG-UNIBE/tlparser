@@ -1,0 +1,26 @@
+[project]
+name = "tlparser"
+version = "0.1"
+description = "Temporal Logic Parser"
+readme = "README.md"
+authors = [{name = "null"}]
+license = {text = "Apache-2.0"}
+requires-python = ">=3.8"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+dependencies = [
+    "click"
+]
+
+[project.urls]
+Homepage = "https://github.com/RomanBoegli/tlparser"
+Changelog = "https://github.com/RomanBoegli/tlparser/releases"
+Issues = "https://github.com/RomanBoegli/tlparser/issues"
+CI = "https://github.com/RomanBoegli/tlparser/actions"
+
+[project.scripts]
+tlparser = "tlparser.cli:cli"
+
+[project.optional-dependencies]
+test = ["pytest"]
