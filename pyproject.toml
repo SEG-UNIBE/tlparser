@@ -7,7 +7,7 @@ authors = [{name = "null"}]
 license = {text = "MIT"}
 requires-python = ">=3.8"
 classifiers = [
-    "License :: OSI Approved :: Apache Software License"
+    "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
     "click"
