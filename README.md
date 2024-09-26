@@ -111,6 +111,18 @@ To print the help message:
 tlparser --help
 ```
 
+Parse some test data.
+
+```bash
+tlparser digest ../tlparser/tests/data/test.json
+```
+
+Parse actual SpaceWire data.
+
+```bash
+tlparser digest ../tlparser/data/spacewire.json
+```
+
 To exit the tool again:
 
 ```bash
