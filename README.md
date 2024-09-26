@@ -18,13 +18,16 @@ pip install tlparser
 ## Usage
 
 For help, run:
+
 ```bash
 tlparser --help
 ```
+
 You can also use:
 ```bash
-python -m tlparser --help
+python3 -m tlparser --help
 ```
+
 ## Development
 
 To contribute to this tool, first checkout the code. Then create a new virtual environment:
@@ -38,7 +41,8 @@ source venv/bin/activate
 Now install the dependencies and test dependencies:
 
 ```bash
-pip3 install -e '.[test]'
+pip3 install --upgrade pip
+pip3 install -e .[test]
 ```
 
 To run the tests:
