@@ -5,6 +5,8 @@
 [![Tests](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/master/LICENSE)
 
+![Tests](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)
+
 Temporal Logic Parser
 
 ## Installation
