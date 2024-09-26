@@ -2746,7 +2746,7 @@
   {
     "id": 2025,
     "status": "NOK",
-    "text": "if one or more N-Chars have been sent since the link reached the Run state AND the last character sent was not an EOP or EEP, read the transmit FIFO and discard the characters read until an EOP or EEP has been read and discarded",
+    "text": "If one or more N-Chars have been sent since the link reached the Run state AND the last character sent was not an EOP or EEP, read the transmit FIFO and discard the characters read until an EOP or EEP has been read and discarded",
     "logics": [
       {
         "type": "LTL_inv",
@@ -3676,7 +3676,7 @@
   },
   {
     "id": 3007,
-    "status": "OK",
+    "status": "REVIEW",
     "text": "The transition from the Started state to the ErrorReset state has “after 12,8 µs” in black (dark text) which is intentional as this transition is normal operation and not an error condition. It occurs when this end of the line is trying to start and the other end is disabled. The transition from the Connecting state to the ErrorReset state has “after 12,8 µs” in red (lighter text) because it is an error: although a Null has been received indicating that the other end of the link is active, no FCT is received within 12,8 µs so it is a fault.",
     "logics": [
       {
@@ -3696,7 +3696,7 @@
       {
         "type": "MTL_bounded",
         "f_latex": "$\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))$ ",
-        "f_code": "G(((Started_state) --> F (ErrorReset_state))) and G((Connecting_state) --> F not (FCT_received) --> (ErrorReset_state)))",
+        "f_code": "G(((Started_state) --> F(ErrorReset_state))) and G((Connecting_state) --> F(not (FCT_received) --> (ErrorReset_state)))",
         "projection": "",
         "reasoning": "bounded diamond operator"
       },
@@ -3872,7 +3872,7 @@
   },
   {
     "id": 3011,
-    "status": "OK",
+    "status": "REVIEW",
     "text": "If an interrupt is used in interrupt mode and the host system requests to send an interrupt too fast after the previous identical interrupt was sent, i.e. before the corresponding interrupt time-out timer in the routing switches has expired, the new interrupt code that the node sends is discarded by a router.",
     "logics": [
       {
@@ -3941,7 +3941,7 @@
       {
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time$ ",
-        "f_code": "Gx((interrupt_ack_mode) --> ((send_interrupt_code_A) --> F(sent_interrupt_code_A))) and t >= maximum_propagation_time",
+        "f_code": "G((interrupt_ack_mode) --> ((send_interrupt_code_A) --> F(sent_interrupt_code_A))) and t >= maximum_propagation_time",
         "projection": "",
         "reasoning": "bounded diamond"
       },
@@ -4019,7 +4019,7 @@
   },
   {
     "id": 3014,
-    "status": "OK",
+    "status": "REVIEW",
     "text": "The delay between the interrupt code arriving and the interrupt acknowledgement being generated shall be less than the maximum time determined for a node to generate an interrupt acknowledgement code",
     "logics": [
       {
@@ -4039,7 +4039,7 @@
       {
         "type": "MTL_bounded",
         "f_latex": "$\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0, t)} (interrupt \\ ack) \\ generated), \\newline t \\leq max interrupt \\ ack \\ time$",
-        "f_code": "G((interrupt_code_arriving) --> F(interrupt_ack_generated) and t <= max interrupt_ack_time",
+        "f_code": "G((interrupt_code_arriving) --> F((interrupt_ack_generated)) and t <= max interrupt_ack_time",
         "projection": "",
         "reasoning": "bounded diamond"
       },
@@ -4215,7 +4215,7 @@
   },
   {
     "id": 4003,
-    "status": "OK",
+    "status": "REVIEW",
     "text": "Once in the Run state it is possible to change the output port data signalling rate from the initial data signalling rate to the intended operating data signalling rate",
     "logics": [
       {
@@ -4256,7 +4256,7 @@
       {
         "type": "STL",
         "f_latex": " $\\Box((state: \\ Run) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline  x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate$ ",
-        "f_code": " G((state_Run) --> ( S_data_(t) := |x| or S_data_(t) == |y|) and not(S_data_(t) == |x| and S_data_(t) == |y|)), and x==initial_data_signaling_rate and y==intended_data_signaling_rate ",
+        "f_code": " G((state_Run) --> (S_data_t == abs_x or S_data_t == abs_y) and not(S_data_t == abs_x and S_data_t == abs_y)), and x == initial_data_signaling_rate and y == intended_data_signaling_rate ",
         "projection": "",
         "reasoning": ""
       }

@@ -15,7 +15,7 @@ class TestStats(TestCase):
             TestCaseData(f_code='G((x and (u == 9) and (i < 3)) --> G(not y or x))', ast_height=5, aps=4, cops=2, lops=5, tops=2),
             TestCaseData(f_code='G(Number_of_FCTs <= 7)', ast_height=1, aps=1, cops=1, lops=0, tops=1),
             TestCaseData(f_code='G(Number_of_FCTs >= seven)', ast_height=1, aps=1, cops=1, lops=0, tops=1),
-            TestCaseData(f_code='G(((ss) --> F(ers))) and G((cs) --> F(not (frs) --> (ers)))', ast_height=6, aps=4, cops=0, lops=5, tops=4),
+            TestCaseData(f_code='G(((ss) --> F(ers))) and G((cs) --> F(not (fct) --> (ers)))', ast_height=6, aps=4, cops=0, lops=5, tops=4),
             TestCaseData(f_code='G((im) --> ((ics) --> F(ics --> disc))) and I == citt', ast_height=6, aps=4, cops=1, lops=4, tops=2),
         }
 
