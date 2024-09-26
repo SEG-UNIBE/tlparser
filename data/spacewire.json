@@ -2745,7 +2745,7 @@
   },
   {
     "id": 2025,
-    "status": "NOK",
+    "status": "OK",
     "text": "If one or more N-Chars have been sent since the link reached the Run state AND the last character sent was not an EOP or EEP, read the transmit FIFO and discard the characters read until an EOP or EEP has been read and discarded",
     "logics": [
       {
@@ -3431,7 +3431,7 @@
   },
   {
     "id": 3002,
-    "status": "NOK",
+    "status": "OK",
     "text": "When a SpaceWire output port has been transmitting characters and the link state machine enters the ErrorReset state (see clause 5.5.7.2), the data and strobe signals shall be reset with a delay between the reset of the strobe followed by data signal or reset of the data followed by strobe signal.",
     "logics": [
       {
@@ -3480,7 +3480,7 @@
   },
   {
     "id": 3003,
-    "status": "NOK",
+    "status": "OK",
     "text": " The Link state machine shall leave the ErrorWait state on one of the following conditions which are evaluated in the order given: 1.When LinkDisabled is asserted, move to the ErrorReset state. 2.When a disconnect occurs, move to the ErrorReset state. 3.When a parity error occurs, move to the ErrorReset state. 4.When an ESC error occurs, move to the ErrorReset state. 5.When an FCT, N-Char or broadcast code is received from the Encoding Layer, move to the ErrorReset state. 6.When the 12,8 µs timer is elapsed, move to the Ready state.",
     "logics": [
       {
@@ -3529,7 +3529,7 @@
   },
   {
     "id": 3004,
-    "status": "NOK",
+    "status": "OK",
     "text": "The delay between the reset of the Strobe signal and the Data signal shall be between 500 ns (the period of slowest permitted transmit bit rate, 2 Mbps) and the period of the fastest transmit time for the particular transmitter which is dependent upon implementation.",
     "logics": [
       {
@@ -3578,7 +3578,7 @@
   },
   {
     "id": 3005,
-    "status": "NOK",
+    "status": "OK",
     "text": " A disconnect shall occur when the length of time since the last transition on either the Data or Strobe line is longer than 727 ns (8 cycles of 10 MHz clock + 10 ) and 1 µs maximum (9 cycles of 10 MHz clock - 10 ).",
     "logics": [
       {
@@ -3597,8 +3597,8 @@
       },
       {
         "type": "MTL_bounded",
-        "f_latex": " $ \\Box(\\neg(data \\ transmitted)\\mathcal{S}_{727 \\ ns} \\newline ((Data \\vee Strobe) \\ transmitted)\\to (disconnect))$ ",
-        "f_code": " $ G(((Data_transmitted or Strobe_transmitted) and F(not(data_transmitted))) --> (disconnect)) ",
+        "f_latex": "\\Box(\\neg(data \\ transmitted)\\mathcal{S}_{727 \\ ns} \\newline ((Data \\vee Strobe) \\ transmitted)\\to (disconnect))",
+        "f_code": "G(((Data_transmitted or Strobe_transmitted) and F(not(data_transmitted))) --> (disconnect)) ",
         "projection": "",
         "reasoning": "bounded until operator"
       },
@@ -3611,7 +3611,7 @@
       },
       {
         "type": "TPTL",
-        "f_latex": "$ \\Box x.(\\neg(data \\ transmitted)\\mathcal{S} y. \\newline (((Data \\vee Strobe) \\ transmitted) \\wedge x-y = 727 \\ ns)\\to (disconnet))$ ",
+        "f_latex": "\\Box x.(\\neg(data \\ transmitted)\\mathcal{S} y. \\newline (((Data \\vee Strobe) \\ transmitted) \\wedge x-y = 727 \\ ns)\\to (disconnet))",
         "f_code": "",
         "projection": "yes",
         "reasoning": ""
