@@ -37,7 +37,7 @@ class TestInit(TestStats):
     def test_aps(self):
         for case in self.data:
             f = Stats(case.f_code)
-            self.assertEqual(case.aps, f.agg['ap'], case.f_code)
+            self.assertEqual(case.aps, f.agg['aps'], case.f_code)
 
     def test_cops(self):
         for case in self.data:
@@ -52,6 +52,5 @@ class TestInit(TestStats):
     def test_tops(self):
         for case in self.data:
             f = Stats(case.f_code)
-            print(f)
             self.assertEqual(case.tops, f.agg['tops'], case.f_code)
 

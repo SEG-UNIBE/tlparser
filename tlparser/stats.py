@@ -7,30 +7,50 @@ class Stats:
         self.formula_raw = formula_str
         self.formula_parsable = None
         self.formula_parsed = None
-        self.ap = set()
-        self.impl_n = 0
-        self.and_n = 0
-        self.or_n = 0
-        self.not_n = 0
-        self.A_n = 0
-        self.E_n = 0
-        self.X_n = 0
-        self.F_n = 0
-        self.G_n = 0
-        self.U_n = 0
-        self.R_n = 0
+        
+        # Group: Comparison operators
+        self.cops = {
+            'eq': 0,  # Equal
+            'neq': 0,  # Not equal
+            'gt': 0,  # Greater than
+            'geq': 0,  # Greater than or equal
+            'lt': 0,  # Less than
+            'leq': 0  # Less than or equal
+        }
+        
+        # Group: Temporal operators
+        self.tops = {
+            'A': 0,  # For all
+            'E': 0,  # Exists
+            'X': 0,  # Next
+            'F': 0,  # Finally
+            'G': 0,  # Globally
+            'U': 0,  # Until
+            'R': 0   # Release
+        }
+        
+        # Group: Logical operators
+        self.lops = {
+            'impl': 0,  # Implication
+            'and': 0,   # And
+            'or': 0,    # Or
+            'not': 0    # Not
+        }
+        
+        # Other properties
         self.nesting = 0
         self.AST_height = 0
+        self.ap = set()  # Atomic propositions (e.g., 'x > 5')
 
         # Replace comparison operators
         self.cops, self.formula_parsable = self.analyse_comparison_ops(self.formula_raw)
-
+        
         # Parse the formula
         p = CTLS.Parser()
         self.formula_parsed = p(self.formula_parsable)
         self.analyze_formula(self.formula_parsed)
 
-        self.update_aggregates()
+        self.agg = self.update_aggregates()
 
     def analyse_comparison_ops(self, formula_str):
         # Patterns for comparison operators
@@ -82,28 +102,30 @@ class Stats:
         if isinstance(node, CTLS.AtomicProposition):
             self.ap.add(str(node))
             return  # Atomic propositions don't have further nesting
+        
         if isinstance(node, CTLS.Imply):
-            self.impl_n += 1
+            self.lops['impl'] += 1
         if isinstance(node, CTLS.And):
-            self.and_n += len(node._subformula) - 1
+            self.lops['and'] += len(node._subformula) - 1
         if isinstance(node, CTLS.Or):
-            self.or_n += len(node._subformula) - 1
+            self.lops['or'] += len(node._subformula) - 1
         if isinstance(node, CTLS.Not):
-            self.not_n += 1
+            self.lops['not'] += 1
+            
         if isinstance(node, CTLS.X):
-            self.X_n += 1
+            self.tops['X'] += 1
         if isinstance(node, CTLS.F):
-            self.F_n += 1
+            self.tops['F'] += 1
         if isinstance(node, CTLS.G):
-            self.G_n += 1
+            self.tops['G'] += 1
         if isinstance(node, CTLS.U):
-            self.U_n += 1
+            self.tops['U'] += 1
         if isinstance(node, CTLS.R):
-            self.R_n += 1
+            self.tops['R'] += 1
         if isinstance(node, CTLS.A):
-            self.A_n += 1
+            self.tops['A'] += 1
         if isinstance(node, CTLS.E):
-            self.E_n += 1
+            self.tops['E'] += 1
 
         # Recursively analyze subformulas
         if hasattr(node, '_subformula'):
@@ -113,10 +135,12 @@ class Stats:
             raise ValueError("Unknown node type")
 
     def update_aggregates(self):
-        self.agg = {"ap": len(self.ap),
-                    "lops": self.impl_n + self.and_n + self.or_n + self.not_n,
-                    "tops": self.A_n + self.E_n + self.X_n + self.F_n + self.G_n + self.U_n + self.R_n,
-                    "cops": sum(self.cops.values())}
+        return {
+            'aps': len(self.ap),
+            'cops': sum(self.cops.values()),
+            'lops': sum(self.lops.values()),
+            'tops': sum(self.tops.values())
+        }
 
     def get_stats(self):
         return {key: value for key, value in vars(self).items() if key not in ['']}
