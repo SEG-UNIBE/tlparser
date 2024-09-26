@@ -1471,7 +1471,7 @@
   },
   {
     "id": 1031,
-    "status": "NOK",
+    "status": "OK",
     "text": "If an input port is waiting for packet characters to arrive, the output port that it is connected to shall also wait. If an output port is waiting to transmit packet characters, the input port it is connected to shall also wait",
     "logics": [
       {
@@ -1520,7 +1520,7 @@
   },
   {
     "id": 1032,
-    "status": "NOK",
+    "status": "OK",
     "text": "When the output port finishes transmission of a packet, it shall be available to accept a packet from another input port",
     "logics": [
       {
@@ -2500,7 +2500,7 @@
   },
   {
     "id": 2020,
-    "status": "NOK",
+    "status": "OK",
     "text": "The Link state machine shall leave the Ready state on one of the following conditions: 1.When LinkDisabled is asserted, move to the ErrorReset state. 2.When a disconnect occurs, move to the ErrorReset state. 3.When a parity error occurs, move to the ErrorReset state. 4.When an ESC error occurs, move to the ErrorReset state. 5.When an FCT, N-Char or broadcast code is received from the Encoding Layer, move to the ErrorReset state. 6.When LinkStart is asserted, move to the Started state. 7.When AutoStart is asserted and gotNull is asserted, move to the Started state",
     "logics": [
       {
@@ -2513,7 +2513,7 @@
       {
         "type": "LTL",
         "f_latex": "\\Box((LinkDisabled) \\to \\nex (ErrorReset)), \\Box((disconnect) \\to \\nex (ErrorReset)), \\Box((parity) \\to \\nex (ErrorReset)), \\Box((ESC Error) \\to \\nex (ErrorReset)), \\Box( (FCT \\ received) \\vee (N-char \\ received) \\vee (broadcast \\ received)) \\to \\nex (ErrorReset)), \\Box((LinkStart \\ asserted) \\to \\nex(Started \\ state)), \\Box(((AutoStart \\ asserted) \\vee (gotNull \\ asserted )) \\to \\nex (Started \\ state))",
-        "f_code": "G((LinkDisabled) --> X (ErrorReset)) and G((disconnect) --> X (ErrorReset)) and G((parity) --> X (ErrorReset)) and G((ESC Error) --> (ErrorReset)) and G( (FCT_received) or (NChar_received) or (broadcast_received)) --> X (ErrorReset)) and G((LinkStart_asserted) --> X(Started_state)) and G(((AutoStart_asserted) or (gotNull_asserted )) --> X (Started_state))",
+        "f_code": "G((LinkDisabled) --> X (ErrorReset)) and G((disconnect) --> X (ErrorReset)) and G((parity) --> X (ErrorReset)) and G((ESC_Error) --> (ErrorReset)) and G(((FCT_received) or (NChar_received) or (broadcast_received)) --> X(ErrorReset)) and G((LinkStart_asserted) --> X(Started_state)) and G(((AutoStart_asserted) or (gotNull_asserted)) --> X(Started_state))",
         "projection": "",
         "reasoning": "until/next operator"
       },
