@@ -10,7 +10,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
-    "click"
+    "click",
+    "pandas",
+    "matplotlib"
 ]
 
 [project.urls]
