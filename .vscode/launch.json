@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: pytest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",  // Use `module` instead of `program`
+            "args": [
+                "-s", // Ensures that `stdout` and `stderr` are not captured
+                "--maxfail=1", // Stop after the first failure
+                "${workspaceFolder}/tests" // Path to the tests folder
+            ],
+            "console": "integratedTerminal", // You can also use "internalConsole"
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "stopOnEntry": false
+        }
+    ]
+}
