@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "pytest (all)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "pytest",  // Use `module` instead of `program`
             "args": [
@@ -21,7 +21,7 @@
         },
         {
             "name": "unit test (stats)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/tests/logic/test_stats.py",  // Path to your specific test file
             "console": "integratedTerminal",
@@ -37,7 +37,7 @@
         },
         {
             "name": "integration test (digest spacewire.json)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "tlparser",
             "args": [
