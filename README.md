@@ -7,12 +7,14 @@
 
 Temporal Logic Parser
 
+<!-- 
 ## Installation
 
 Install this tool using `pip`:
 ```bash
 pip install tlparser
-```
+``` -->
+
 ## Usage
 
 For help, run:
@@ -26,16 +28,27 @@ python -m tlparser --help
 ## Development
 
 To contribute to this tool, first checkout the code. Then create a new virtual environment:
+
 ```bash
 cd tlparser
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 ```
+
 Now install the dependencies and test dependencies:
+
 ```bash
-pip install -e '.[test]'
+pip3 install -e '.[test]'
 ```
+
 To run the tests:
+
 ```bash
-python -m pytest
+python3 -m pytest
+```
+
+To exit the tool again:
+
+```bash
+deactivate
 ```
