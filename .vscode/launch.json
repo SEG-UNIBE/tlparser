@@ -23,16 +23,18 @@
             "name": "unit test (stats)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/tests/logic/test_stats.py",  // Path to your specific test file
+            "module": "pytest", 
+            "args": [
+                "-s",
+                "--maxfail=1",
+                "${workspaceFolder}/tests/logic/test_stats.py"
+            ],
             "console": "integratedTerminal",
             "justMyCode": true,
             "cwd": "${workspaceFolder}",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}"  // Ensure your imports work properly
+                "PYTHONPATH": "${workspaceFolder}"
             },
-            "args": [
-                "-m", "unittest", "-v"  // Run unittest in verbose mode
-            ],
             "stopOnEntry": false
         },
         {
