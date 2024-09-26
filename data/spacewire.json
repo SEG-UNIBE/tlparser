@@ -1590,8 +1590,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -1639,8 +1639,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -1786,8 +1786,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -1835,8 +1835,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -1933,8 +1933,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2129,8 +2129,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2178,8 +2178,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2325,8 +2325,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2717,8 +2717,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2766,8 +2766,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2913,8 +2913,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -2962,8 +2962,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -3060,8 +3060,8 @@
         "type": "MTL_bounded",
         "f_latex": "",
         "f_code": "",
-        "projection": "yes",
-        "reasoning": ""
+        "projection": "no",
+        "reasoning": "unbounded until operator"
       },
       {
         "type": "MITL",
@@ -3396,7 +3396,7 @@
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "no",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3445,7 +3445,7 @@
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "no",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3453,7 +3453,7 @@
         "f_latex": "$\\Box((output  \\ port \\ transmitting) \\wedge (ErrorReset \\ state) \\to \\Diamond_{(0,delay)} (reset \\ (data \\wedge Strobe))) \\newline delay:= (t_2 - t_1) \\vee (t_1 - t_2), t_1 := strobe \\ reset, t_2 := data \\ reset $",
         "f_code": "G(((output_port_transmitting) and (ErrorReset_state)) --> F (reset_data and reset_Strobe)) ",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
@@ -3494,7 +3494,7 @@
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "No",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3502,7 +3502,7 @@
         "f_latex": "$\\Box(((LinkDisabled) \\to \\nex(ErrorReset \\ state)) \\vee (Disconnect \\to \\nex (ErrorReset \\ state)) \\vee  ((Parity \\ Error) \\to \\nex (ErrorReset \\ state)) \\vee ((ESC \\ Error) \\to \\nex (ErroeReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) \\ received) \\to \\nex (ErrorReset \\ state)) \\vee (\\Diamond_{12.8} (Ready \\ state)))$",
         "f_code": "G(((LinkDisabled)--> X(ErrorReset_state)) or (Disconnect --> X(ErrorReset_state)) or  ((Parity_Error) --> X (ErrorReset_state)) or ((ESC_Error) --> X (ErrorReset_state)) or ((FCT or NChar or broadcast_code) --> X(ErrorReset_state)) or (F (Ready_state)))",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
@@ -3530,41 +3530,41 @@
   {
     "id": 3004,
     "status": "NOK",
-    "text": "xxxxxxx",
+    "text": "The delay between the reset of the Strobe signal and the Data signal shall be between 500 ns (the period of slowest permitted transmit bit rate, 2 Mbps) and the period of the fastest transmit time for the particular transmitter which is dependent upon implementation.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "$\\Box((reset \\ strobe \\ signal) \\to \\Diamond_{(0,500 ns)} (reset \\ data \\ signal))$ ",
+        "f_code": "G((reset_strobe_signal) --> F (reset_data_signal))",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.((reset \\ strobe \\ signal) \\to \\Diamond y. (reset \\ data \\ signal) \\wedge y - x \\leq 500 \\ ns)$ ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3579,41 +3579,41 @@
   {
     "id": 3005,
     "status": "NOK",
-    "text": "xxxxxxx",
+    "text": " A disconnect shall occur when the length of time since the last transition on either the Data or Strobe line is longer than 727 ns (8 cycles of 10 MHz clock + 10 ) and 1 µs maximum (9 cycles of 10 MHz clock - 10 ).",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": " $ \\Box(\\neg(data \\ transmitted)\\mathcal{S}_{727 \\ ns} \\newline ((Data \\vee Strobe) \\ transmitted)\\to (disconnect))$ ",
+        "f_code": " $ G(((Data_transmitted or Strobe_transmitted) and F(not(data_transmitted))) --> (disconnect)) ",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded until operator"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$ \\Box x.(\\neg(data \\ transmitted)\\mathcal{S} y. \\newline (((Data \\vee Strobe) \\ transmitted) \\wedge x-y = 727 \\ ns)\\to (disconnet))$ ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3627,42 +3627,42 @@
   },
   {
     "id": 3006,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": " A packet shall be regarded by a port as being stuck when the following conditions are all fulfilled: 1.It has started. 2.It has not yet ended. 3.The time since the last data character was sent from the input port to the output port is longer than the port time-out period.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "$\\Box(((packet \\ started)\\wedge \\neg(packet \\ ended) \\wedge (\\neg(data \\ sent)\\mathcal{S}_{(0,t)} \\newline (last \\ data \\ sent)))\\to (packet \\ stuck)), \\newline t=time-out \\ period$",
+        "f_code": "G(((packet_started) and not(packet_ended) and (last_data_sent) and F(time_out_period)) --> (packet_stuck))",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded until operator"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x. (((packet \\ started)\\wedge \\neg(packet \\ ended) \\wedge (\\neg(data \\ sent)\\mathcal{S} y. (last \\ data \\ sent) \\newline \\wedge x-y \\geq time-out \\ period))\\to (packet \\ stuck))$  ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3676,42 +3676,42 @@
   },
   {
     "id": 3007,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": "The transition from the Started state to the ErrorReset state has “after 12,8 µs” in black (dark text) which is intentional as this transition is normal operation and not an error condition. It occurs when this end of the line is trying to start and the other end is disabled. The transition from the Connecting state to the ErrorReset state has “after 12,8 µs” in red (lighter text) because it is an error: although a Null has been received indicating that the other end of the link is active, no FCT is received within 12,8 µs so it is a fault.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
+        "f_latex": "$\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))$ ",
+        "f_code": "G(((Started_state) --> F (ErrorReset_state))) and G((Connecting_state) --> F not (FCT_received) --> (ErrorReset_state)))",
         "projection": "",
-        "reasoning": ""
+        "reasoning": "bounded diamond operator"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x. (((Started \\ state) \\to \\Diamond y.(ErrorReset \\ state) \\wedge y-x \\leq 14.33 \\mu s)) , \\newline \\Box x. ((Connecting \\ state) \\to (\\Diamond y. \\neg(FCT \\ received) \\wedge y-x \\leq 14.33 \\mu s))\\to (ErrorReset \\ state)))$ ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3725,42 +3725,42 @@
   },
   {
     "id": 3008,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": " The Link state machine shall leave the Started state on one of the following conditions: 1.When LinkDisabled is asserted, move to the ErrorReset state. 2.When a disconnect occurs, move to the ErrorReset state. 3.When a parity error occurs, move to the ErrorReset state. 4.When an ESC error, move to the ErrorReset state. 5.When an FCT, N-Char or broadcast code is received from the Encoding Layer, move to the ErrorReset state. 6.When enable is asserted, at least one Null has been sent and gotNull is asserted, move to the Connecting state. 7.12,8 µs after entering the Started state, move to the ErrorReset state.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_code": "$\\Box(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond_{12.8 \\mu s} (ErrorReset \\ state))$",
+        "f_code": "G(((LinkDisabled_asserted) --> X(Error_Reset_state)) or ((disconnect) --> X (ErrorReset_state)) or ((parity_error) --> X (ErrorReset_state)) or ((ESC_error) --> X(ErrorReset_state)) or (((enable_asserted) and (one_FCT_sent) and (one_FCT_received) ) --> X(Run_state)) or (((NChar_received) or (broadcast_code_received)) --> X(ErrorReset_state)) or ((Connecting_state) --> F (ErrorReset_state))) ",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcat \\ code) received ) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ null \\ sent) \\wedge(gotNull \\ asserted))\\to \\nex(Connecting \\ state)) \\vee (Started \\ state) \\to \\Diamond y. (ErrorReset \\ state) \\wedge y-x=12.8 \\mu s)$ ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3774,42 +3774,42 @@
   },
   {
     "id": 3009,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": " The Link state machine shall leave the Connecting state on one of the following conditions: 1.When LinkDisabled is asserted, move to the ErrorReset state. 2.When a disconnect occurs, move to the ErrorReset state. 3.When a parity error occurs, move to the ErrorReset state. 4.When an ESC error occurs, move to the ErrorReset state. 5.When enable is asserted, at least one FCT has been sent and an FCT has been received (gotFCT asserted), move to the Run state. 6.When an N-Char or broadcast code is received from the Encoding Layer, move to the ErrorReset state. 7.12,8 µs after entering the Connecting state, move to the ErrorReset state.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ FCT \\ sent) \\wedge (one \\ FCT \\ received) ) \\to \\nex(Run \\ state)) \\vee (((NChar \\ received) \\vee (broadcast \\ code \\ received)) \\to \\nex(ErrorReset \\ state)) \\vee ((Connecting \\ state) \\to \\Diamond_{12.8 \\mu s} (ErrorReset \\ state)))$",
+        "f_code": "G(((LinkDisabled_asserted) --> X(Error_Reset_state)) or ((disconnect) --> X (ErrorReset_state)) or ((parity_error) --> X(ErrorReset_state)) or ((ESC_error) --> X(ErrorReset_state)) or (((enable_asserted) and (one_FCT_sent) and (one_FCT_received) ) --> X(Run_state)) or (((NChar_received) or (broadcast_code_received)) --> X(ErrorReset_state)) or ((Connecting_state) --> F (ErrorReset_state)))",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.(((LinkDisabled \\ asserted) \\to \\nex(Error \\ Reset \\ state)) \\vee ((disconnect) \\to \\nex (ErrorReset \\ state)) \\vee ((parity \\ error) \\to \\nex(ErrorReset \\ state)) \\vee ((ESC \\ error) \\to \\nex(ErrorReset \\ state)) \\vee (((enable \\ asserted) \\wedge (one \\ FCT \\ sent) \\wedge (one \\ FCT \\ received) ) \\to \\nex(Run \\ state)) \\vee (((NChar \\ received) \\vee (broadcast \\ code \\ received)) \\to \\nex(ErrorReset \\ state)) \\vee ((Connecting \\ state) \\to \\Diamond y. (ErrorReset \\ state) \\wedge y-x=12.8 \\mu s))$",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3823,42 +3823,42 @@
   },
   {
     "id": 3010,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": " When operating in interrupt mode, there should be a minimum interval between a node sending one interrupt code with a particular value and sending the next interrupt with that same value which is greater than the maximum propagation time of an interrupt code across the network.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time$",
+        "f_code": "G((interrupt_mode) --> ((send_interrupt_code_A) --> F (sent_interrupt_code_A))) and t >= maximum_propagation_time",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.((interrupt \\ mode) \\to ((send \\ interuupt \\ code \\ A) \\to \\Diamond y. (sent \\ interrupt \\ code \\ A) \\wedge y-x \\geq maximum \\ propagation \\ time))$ ",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3872,42 +3872,42 @@
   },
   {
     "id": 3011,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": "If an interrupt is used in interrupt mode and the host system requests to send an interrupt too fast after the previous identical interrupt was sent, i.e. before the corresponding interrupt time-out timer in the routing switches has expired, the new interrupt code that the node sends is discarded by a router.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond_I (interrupt \\ code \\ sent) \\to (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out$",
+        "f_code": "G((interrupt_mode) --> ((interrupt_code_sent) --> F (interrupt_code_sent) --> (new_interrupt_code_discard) ))and I == corresponding_interrupt_timeout",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x .((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond y. ((interrupt \\ code \\ sent) \\wedge (y - x = corresponding \\ interrupt \\ time-out)) \\to (new \\ interrupt \\ code \\ discard) ) )$",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3921,42 +3921,42 @@
   },
   {
     "id": 3012,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": " When operating in interrupt acknowledgement mode, there shall be a minimum interval between a node sending one interrupt code with a particular value and sending the next interrupt with that same value which is greater than the maximum propagation time of a interrupt code across the network and the maximum time for the interrupt acknowledgement code to be generated and return across the network.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time$ ",
+        "f_code": "Gx((interrupt_ack_mode) --> ((send_interrupt_code_A) --> F (sent_interrupt_code_A))) and t >= maximum_propagation_time",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond y. (sent \\ interrupt \\ code \\ A) \\wedge y-x \\geq maximum \\ propagation \\ time))$",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -3970,42 +3970,42 @@
   },
   {
     "id": 3013,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": "There shall be a delay between the interrupt code arriving and the interrupt acknowledgement being generated, which is greater than the propagation time of the interrupt code across the network.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0,t)} (interrupt \\newline  acknowlrdgement)), \\newline t \\geq propagation \\ interrupt \\ code \\ time$",
+        "f_code": "G((interrupt_code_arriving) --> F(interrupt_acknowledgement))and t >= propagation_interrupt_code_time",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.((interrupt \\ code \\ arriving) \\to \\newline \\Diamond y. ((interrupt \\ acknowlrdgement) \\newline \\wedge y-x  \\geq propagation \\ interrupt \\ code \\ time))$",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -4019,42 +4019,42 @@
   },
   {
     "id": 3014,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": "The delay between the interrupt code arriving and the interrupt acknowledgement being generated shall be less than the maximum time determined for a node to generate an interrupt acknowledgement code",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0, t)} (interrupt \\ ack) \\ generated), \\newline t \\leq max interrupt \\ ack \\ time$",
+        "f_code": "G((interrupt_code_arriving) --> F (interrupt_ack_generated) and t <= max interrupt_ack_time",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.((interrupt \\ code \\ arriving) \\to \\Diamond y. ((interrupt \\ ack \\ generated)\\wedge y-x \\leq max interrupt \\ ack \\ time))$",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -4068,140 +4068,42 @@
   },
   {
     "id": 3015,
-    "status": "NOK",
-    "text": "xxxxxxx",
+    "status": "OK",
+    "text": "If the host system is too slow in sending an interrupt acknowledgement after a corresponding interrupt code has been received, i.e. the interrupt acknowledgement code is sent after the corresponding interrupt time-out timer in the routing switches has expired, the interrupt acknowledgement code is discarded by the first router.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
+        "f_latex": "$\\Box((interrupt \\ code \\ received) \\to \\newline (\\neg \\Diamond_{(0,t)} (interrupt \\ ack \\ received) \\newline \\to (Discard \\ interrupt \\ ack \\ code))), \\newline t = corresponding \\ interrupt \\ time-out  $",
+        "f_code": "G((interrupt_code_received) --> ((not  F (interrupt_ack_received)) --> (Discard_interrupt_ack_code))) and t == corresponding_interrupt_timeout ",
+        "projection": "yes",
+        "reasoning": "bounded diamond"
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
         "type": "TPTL",
-        "f_latex": "xxxxxx",
+        "f_latex": "$\\Box x.(((interrupt \\ code \\ received) \\to \\Diamond y. ((interrupt \\ ack \\ received) \\wedge y-x \\geq corresponding \\ interrupt \\ time-out )) \\to (Discard \\ interrupt \\ ack \\ code)))$",
         "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "STL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "unknown",
-        "reasoning": ""
-      }
-    ]
-  },
-  {
-    "id": 3016,
-    "status": "NOK",
-    "text": "xxxxxxx",
-    "logics": [
-      {
-        "type": "LTL_inv",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "LTL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "MITL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "STL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "unknown",
-        "reasoning": ""
-      }
-    ]
-  },
-  {
-    "id": 3017,
-    "status": "NOK",
-    "text": "xxxxxxx",
-    "logics": [
-      {
-        "type": "LTL_inv",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "LTL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "MTL_bounded",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "MITL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "",
-        "reasoning": ""
-      },
-      {
-        "type": "TPTL",
-        "f_latex": "xxxxxx",
-        "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "yes",
         "reasoning": ""
       },
       {
@@ -4216,48 +4118,48 @@
   {
     "id": 4001,
     "status": "NOK",
-    "text": "xxxxxx",
+    "text": "After a reset or disconnect (see clause 5.4.8) an output port shall start operating at a data signalling rate of 10 ±1 Mb/s.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "TPTL",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "STL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "unknown",
+        "f_latex": "$\\Box((reset \\vee disconnect)\\to \\newline \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))$",
+        "f_code": "G((reset or disconnect)--> X ( 9<= S_data_(t)<= 11))",
+        "projection": "yes",
         "reasoning": ""
       }
     ]
@@ -4265,195 +4167,195 @@
   {
     "id": 4002,
     "status": "NOK",
-    "text": "xxxxxx",
+    "text": "The SpaceWire output port shall operate at 10 ±1 Mb/s until set to operate at a different data signalling rate.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "TPTL",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "STL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "unknown",
+        "f_latex": "$\\Box((\\  9\\leq S_{data} (t)\\leq 11) \\  \\newline \\until \\ (set \\ different \\ rate))$",
+        "f_code": "G(( 9 <= S_data_(t) <= 11) U (set_different_rate))",
+        "projection": "yes",
         "reasoning": ""
       }
     ]
   },
   {
     "id": 4003,
-    "status": "NOK",
-    "text": "xxxxxx",
+    "status": "OK",
+    "text": "Once in the Run state it is possible to change the output port data signalling rate from the initial data signalling rate to the intended operating data signalling rate",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "TPTL",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "unknown",
         "reasoning": ""
       },
       {
         "type": "STL",
-        "f_latex": "",
-        "f_code": "",
-        "projection": "unknown",
+        "f_latex": " $\\Box((state: \\ Run) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline  x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate$ ",
+        "f_code": " G((state_Run) --> ( S_data_(t) := |x| or S_data_(t) == |y|) and not(S_data_(t) == |x| and S_data_(t) == |y|)), and x==initial_data_signaling_rate and y==intended_data_signaling_rate ",
+        "projection": "yes",
         "reasoning": ""
       }
     ]
   },
   {
     "id": 5001,
-    "status": "NOK",
+    "status": "OK",
     "text": "Received characters and control codes shall be passed to the data link layer in the order in which they are received.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "TPTL",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "STL",
         "f_latex": "",
         "f_code": "",
-        "projection": "unknown",
+        "projection": "no",
         "reasoning": ""
       }
     ]
   },
   {
     "id": 5002,
-    "status": "NOK",
+    "status": "OK",
     "text": "If the host system tries to send an interrupt acknowledgement too soon after a corresponding interrupt code has been received, i.e. before the interrupt code has propagated across the entire network, the result is indeterminate for that specific interrupt. The new interrupt acknowledgement code that the node sends can either be discarded by a router, or repeatedly propagated through the network if the network has circular connections.",
     "logics": [
       {
         "type": "LTL_inv",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "MTL_bounded",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "MITL",
         "f_latex": "",
         "f_code": "",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "TPTL",
         "f_latex": "xxxxxx",
         "f_code": "xxxxxx",
-        "projection": "",
+        "projection": "no",
         "reasoning": ""
       },
       {
         "type": "STL",
         "f_latex": "",
         "f_code": "",
-        "projection": "unknown",
+        "projection": "no",
         "reasoning": ""
       }
     ]
