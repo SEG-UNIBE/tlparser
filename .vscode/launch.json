@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: pytest",
+            "name": "pytest (all)",
             "type": "python",
             "request": "launch",
             "module": "pytest",  // Use `module` instead of `program`
@@ -20,7 +20,7 @@
             "stopOnEntry": false
         },
         {
-            "name": "Python: Test Stats (test_stats.py)",
+            "name": "unit test (stats)",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/tests/logic/test_stats.py",  // Path to your specific test file
@@ -34,6 +34,18 @@
                 "-m", "unittest", "-v"  // Run unittest in verbose mode
             ],
             "stopOnEntry": false
+        },
+        {
+            "name": "integration test (digest spacewire.json)",
+            "type": "python",
+            "request": "launch",
+            "module": "tlparser",
+            "args": [
+                "digest", "${workspaceFolder}/data/spacewire.json"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
