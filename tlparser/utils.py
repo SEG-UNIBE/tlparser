@@ -50,8 +50,15 @@ class Utils:
         # Write the data to the sheet
         for row, item in enumerate(flattened_data, start=2):
             for col, header in enumerate(headers, start=1):
-                value = item.get(header, '')  # Use empty string if key is missing
-                sheet.cell(row=row, column=col, value=str(value))
+                value = item.get(header)
+                if value is None or value == '' or (isinstance(value, set) and len(value) == 0):
+                    sheet.cell(row=row, column=col, value=None)
+                elif isinstance(value, int) or isinstance(value, float):
+                    sheet.cell(row=row, column=col, value=value)
+                elif isinstance(value, set):
+                    sheet.cell(row=row, column=col, value=', '.join(value))
+                else:
+                    sheet.cell(row=row, column=col, value=str(value))
 
         # Save the workbook to a file
         os.makedirs(self.config.folder_data_out, exist_ok=True)
