@@ -38,8 +38,7 @@ class Stats:
         }
         
         # Other properties
-        self.nesting = 0
-        self.AST_height = 0
+        self.asth = 0
         self.ap = set()  # Atomic propositions (e.g., 'x > 5')
 
         if len(self.formula_raw) > 0:
@@ -91,8 +90,7 @@ class Stats:
 
     def analyze_formula(self, node, level=0):
         if level == 0:
-            self.AST_height = node.height
-        self.nesting = max(self.nesting, level)
+            self.asth = node.height
 
         # print(f"Node:\t\t{node}")
         # print(f"Symbol:\t\t{node.symbols[0]}")  if hasattr(node, '_subformula') else print(f"Symbol:\t\tAP")
