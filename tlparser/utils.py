@@ -25,7 +25,10 @@ class Utils:
                     s = Stats(logic["f_code"])
                     parsed_formulas.append({
                         "id": entry['id'],
-                        "logic": logic["type"],
+                        "text": entry['text'],
+                        "type": logic["type"],
+                        "projection": logic["projection"],
+                        "reasoning": logic["reasoning"],
                         "stats": s.get_stats()
                     })
         return parsed_formulas
@@ -37,7 +40,11 @@ class Utils:
         headers = set()
         for item in flattened_data:
             headers.update(item.keys())
-        headers = sorted(headers)  # Sort headers for consistent column order
+        
+        # Sort headers according to predefined order, with any extra headers at the end
+        predefined_order = Utils.get_column_order()
+        headers = [header for header in predefined_order if header in headers] + \
+                  [header for header in headers if header not in predefined_order]
 
         # Create a new workbook and select the active worksheet
         workbook = openpyxl.Workbook()
@@ -56,7 +63,7 @@ class Utils:
                 elif isinstance(value, int) or isinstance(value, float):
                     sheet.cell(row=row, column=col, value=value)
                 elif isinstance(value, set):
-                    sheet.cell(row=row, column=col, value=', '.join(value))
+                    sheet.cell(row=row, column=col, value=' | '.join(value))
                 else:
                     sheet.cell(row=row, column=col, value=str(value))
 
@@ -66,6 +73,8 @@ class Utils:
         out = os.path.join(self.config.folder_data_out, f'{prefix}_{self.get_unique_filename()}.xlsx')
         workbook.save(out)
         return out
+
+   
 
     @staticmethod
     def flatten_dict(d, parent_key='', sep='.'):
@@ -87,3 +96,50 @@ class Utils:
     def extract_filename_without_suffix(file_path):
         base_name = os.path.basename(file_path)
         return os.path.splitext(base_name)[0]
+    
+    @staticmethod
+    def get_latest_excel(folder):
+        excel_files = [f for f in os.listdir(folder) if f.endswith('.xlsx')]
+        if not excel_files:
+            return ''
+        
+        # Sort files by modification time
+        latest_file = max(excel_files, key=lambda f: os.path.getmtime(os.path.join(folder, f)))
+        file = os.path.join(folder, latest_file)
+        return file
+    
+    @staticmethod
+    def get_column_order():
+        return [
+            "id",
+            "text",
+            "type",
+            "reasoning",
+            "projection",
+            "stats.formula_raw",
+            "stats.formula_parsable",
+            "stats.formula_parsed",
+            "stats.AST_height",
+            "stats.ap",
+            "stats.cops.eq",
+            "stats.cops.geq",
+            "stats.cops.gt",
+            "stats.cops.leq",
+            "stats.cops.lt",
+            "stats.cops.neq",
+            "stats.lops.and",
+            "stats.lops.impl",
+            "stats.lops.not",
+            "stats.lops.or",
+            "stats.tops.A",
+            "stats.tops.E",
+            "stats.tops.F",
+            "stats.tops.G",
+            "stats.tops.R",
+            "stats.tops.U",
+            "stats.tops.X",
+            "stats.agg.aps",
+            "stats.agg.cops",
+            "stats.agg.lops",
+            "stats.agg.tops",
+        ]
