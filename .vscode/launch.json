@@ -48,6 +48,18 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "integration test (visualize)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tlparser",
+            "args": [
+                "visualize", "--latest"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

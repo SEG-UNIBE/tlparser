@@ -1,0 +1,10 @@
+{
+      "python.languageServer": "Microsoft",
+      "python.formatting.provider": "black",
+      "editor.formatOnSave": true,
+      "python.linting.flake8Enabled": true,
+      "python.linting.enabled": true,
+      "cSpell.words": [
+            "tlparser"
+      ],
+}
