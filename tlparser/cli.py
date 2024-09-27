@@ -88,8 +88,8 @@ def visualize_data(file, latest):
     # Read the Excel file
     viz = Viz(config, file)
 
-    plot1 = viz.plot_distribution()
-    click.echo(f"Plot 1 saved as {plot1}")
+    plot1 = viz.plot_distribution_natural()
+    plot2 = viz.plot_distribution_combined()
 
     click.echo(f"Plot generation completed.")
 
