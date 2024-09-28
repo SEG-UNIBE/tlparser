@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import seaborn as sns
 
 from tlparser.utils import Utils
@@ -112,7 +113,7 @@ class Viz:
             nrows=2, ncols=2, figsize=(9, 7), sharex=True, sharey=True
         )
         axes = axes.flatten()  # Flatten the axes array for easier iteration
-        plt.subplots_adjust(hspace=0.2, wspace=0.2)
+        plt.subplots_adjust(hspace=0.1, wspace=0.1)
         i = 1
         # Plot each aggregation in a separate subplot
         for ax, agg in zip(axes, agg_columns):
@@ -120,26 +121,49 @@ class Viz:
                 x="type",
                 y="value",
                 data=df_long[df_long["aggregation"] == agg],
+                hue="type",
                 palette="colorblind",
                 bw_method=0.5,
+                edgecolor="black",
+                linewidth=1,
+                linecolor="k",
                 ax=ax,
+                inner=None,
+                legend=False,
+            )
+            sns.boxplot(
+                x="type",
+                y="value",
+                hue="type",
+                palette="colorblind",
+                data=df_long[df_long["aggregation"] == agg],
+                width=0.12,  # Adjust the box width
+                showcaps=True,
+                showbox=True,
+                whiskerprops={"linewidth": 1.2, "color": "black"},
+                medianprops={"linewidth": 1.2, "color": "black"},
+                ax=ax,
+                fliersize=5,
             )
             # Make violins slightly transparent
             for violin_part in violin.collections:
-                violin_part.set_alpha(0.6)
+                violin_part.set_alpha(0.5)
 
-            sns.swarmplot(
-                x="type",
-                y="value",
-                data=df_long[df_long["aggregation"] == agg],
-                color="black",
-                alpha=0.5,
-                size=4,
-                marker="o",
-                edgecolor="white",
-                ax=ax,
-            )
+            # sns.stripplot(
+            #     x="type",
+            #     y="value",
+            #     hue="type",
+            #     data=df_long[df_long["aggregation"] == agg],
+            #     alpha=0.4,
+            #     size=5,
+            #     marker="o",
+            #     edgecolor="black",
+            #     linewidth=1,
+            #     ax=ax,
+            #     dodge=False,
+            # )
             ax.set_xlabel("")
+            ax.yaxis.set_minor_locator(ticker.MultipleLocator(1))
 
             # Annotate mean and median values on the plot above each violin
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():

@@ -66,7 +66,17 @@ def digest_file(json_file):
     is_flag=True,
     help="Use the latest Excel file in the working directory",
 )
-def visualize_data(file, latest):
+@click.option(
+    "--plot",
+    "-p",
+    type=click.Choice(
+        ["distnat", "distcomb", "complexity", "pairplot", "projclass", "all"],
+        case_sensitive=False,
+    ),
+    multiple=True,
+    help="Specify the plot types to generate",
+)
+def visualize_data(file, latest, plot):
     """Creates a PDF plot from the Excel file"""
 
     if not (file or latest):
@@ -89,12 +99,19 @@ def visualize_data(file, latest):
 
     # Read the Excel file
     viz = Viz(config, file)
+    plot_methods = {
+        "distnat": viz.plot_distribution_natural,
+        "distcomb": viz.plot_distribution_combined,
+        "complexity": viz.plot_complexity,
+        "pairplot": viz.plot_pairplot,
+        "projclass": viz.plot_projection_classes,
+    }
 
-    plot1 = viz.plot_distribution_natural()
-    plot2 = viz.plot_distribution_combined()
-    plot3 = viz.plot_complexity()
-    plot3 = viz.plot_pairplot()
-    plot3 = viz.plot_projection_classes()
+    if "all" in plot or not plot:
+        plot = plot_methods.keys()
+    for pt in plot:
+        click.echo(f"Generating {pt} plot...")
+        plot_methods[pt]()
 
     click.echo("Plot generation completed.")
 
