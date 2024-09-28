@@ -38,12 +38,7 @@ class Viz:
         plt.title("Histogram of Natural Fomalizations by Logic")
         plt.xticks(rotation=0)
 
-        os.makedirs(self.config.folder_data_out, exist_ok=True)
-        prefix = Utils.extract_filename_without_suffix(self.config.file_data_in)
-        out = os.path.join(
-            self.config.folder_data_out,
-            f"dist_nat_{prefix}_{Utils.get_unique_filename()}_dist.pdf",
-        )
+        out = self.get_file_name("distnat")
         plt.savefig(out)
         plt.close()
 
@@ -79,12 +74,7 @@ class Viz:
         plt.xticks(rotation=0)
         plt.legend(title="Projection Status")
 
-        os.makedirs(self.config.folder_data_out, exist_ok=True)
-        prefix = Utils.extract_filename_without_suffix(self.config.file_data_in)
-        out = os.path.join(
-            self.config.folder_data_out,
-            f"dist_comb_{prefix}_{Utils.get_unique_filename()}_dist.pdf",
-        )
+        out = self.get_file_name("distcomb")
         plt.savefig(out)
         plt.close()
 
@@ -203,9 +193,6 @@ class Viz:
         for i in range(len(agg_columns), len(axes)):
             axes[i].set_visible(False)
 
-        # plt.suptitle(
-        #     'Violin and Swarm Plot of Aggregation Values by Type (Filtered by projection = "self")'
-        # )
         fig.tight_layout()
 
         out = self.get_file_name("violine")
@@ -217,5 +204,5 @@ class Viz:
         os.makedirs(self.config.folder_data_out, exist_ok=True)
         return os.path.join(
             self.config.folder_data_out,
-            f"{prefix}_{Utils.get_unique_filename()}_dist.pdf",
+            f"{prefix}_{Utils.get_unique_filename()}.pdf",
         )
