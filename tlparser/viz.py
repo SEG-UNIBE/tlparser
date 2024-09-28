@@ -231,10 +231,13 @@ class Viz:
 
     def plot_pairplot(self):
 
-        agg_columns = self.data.filter(like=".agg.").columns.tolist()
-        df_pairplot = self.data[agg_columns + ["type"]]
+        df = self.data[self.data["projection"] == "self"]
+        agg_columns = df.filter(like=".agg.").columns.tolist()
+        df_pairplot = df[agg_columns + ["type"]]
 
-        markers = ["o", "s", "D", "^", "v", "P"]
+        unique_types = df_pairplot["type"].nunique()
+        markers = ["o", "s", "D", "^", "v", "P"][:unique_types]
+
         g = sns.pairplot(
             df_pairplot,
             hue="type",
