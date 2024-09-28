@@ -92,6 +92,7 @@ def visualize_data(file, latest):
     # plot2 = viz.plot_distribution_combined()
     # plot3 = viz.plot_complexity()
     plot3 = viz.plot_pairplot()
+    viz.plot_projection_classes()
 
     click.echo("Plot generation completed.")
 

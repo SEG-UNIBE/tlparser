@@ -22,6 +22,13 @@ class Viz:
         self.config = config
         self.data = pd.read_excel(file)
 
+    def __get_file_name(self, prefix):
+        os.makedirs(self.config.folder_data_out, exist_ok=True)
+        return os.path.join(
+            self.config.folder_data_out,
+            f"{prefix}_{Utils.get_unique_filename()}.pdf",
+        )
+
     def plot_distribution_natural(self):
         empty_counts = (
             self.data[self.data["projection"] == "self"]
@@ -38,7 +45,7 @@ class Viz:
         plt.title("Histogram of Natural Fomalizations by Logic")
         plt.xticks(rotation=0)
 
-        out = self.get_file_name("distnat")
+        out = self.__get_file_name("distnat")
         plt.savefig(out)
         plt.close()
 
@@ -74,7 +81,7 @@ class Viz:
         plt.xticks(rotation=0)
         plt.legend(title="Projection Status")
 
-        out = self.get_file_name("distcomb")
+        out = self.__get_file_name("distcomb")
         plt.savefig(out)
         plt.close()
 
@@ -195,7 +202,7 @@ class Viz:
 
         fig.tight_layout()
 
-        out = self.get_file_name("violine")
+        out = self.__get_file_name("violine")
         plt.savefig(out)
         plt.close()
         return out
@@ -220,14 +227,39 @@ class Viz:
                 artist.set_alpha(0.6)
         g._legend.set_title("Logic")
 
-        out = self.get_file_name("pairplot")
+        out = self.__get_file_name("pairplot")
         plt.savefig(out)
         plt.close()
         return out
 
-    def get_file_name(self, prefix):
-        os.makedirs(self.config.folder_data_out, exist_ok=True)
-        return os.path.join(
-            self.config.folder_data_out,
-            f"{prefix}_{Utils.get_unique_filename()}.pdf",
+    def plot_projection_classes(self):
+
+        df = self.data
+
+        df["type"] = pd.Categorical(
+            df["type"], categories=self.type_order, ordered=True
         )
+
+        df_sorted = df.sort_values(by=["id", "type"])
+        df["projection_key"] = df_sorted.groupby("id")["projection"].transform(
+            lambda x: "".join([value[0] for value in x])
+        )
+
+        df = df[df["projection"] == "self"]
+
+        # Count the occurrences of each projection_key
+        projection_key_counts = df["projection_key"].value_counts().reset_index()
+        projection_key_counts.columns = ["projection_key", "count"]
+
+        # Plot a seaborn histogram for counts per key
+        plt.figure(figsize=(10, 6))
+        sns.barplot(data=projection_key_counts, x="projection_key", y="count")
+        plt.xlabel("Projection Key")
+        plt.ylabel("Count")
+        plt.title("Counts per Projection Key")
+        plt.tight_layout()
+
+        out = self.__get_file_name("projclass")
+        plt.savefig(out)
+        plt.close()
+        return out
