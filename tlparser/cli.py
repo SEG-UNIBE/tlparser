@@ -90,8 +90,9 @@ def visualize_data(file, latest):
 
     plot1 = viz.plot_distribution_natural()
     plot2 = viz.plot_distribution_combined()
+    plot3 = viz.plot_complexity()
 
-    click.echo(f"Plot generation completed.")
+    click.echo("Plot generation completed.")
 
 
 @cli.command(name="cleanup")
