@@ -105,12 +105,12 @@ class Viz:
         # Calculate mean and median values for annotations
         stats_values = (
             df_long.groupby(["type", "aggregation"])["value"]
-            .agg(["mean", "median", "count"])
+            .agg(["mean", "median", "count", "std"])
             .reset_index()
         )
 
         y_min = df_long["value"].min()
-        y_max = df_long["value"].max() + 5
+        y_max = df_long["value"].max() + 4.5
 
         # Create a 2x2 grid of subplots
         fig, axes = plt.subplots(
@@ -118,7 +118,7 @@ class Viz:
         )
         axes = axes.flatten()  # Flatten the axes array for easier iteration
         plt.subplots_adjust(hspace=0.2, wspace=0.2)
-
+        i = 1
         # Plot each aggregation in a separate subplot
         for ax, agg in zip(axes, agg_columns):
             violin = sns.violinplot(
@@ -153,9 +153,10 @@ class Viz:
 
                 # Prepare formatted string for annotation
                 annotation_text = (
-                    f"n: {row['count']:<5}\n"
-                    f"μ:  {row['mean']:<4.1f}\n"
-                    f"M:  {row['median']:<4.1f}"
+                    # f"n={row['count']}\n"
+                    f"μ={row['mean']:.1f}\n"
+                    f"M={row['median']:.1f}\n"
+                    f"σ={row['std']:.1f}"
                 )
 
                 ax.text(
@@ -165,10 +166,35 @@ class Viz:
                     color="black",
                     ha="center",
                     va="bottom",
-                    fontfamily="monospace",
+                    # fontfamily="monospace",
                     # size=8,
                 )
 
+            # Place the count 'n' below the x-axis tick marks
+            if i > 2:
+                for x_category in df_long["type"].unique():
+                    # Get the specific count 'n' for this aggregation and type
+                    n_value = int(
+                        stats_values[
+                            (stats_values["aggregation"] == agg)
+                            & (stats_values["type"] == x_category)
+                        ]["count"].iloc[0]
+                    )
+
+                    # Find the x position of the category
+                    x_position = list(df_long["type"].unique()).index(x_category)
+
+                    # Annotate n value below the x-tick
+                    ax.text(
+                        x_position,  # x position (each tick mark)
+                        y_min - 8,  # position slightly below the y-axis minimum
+                        f"n={n_value}",
+                        color="black",
+                        ha="center",
+                        va="top",
+                    )
+
+            i += 1
             ax.set_title(self.title_map.get(agg, agg))
             ax.set_ylabel("Count")
             ax.set_ylim(y_min - 5, y_max + 5)
