@@ -104,7 +104,7 @@ class Viz:
 
         # Create a 2x2 grid of subplots
         fig, axes = plt.subplots(
-            nrows=2, ncols=2, figsize=(11, 7), sharex=True, sharey=True
+            nrows=2, ncols=2, figsize=(9, 7), sharex=True, sharey=True
         )
         axes = axes.flatten()  # Flatten the axes array for easier iteration
         plt.subplots_adjust(hspace=0.2, wspace=0.2)
