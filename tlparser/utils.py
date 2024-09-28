@@ -1,9 +1,11 @@
 import json
-from tlparser.config import Configuration
-from tlparser.stats import Stats
 import openpyxl
 import os
+import pandas as pd
 from datetime import datetime
+
+from tlparser.config import Configuration
+from tlparser.stats import Stats
 
 
 class Utils:
@@ -38,6 +40,16 @@ class Utils:
 
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
+
+        # Derive and append projclass
+        df = pd.DataFrame(flattened_data)
+        type_order = self.config.logic_order
+        df["type"] = pd.Categorical(df["type"], categories=type_order, ordered=True)
+        df_sorted = df.sort_values(by=["id", "type"])
+        df["projclass"] = df_sorted.groupby("id")["projection"].transform(
+            lambda x: "".join([value[0] for value in x])
+        )
+        flattened_data = df.to_dict(orient="records")
 
         # Get all unique headers
         headers = set()

@@ -9,8 +9,6 @@ from tlparser.config import Configuration
 
 class Viz:
 
-    type_order = ["INV", "LTL", "MTLb", "MITL", "TPTL", "STL"]
-
     title_map = {
         "stats.agg.aps": "Atomic Propositions",
         "stats.agg.cops": "Comparison Operators",
@@ -34,7 +32,7 @@ class Viz:
             self.data[self.data["projection"] == "self"]
             .groupby("type")
             .size()
-            .reindex(self.type_order, fill_value=0)
+            .reindex(self.config.logic_order, fill_value=0)
         )
 
         plt.figure(figsize=(8, 6))
@@ -56,7 +54,7 @@ class Viz:
             self.data.groupby(["type", "projection"])
             .size()
             .unstack(fill_value=0)
-            .reindex(self.type_order, fill_value=0)
+            .reindex(self.config.logic_order, fill_value=0)
         )
 
         projection_colors = {
@@ -234,29 +232,17 @@ class Viz:
 
     def plot_projection_classes(self):
 
-        df = self.data
+        df = self.data[self.data["projection"] == "self"]
 
-        df["type"] = pd.Categorical(
-            df["type"], categories=self.type_order, ordered=True
-        )
-
-        df_sorted = df.sort_values(by=["id", "type"])
-        df["projection_key"] = df_sorted.groupby("id")["projection"].transform(
-            lambda x: "".join([value[0] for value in x])
-        )
-
-        df = df[df["projection"] == "self"]
-
-        # Count the occurrences of each projection_key
-        projection_key_counts = df["projection_key"].value_counts().reset_index()
-        projection_key_counts.columns = ["projection_key", "count"]
+        projection_key_counts = df["projclass"].value_counts().reset_index()
+        projection_key_counts.columns = ["projclass", "count"]
 
         # Plot a seaborn histogram for counts per key
         plt.figure(figsize=(10, 6))
-        sns.barplot(data=projection_key_counts, x="projection_key", y="count")
+        sns.barplot(data=projection_key_counts, x="projclass", y="count")
         plt.xlabel("Projection Key")
         plt.ylabel("Count")
-        plt.title("Counts per Projection Key")
+        plt.title("Counts per Projection Class")
         plt.tight_layout()
 
         out = self.__get_file_name("projclass")

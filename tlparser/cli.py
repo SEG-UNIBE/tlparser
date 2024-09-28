@@ -12,6 +12,7 @@ from tlparser.viz import Viz
 
 DEFAULT_WD = "workingdir"
 DEFAULT_STATI = ["OK"]
+DEFAULT_ORDER = ["INV", "LTL", "MTLb", "MITL", "TPTL", "STL"]
 
 
 def get_working_directory():
@@ -46,6 +47,7 @@ def digest_file(json_file):
         file_data_in=json_file,
         folder_data_out=working_dir,
         only_with_status=DEFAULT_STATI,
+        logic_order=DEFAULT_ORDER,
     )
     util = Utils(config)
     formulas = util.read_formulas_from_json()
@@ -74,7 +76,7 @@ def visualize_data(file, latest):
         latest = False
 
     working_dir = get_working_directory()
-    config = Configuration(folder_data_out=working_dir)
+    config = Configuration(folder_data_out=working_dir, logic_order=DEFAULT_ORDER)
     util = Utils(config)
 
     # If --latest is used, find the latest file
@@ -88,11 +90,11 @@ def visualize_data(file, latest):
     # Read the Excel file
     viz = Viz(config, file)
 
-    # plot1 = viz.plot_distribution_natural()
-    # plot2 = viz.plot_distribution_combined()
-    # plot3 = viz.plot_complexity()
+    plot1 = viz.plot_distribution_natural()
+    plot2 = viz.plot_distribution_combined()
+    plot3 = viz.plot_complexity()
     plot3 = viz.plot_pairplot()
-    viz.plot_projection_classes()
+    plot3 = viz.plot_projection_classes()
 
     click.echo("Plot generation completed.")
 
