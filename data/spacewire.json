@@ -2745,7 +2745,7 @@
   },
   {
     "id": 2025,
-    "status": "OK",
+    "status": "REVIEW",
     "text": "If one or more N-Chars have been sent since the link reached the Run state AND the last character sent was not an EOP or EEP, read the transmit FIFO and discard the characters read until an EOP or EEP has been read and discarded",
     "logics": [
       {
