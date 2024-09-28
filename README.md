@@ -13,6 +13,8 @@ Takes something like this as input:
 
 And returns some statistics about it, which can be used to derive a statement about the formula's complexity:
 
+tbd
+<!-- 
 ```json
 { 'AST_height': 5,
   'A_n': 0,
@@ -47,10 +49,10 @@ Value | Meaning
 `X_n` | Number of `next`operators
 `agg.ap` | Total number of atomic propositions
 `agg.cops` | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)
-`agg.lops` | Total number of logical operators (`and`, `or`, `-->`, `not`)
+`agg.lops` | Total number of logical operators (`and`, `or`, `->`, `not`)
 `agg.tops` | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)
 `and_n` | Number of `∧` (and) operators (aggregated in `agg.cops`)
-`impl_n` | Number of `-->` (implies) operators (aggregated in `agg.cops`)
+`impl_n` | Number of `->` (implies) operators (aggregated in `agg.cops`)
 `not_n` | Number of `¬` (not) operators (aggregated in `agg.cops`)
 `or_n` | Number of `∨` (or) operators (aggregated in `agg.cops`)
 `cops.eq` | Number of equals comparisons (`eq`)
@@ -58,6 +60,7 @@ Value | Meaning
 `cops.leq` | Number of less-or-equal-than comparisons (`leq`)
 `cops.lt` | Number of less-than comparisons (`lt`)
 `cops.neq` | Number of non-equals comparisons (`neq`)
+-->
 
 <!-- 
 ## Installation
