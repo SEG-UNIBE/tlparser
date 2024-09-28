@@ -176,8 +176,8 @@ class Viz:
 
                     # Annotate n value below the x-tick
                     ax.text(
-                        x_position,  # x position (each tick mark)
-                        y_min - 8,  # position slightly below the y-axis minimum
+                        x_position,
+                        y_min - 8,
                         f"n={n_value}",
                         color="black",
                         ha="center",
@@ -196,6 +196,31 @@ class Viz:
         fig.tight_layout()
 
         out = self.get_file_name("violine")
+        plt.savefig(out)
+        plt.close()
+        return out
+
+    def plot_pairplot(self):
+
+        agg_columns = self.data.filter(like=".agg.").columns.tolist()
+        df_pairplot = self.data[agg_columns + ["type"]]
+
+        markers = ["o", "s", "D", "^", "v", "P"]
+        g = sns.pairplot(
+            df_pairplot,
+            hue="type",
+            palette="colorblind",
+            diag_kind="kde",
+            markers=markers,
+        )
+
+        for ax in g.axes.flat:
+            for artist in ax.collections:
+                artist.set_edgecolor("black")
+                artist.set_alpha(0.6)
+        g._legend.set_title("Logic")
+
+        out = self.get_file_name("pairplot")
         plt.savefig(out)
         plt.close()
         return out

@@ -88,9 +88,10 @@ def visualize_data(file, latest):
     # Read the Excel file
     viz = Viz(config, file)
 
-    plot1 = viz.plot_distribution_natural()
-    plot2 = viz.plot_distribution_combined()
-    plot3 = viz.plot_complexity()
+    # plot1 = viz.plot_distribution_natural()
+    # plot2 = viz.plot_distribution_combined()
+    # plot3 = viz.plot_complexity()
+    plot3 = viz.plot_pairplot()
 
     click.echo("Plot generation completed.")
 
