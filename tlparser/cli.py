@@ -1,10 +1,6 @@
 import click
 import os
-import json
-import csv
 import shutil
-import pandas as pd
-import matplotlib.pyplot as plt
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
