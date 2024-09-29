@@ -135,6 +135,7 @@ class Utils:
             "type",
             "reasoning",
             "projection",
+            "projclass",
             "stats.formula_raw",
             "stats.formula_parsable",
             "stats.formula_parsed",

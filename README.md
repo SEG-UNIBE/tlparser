@@ -13,76 +13,40 @@ Takes something like this as input:
 
 And returns some statistics about it, which can be used to derive a statement about the formula's complexity:
 
-tbd
-<!-- 
-```json
-{ 'AST_height': 5,
-  'A_n': 0,
-  'E_n': 0,
-  'F_n': 0,
-  'G_n': 2,
-  'R_n': 0,
-  'U_n': 0,
-  'X_n': 0,
-  'agg': {'ap': 4, 'cops': 2, 'lops': 5, 'tops': 2},
-  'and_n': 2,
-  'ap': {'y', 'i_lt_3', 'x', 'u_eq_9'},
-  'cops': {'eq': 1, 'geq': 0, 'gt': 0, 'leq': 0, 'lt': 1, 'neq': 0},
-  'impl_n': 1,
-  'not_n': 1,
-  'or_n': 1
-}
-```
-
-The table below describes the meaning for each value:
-
-Value | Meaning
-------|---------
-`ap` | Set of all atomic propositions
-`AST_height` | Height (or *depth* or *nesting*) of the abstract syntax tree
-`A_n` | Not sure actually, something CTL-related? yes 🚧
-`E_n` | Not sure actually, something CTL-related? yes 🚧
-`F_n` | Number of `eventually` (diamond symbol) operators
-`G_n` | Number of `globally` (square symbol) operators
-`R_n` | Number of `release`operators
-`U_n` | Number of `until`operators
-`X_n` | Number of `next`operators
-`agg.ap` | Total number of atomic propositions
-`agg.cops` | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)
-`agg.lops` | Total number of logical operators (`and`, `or`, `->`, `not`)
-`agg.tops` | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)
-`and_n` | Number of `∧` (and) operators (aggregated in `agg.cops`)
-`impl_n` | Number of `->` (implies) operators (aggregated in `agg.cops`)
-`not_n` | Number of `¬` (not) operators (aggregated in `agg.cops`)
-`or_n` | Number of `∨` (or) operators (aggregated in `agg.cops`)
-`cops.eq` | Number of equals comparisons (`eq`)
-`cops.gt` | Number of greater-than comparisons (`gt`)
-`cops.leq` | Number of less-or-equal-than comparisons (`leq`)
-`cops.lt` | Number of less-than comparisons (`lt`)
-`cops.neq` | Number of non-equals comparisons (`neq`)
--->
-
-<!-- 
-## Installation
-
-Install this tool using `pip`:
-```bash
-pip install tlparser
-``` 
-
-## Usage
-
-For help, run:
-
-```bash
-tlparser --help
-```
-
-You can also use:
-```bash
-python3 -m tlparser --help
-```
--->
+| Column           | Meaning |
+|------------------|---------|
+| id               | Unique requirement identifier |
+| text             | Requirement in human language |
+| type             | Temporal logic (supported are `INV`, `LTL`, `MTLb`, `MITL`, `TPTL`, `CTLS`, `STL`)|
+| reasoning        | Thought decisive for formalizing the requirement in this logic |
+| projection       | Specified whether the requirement can theoretically be formalized in another logic (possible values are `self`, `yes`, `no`, `unknown`) |
+| projclass        | Category name derived by concatenating first letters of all projection values per requirement |
+| stats.formula_raw    | Formalization with comparison operators (e.g. `G((x <= 7) --> (not (y)))`) |
+| stats.formula_parsable | Formalization without comparison operators (e.g. `G((x_leq_7) --> (not (y)))`) |
+| stats.formula_parsed    | Interpreted formalization using [`pyModelChecking`](https://github.com/albertocasagrande/pyModelChecking) (e.g. `G((x_leq_7 --> not y))`) |
+| stats.asth       | Height (or *depth* or *nesting*) of the abstract syntax tree |
+| stats.ap         | Set of all atomic propositions |
+| stats.cops.eq    | Number of `==` (equals) comparisons |
+| stats.cops.ge    | Number of `>=` (greater-or-equal-than) comparisons |
+| stats.cops.gt    | Number of `>` (greater-than) comparisons |
+| stats.cops.leq   | Number of `<=`less-or-equal-than comparisons |
+| stats.cops.lt    | Number of `<` (less-than) comparisons  |
+| stats.cops.ne    | Number of `!=` (not-equals) comparisons |
+| stats.lops.and   | Number of `∧` (and) operators |
+| stats.lops.imp   | Number of `-->` (implies) operators|
+| stats.lops.not   | Number of `¬` (not) operators |
+| stats.lops.or    | Number of `∨` (or) operators |
+| stats.tops.A     | Number of `for all paths` operators |
+| stats.tops.E     | Number of `there exists a path` operators  |
+| stats.tops.F     | Number of `eventually` (diamond symbol) operators |
+| stats.tops.G     | Number of `globally` (square symbol) operators |
+| stats.tops.R     | Number of `release` operators |
+| stats.tops.U     | Number of `until` operators |
+| stats.tops.X     | Number of `next` operators |
+| stats.agg.aps    | Total number of atomic propositions |
+| stats.agg.cops   | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`) |
+| stats.agg.lops   | Total number of logical operators (`∧`, `∨`, `-->`, `¬`) |
+| stats.agg.tops   | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`) |
 
 ## How to use
 
@@ -144,4 +108,10 @@ Exit the virtual environment again using this command:
 
 ```bash
 deactivate
+```
+
+To activate it again, simply execute this command in the root folder of the repository again:
+
+```bash
+source venv/bin/activate
 ```
