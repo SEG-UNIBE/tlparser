@@ -59,7 +59,7 @@ And returns some statistics about it:
 To contribute to this tool, first `git clone` this repository and `cd` into the folder.
 
 > [!NOTE]  
-> This tool requires **Python 3.10 or later**. Ensure you have the correct version installed. Download it here: [Download Python](https://www.python.org/downloads/)
+> This tool requires **Python 3.10 or later**. Ensure you have the correct version [installed](https://www.python.org/downloads/).
 
 Next, create a new virtual environment using the following commands:
 
@@ -154,7 +154,7 @@ Exit the virtual environment again using this command:
 deactivate
 ```
 
-To activate it again, simply execute this command in the root folder of the repository again:
+To activate it again, simply execute this command in the root folder of the repository:
 
 ```bash
 source venv/bin/activate
