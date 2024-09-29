@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import seaborn as sns
+import plotly.graph_objects as go
+import plotly.io as pio
 
 from tlparser.utils import Utils
 from tlparser.config import Configuration
@@ -275,4 +277,93 @@ class Viz:
         out = self.__get_file_name("projclass")
         plt.savefig(out)
         plt.close()
+        return out
+
+    def plot_chord(self):
+
+        df = self.data
+
+        # Initialize flow counts for all type-to-type connections
+        flow_counts = {"yes": {}, "no": {}, "unknown": {}}
+
+        # Iterate over each id block
+        for id_value, group in df.groupby("id"):
+            # Identify the source type with 'self' projection
+            source_type = group[group["projection"] == "self"]["type"].values[0]
+
+            # Iterate over all rows in the group
+            for _, row in group.iterrows():
+                target_type = row["type"]
+                projection_type = row["projection"]
+
+                # Ignore 'self' and handle each projection type
+                if projection_type in ["yes", "no", "unknown"]:
+                    if (source_type, target_type) not in flow_counts[projection_type]:
+                        flow_counts[projection_type][(source_type, target_type)] = set()
+                    flow_counts[projection_type][(source_type, target_type)].add(
+                        id_value
+                    )
+
+        # Create labels
+        labels = df["type"].unique().tolist()
+
+        # Initialize the source, target, value, and color lists for the chord diagram
+        source = []
+        target = []
+        value = []
+        link_labels = []
+        link_colors = []
+
+        # Define colors for the projection types
+        projection_colors = {
+            "yes": "rgba(0, 128, 0, 0.7)",  # Green for 'yes'
+            "no": "rgba(255, 0, 0, 0.7)",  # Red for 'no'
+            "unknown": "rgba(128, 128, 128, 0.7)",  # Gray for 'unknown'
+        }
+
+        # Map each type to an index
+        label_to_index = {label: idx for idx, label in enumerate(labels)}
+
+        # Populate source, target, value, link labels, and link colors for each projection type
+        for projection_type, flows in flow_counts.items():
+            for (src, tgt), ids_set in flows.items():
+                source.append(label_to_index[src])
+                target.append(label_to_index[tgt])
+                value.append(len(ids_set))  # The count of unique ids
+                link_labels.append(
+                    f"{len(ids_set)} ids ({projection_type})"
+                )  # Label to show the count and type
+                link_colors.append(
+                    projection_colors[projection_type]
+                )  # Color based on the projection type
+
+        # Create a Sankey diagram (works similarly to a chord diagram in plotly)
+        fig = go.Figure(
+            data=[
+                go.Sankey(
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(color="black", width=0.5),
+                        label=labels,
+                    ),
+                    link=dict(
+                        source=source,
+                        target=target,
+                        value=value,
+                        label=link_labels,  # Add labels to links
+                        color=link_colors,  # Color the links based on projection type
+                    ),
+                )
+            ]
+        )
+
+        # Tighten layout
+        fig.update_layout(
+            title_text="Chord Diagram of Projections with Unique ID Counts",
+            font_size=10,
+        )
+
+        out = self.__get_file_name("chord")
+        pio.write_image(fig, out, format="pdf")
         return out

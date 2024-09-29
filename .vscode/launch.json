@@ -5,7 +5,7 @@
             "name": "pytest (all)",
             "type": "debugpy",
             "request": "launch",
-            "module": "pytest",  // Use `module` instead of `program`
+            "module": "pytest", // Use `module` instead of `program`
             "args": [
                 "-s", // Ensures that `stdout` and `stderr` are not captured
                 "--maxfail=1", // Stop after the first failure
@@ -23,7 +23,7 @@
             "name": "unit test (stats)",
             "type": "debugpy",
             "request": "launch",
-            "module": "pytest", 
+            "module": "pytest",
             "args": [
                 "-s",
                 "--maxfail=1",
@@ -43,7 +43,8 @@
             "request": "launch",
             "module": "tlparser",
             "args": [
-                "digest", "${workspaceFolder}/data/spacewire.json"
+                "digest",
+                "${workspaceFolder}/data/spacewire.json"
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
@@ -55,7 +56,10 @@
             "request": "launch",
             "module": "tlparser",
             "args": [
-                "visualize", "--latest"
+                "visualize",
+                "--latest",
+                "-p",
+                "chord"
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
