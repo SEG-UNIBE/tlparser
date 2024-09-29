@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from tlparser.config import Configuration
-from tlparser.utils import Utils
 from tlparser.stats import Stats
 from test_case_data import TestCaseData
 
