@@ -196,11 +196,14 @@ class Viz:
             if i > 2:
                 for x_category in df_long["type"].unique():
                     # Get the specific count 'n' for this aggregation and type
-                    n_value = int(
-                        stats_values[
-                            (stats_values["aggregation"] == agg)
-                            & (stats_values["type"] == x_category)
-                        ]["count"].iloc[0]
+                    filtered_values = stats_values.loc[
+                        (stats_values["aggregation"] == agg)
+                        & (stats_values["type"] == x_category),
+                        "count",
+                    ]
+
+                    n_value = (
+                        int(filtered_values.iloc[0]) if not filtered_values.empty else 0
                     )
 
                     # Find the x position of the category
@@ -351,7 +354,7 @@ class Viz:
         outs = []
         for target in ["yes", "no", "unknown"]:
 
-            df = pd.DataFrame(self.data)
+            df = self.data
             d3 = D3Blocks(chart="chord", frame=True, verbose="critical")
             links = []
 
@@ -367,24 +370,26 @@ class Viz:
                         links.append(
                             {"source": source_type, "target": target_type, "weight": 1}
                         )
+            if len(links) > 0:
+                links_df = pd.DataFrame(links)
+                links_df = (
+                    links_df.groupby(["source", "target"])
+                    .size()
+                    .reset_index(name="weight")
+                )
 
-            links_df = pd.DataFrame(links)
-            links_df = (
-                links_df.groupby(["source", "target"]).size().reset_index(name="weight")
-            )
-
-            out = self.__get_file_name(f"chord_{target}", ".html")
-            d3.chord(
-                links_df,
-                title=f"Chord Diagram (self -> {target})",
-                filepath=out,
-                save_button=True,
-                ordering=self.config.logic_order,
-                cmap="tab10",
-                figsize=[500, 500],
-                reset_properties=True,
-                arrowhead=30,
-                fontsize=13,
-            )
-            outs.append(out)
+                out = self.__get_file_name(f"chord_{target}", ".html")
+                d3.chord(
+                    links_df,
+                    title=f"Chord Diagram (self -> {target})",
+                    filepath=out,
+                    save_button=True,
+                    ordering=self.config.logic_order,
+                    cmap="tab10",
+                    figsize=[500, 500],
+                    reset_properties=True,
+                    arrowhead=30,
+                    fontsize=13,
+                )
+                outs.append(out)
         return "\n".join(outs)

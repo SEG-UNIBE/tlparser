@@ -5,7 +5,7 @@
     "text": "If q implies p, then x must be true.",
     "logics": [
       {
-        "type": "LTL (invariant)",
+        "type": "INV",
         "f_latex": "",
         "f_code": "((q --> p) --> x)",
         "projection": "self",

@@ -8,7 +8,7 @@ from tlparser.viz import Viz
 
 DEFAULT_WD = "workingdir"
 DEFAULT_STATI = ["OK"]
-DEFAULT_ORDER = ["INV", "LTL", "MTLb", "MITL", "TPTL", "STL"]
+DEFAULT_ORDER = ["INV", "LTL", "MTLb", "MITL", "TPTL", "CTLS", "STL"]
 
 
 def get_working_directory():
