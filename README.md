@@ -81,7 +81,7 @@ tlparser --help
 ```
 
 <details>
-<summary>Read and plot test data</summary>
+<summary>Read and plot test data (optional)</summary>
 
 First, digest the test data file to create an Excel file.
 
