@@ -38,6 +38,19 @@
             "stopOnEntry": false
         },
         {
+            "name": "integration test (digest test.json)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tlparser",
+            "args": [
+                "digest",
+                "${workspaceFolder}/tests/data/test.json"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "integration test (digest spacewire.json)",
             "type": "debugpy",
             "request": "launch",
