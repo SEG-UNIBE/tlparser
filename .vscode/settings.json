@@ -1,5 +1,5 @@
 {
-      "python.languageServer": "Microsoft",
+      "python.languageServer": "Default",
       "python.formatting.provider": "black",
       "editor.formatOnSave": true,
       "python.linting.flake8Enabled": true,
