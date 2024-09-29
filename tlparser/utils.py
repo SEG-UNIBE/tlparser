@@ -49,12 +49,9 @@ class Utils:
         df["projclass"] = df_sorted.groupby("id")["projection"].transform(
             lambda x: "".join([value[0] for value in x])
         )
-        flattened_data = df.to_dict(orient="records")
 
-        # Get all unique headers
-        headers = set()
-        for item in flattened_data:
-            headers.update(item.keys())
+        flattened_data = df.to_dict(orient="records")
+        headers = {key for item in flattened_data for key in item.keys()}
 
         # Sort headers according to predefined order, with any extra headers at the end
         predefined_order = Utils.get_column_order()
