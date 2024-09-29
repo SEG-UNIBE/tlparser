@@ -84,49 +84,63 @@ python3 -m tlparser --help
 ```
 -->
 
-## Development
+## How to use
 
-To contribute to this tool, first check out the code.
-Then create a new virtual environment:
+To contribute to this tool, first `git clone` this repository and `cd` into the folder.
 
-```bash
-cd tlparser
-python3 -m venv venv
-source venv/bin/activate
-```
+> [!NOTE]  
+> This tool requires **Python 3.10 or later**. Ensure you have the correct version installed. Download it here: [Download Python](https://www.python.org/downloads/)
 
-Now install the dependencies and test dependencies:
+Next, create a new virtual environment using the following commands:
 
 ```bash
-pip3 install --upgrade pip
-pip3 install -e '.[test]'
+python3 -m venv venv && source venv/bin/activate
 ```
 
-To run the tests:
+Install and test the dependencies:
 
 ```bash
-python3 -m pytest
+pip3 install --upgrade pip && pip3 install -e '.[test]' && python3 -m pytest
 ```
 
-To print the help message:
+Now you are ready to start the `tlparser`.
+Test it by printing the `help` message.
 
 ```bash
 tlparser --help
 ```
 
-Parse some test data.
+<details>
+<summary>Read and plot test data</summary>
+
+First, digest the test data file to create an Excel file.
 
 ```bash
 tlparser digest ../tlparser/tests/data/test.json
 ```
 
-Parse actual SpaceWire data.
+The Excel file will serve as basis for generating the plots.
+
+```bash
+tlparser visualize -l -p all
+```
+
+</details>
+</br>
+
+You can parse the `spacewire` requirements using the following command:
 
 ```bash
 tlparser digest ../tlparser/data/spacewire.json
 ```
 
-To exit the tool again:
+The resulting Excel file serves as basis for generating the plots.
+
+```bash
+tlparser visualize -l -p all
+```
+
+Exit the virtual environment again using this command:
 
 ```bash
 deactivate
