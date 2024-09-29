@@ -70,7 +70,16 @@ def digest_file(json_file):
     "--plot",
     "-p",
     type=click.Choice(
-        ["distnat", "distcomb", "complexity", "pairplot", "projclass", "chord", "all"],
+        [
+            "distnat",
+            "distcomb",
+            "complexity",
+            "pairplot",
+            "projclass",
+            "sankey",
+            "chord",
+            "all",
+        ],
         case_sensitive=False,
     ),
     multiple=True,
@@ -105,6 +114,7 @@ def visualize_data(file, latest, plot):
         "complexity": viz.plot_complexity,
         "pairplot": viz.plot_pairplot,
         "projclass": viz.plot_projection_classes,
+        "sankey": viz.plot_sankey,
         "chord": viz.plot_chord,
     }
 

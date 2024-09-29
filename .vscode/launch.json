@@ -59,7 +59,7 @@
                 "visualize",
                 "--latest",
                 "-p",
-                "chord"
+                "all",
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",

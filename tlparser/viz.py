@@ -7,11 +7,6 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from d3blocks import D3Blocks
 
-import holoviews as hv
-from holoviews import opts
-
-hv.extension("bokeh")
-
 from tlparser.utils import Utils
 from tlparser.config import Configuration
 
@@ -29,11 +24,11 @@ class Viz:
         self.config = config
         self.data = pd.read_excel(file)
 
-    def __get_file_name(self, prefix):
+    def __get_file_name(self, prefix, suffix=".pdf"):
         os.makedirs(self.config.folder_data_out, exist_ok=True)
         return os.path.join(
             self.config.folder_data_out,
-            f"{prefix}_{Utils.get_unique_filename()}.pdf",
+            f"{prefix}_{Utils.get_unique_filename()}{suffix}",
         )
 
     def plot_distribution_natural(self):
@@ -272,7 +267,6 @@ class Viz:
         projection_key_counts = df["projclass"].value_counts().reset_index()
         projection_key_counts.columns = ["projclass", "count"]
 
-        # Plot a seaborn histogram for counts per key
         plt.figure(figsize=(10, 6))
         sns.barplot(data=projection_key_counts, x="projclass", y="count")
         plt.xlabel("Projection Key")
@@ -285,50 +279,112 @@ class Viz:
         plt.close()
         return out
 
-    def plot_chord(self):
+    def plot_sankey(self):
 
-        # Convert to DataFrame
-        df = pd.DataFrame(self.data)
+        df = self.data
 
-        # Initialize D3Blocks
-        d3 = D3Blocks()
-
-        # Create a list to represent the valid 'yes' links from 'self' types
-        links = []
-
-        # Group by each 'id' and identify mappings from 'self' to 'yes'
+        flow_counts = {"yes": {}, "no": {}, "unknown": {}}
         for id_value, group in df.groupby("id"):
-            # Identify the source type with 'self' projection
-            source_type_row = group[group["projection"] == "self"]
-            if not source_type_row.empty:
-                source_type = source_type_row["type"].values[0]
-                # Find all rows that have 'yes' projection from the source type
-                yes_targets = group[
-                    (group["projection"] == "yes") & (group["type"] != source_type)
-                ]
-                # Add each 'yes' connection as a link
-                for _, row in yes_targets.iterrows():
-                    target_type = row["type"]
-                    links.append(
-                        {"source": source_type, "target": target_type, "weight": 1}
+            source_type = group[group["projection"] == "self"]["type"].values[0]
+            for _, row in group.iterrows():
+                target_type = row["type"]
+                projection_type = row["projection"]
+                if projection_type in ["yes", "no", "unknown"]:
+                    if (source_type, target_type) not in flow_counts[projection_type]:
+                        flow_counts[projection_type][(source_type, target_type)] = set()
+                    flow_counts[projection_type][(source_type, target_type)].add(
+                        id_value
                     )
 
-        # Create DataFrame of links
-        links_df = pd.DataFrame(links)
+        labels = df["type"].unique().tolist()
+        source = []
+        target = []
+        value = []
+        link_labels = []
+        link_colors = []
 
-        # Group by source-target pairs to get the total weights
-        links_df = (
-            links_df.groupby(["source", "target"]).size().reset_index(name="weight")
+        projection_colors = {
+            "yes": "rgba(0, 128, 0, 0.7)",
+            "no": "rgba(255, 0, 0, 0.7)",
+            "unknown": "rgba(128, 128, 128, 0.7)",
+        }
+
+        label_to_index = {label: idx for idx, label in enumerate(labels)}
+        for projection_type, flows in flow_counts.items():
+            for (src, tgt), ids_set in flows.items():
+                source.append(label_to_index[src])
+                target.append(label_to_index[tgt])
+                value.append(len(ids_set))
+                link_labels.append(f"{len(ids_set)} ids ({projection_type})")
+                link_colors.append(projection_colors[projection_type])
+
+        fig = go.Figure(
+            data=[
+                go.Sankey(
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(color="black", width=0.5),
+                        label=labels,
+                    ),
+                    link=dict(
+                        source=source,
+                        target=target,
+                        value=value,
+                        label=link_labels,  # Add labels to links
+                        color=link_colors,  # Color the links based on projection type
+                    ),
+                )
+            ]
         )
 
-        # Get unique nodes from the filtered links
-        nodes = list(set(links_df["source"]).union(set(links_df["target"])))
-
-        # Debug: Print DataFrame to ensure correct structure
-        print(links_df)
-
-        # Create the chord diagram using the links DataFrame
-        out = self.__get_file_name("chord") + ".html"
-        d3.chord(links_df, title="Chord Diagram", filepath=out)
-
+        fig.update_layout(
+            title_text="Sankey Diagram of Projections with Unique ID Counts",
+            font_size=10,
+        )
+        out = self.__get_file_name("sankey")
+        pio.write_image(fig, out, format="pdf")
         return out
+
+    def plot_chord(self):
+
+        outs = []
+        for target in ["yes", "no", "unknown"]:
+
+            df = pd.DataFrame(self.data)
+            d3 = D3Blocks(chart="chord", frame=True, verbose="critical")
+            links = []
+
+            for _, group in df.groupby("id"):
+                source_type_row = group[group["projection"] == "self"]
+                if not source_type_row.empty:
+                    source_type = source_type_row["type"].values[0]
+                    yes_targets = group[
+                        (group["projection"] == target) & (group["type"] != source_type)
+                    ]
+                    for _, row in yes_targets.iterrows():
+                        target_type = row["type"]
+                        links.append(
+                            {"source": source_type, "target": target_type, "weight": 1}
+                        )
+
+            links_df = pd.DataFrame(links)
+            links_df = (
+                links_df.groupby(["source", "target"]).size().reset_index(name="weight")
+            )
+
+            out = self.__get_file_name(f"chord_{target}", ".html")
+            d3.chord(
+                links_df,
+                title=f"Chord Diagram (self -> {target})",
+                filepath=out,
+                save_button=True,
+                ordering=self.config.logic_order,
+                cmap="tab10",
+                figsize=[500, 500],
+                reset_properties=True,
+                arrowhead=30,
+                fontsize=13,
+            )
+            outs.append(out)
+        return "\n".join(outs)
