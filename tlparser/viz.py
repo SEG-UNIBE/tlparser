@@ -31,12 +31,21 @@ class Viz:
             f"{prefix}_{Utils.get_unique_filename()}{suffix}",
         )
 
+    def __get_reduced_logic_order(self):
+        return [
+            item
+            for item in self.config.logic_order
+            if item in self.data["type"].unique()
+        ]
+
     def plot_distribution_natural(self):
+
+        reduced_order = self.__get_reduced_logic_order()
         empty_counts = (
             self.data[self.data["projection"] == "self"]
             .groupby("type")
             .size()
-            .reindex(self.config.logic_order, fill_value=0)
+            .reindex(reduced_order, fill_value=0)
         )
 
         plt.figure(figsize=(8, 6))
@@ -54,11 +63,13 @@ class Viz:
         return out
 
     def plot_distribution_combined(self):
+
+        reduced_order = self.__get_reduced_logic_order()
         projection_counts = (
             self.data.groupby(["type", "projection"])
             .size()
             .unstack(fill_value=0)
-            .reindex(self.config.logic_order, fill_value=0)
+            .reindex(reduced_order, fill_value=0)
         )
 
         projection_colors = {
@@ -384,7 +395,7 @@ class Viz:
                     title=f"Chord Diagram (self -> {target})",
                     filepath=out,
                     save_button=True,
-                    ordering=self.config.logic_order,
+                    ordering=self.__get_reduced_logic_order(),
                     cmap="tab10",
                     figsize=[500, 500],
                     reset_properties=True,
