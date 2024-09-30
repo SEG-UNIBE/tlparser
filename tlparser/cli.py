@@ -79,11 +79,10 @@ def digest_file(json_file):
     type=click.Choice(
         [
             "hist",
-            "complexity",
-            "pairplot",
-            "castclass",
-            "sankey",
+            "viol",
+            "pair",
             "chord",
+            "sankey",
             "all",
         ],
         case_sensitive=False,
@@ -116,11 +115,10 @@ def visualize_data(file, latest, plot):
     viz = Viz(config, file)
     plot_methods = {
         "hist": viz.plot_histogram,
-        "complexity": viz.plot_complexity,
-        "pairplot": viz.plot_pairplot,
-        "castclass": viz.plot_cast_classes,
-        "sankey": viz.plot_sankey,
+        "viol": viz.plot_violin,
+        "pairp": viz.plot_pairplot,
         "chord": viz.plot_chord,
+        "sankey": viz.plot_sankey,
     }
 
     if "all" in plot or not plot:

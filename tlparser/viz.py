@@ -2,15 +2,17 @@ import os
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from matplotlib.colors import ListedColormap
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+pio.kaleido.scope.mathjax = None
+
 import seaborn as sns
 from d3blocks import D3Blocks
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
-
 
 class Viz:
     title_map = {
@@ -39,13 +41,10 @@ class Viz:
         ]
 
     def plot_histogram(self):
-
         reduced_order = self.__get_reduced_logic_order()
         type_palette = self.config.color_palette
-        filtered_data = self.data
-
-        # Set the 'type' column as a categorical type to enforce the desired order
-        filtered_data['type'] = pd.Categorical(filtered_data['type'], categories=reduced_order, ordered=True)
+        df = self.data.copy()
+        df['type'] = pd.Categorical(df['type'], categories=reduced_order, ordered=True)
         _, axes = plt.subplots(4, 1, figsize=(7, 8), sharex=True)
 
         titles = {
@@ -55,11 +54,11 @@ class Viz:
             'unknown': 'Casting Status Uncertain'
         }
 
-        max_count = filtered_data['type'].value_counts().max() + 5
+        max_count = df['type'].value_counts().max() + 5
 
         for ax, casting in zip(axes, ['self', 'yes', 'no', 'unknown']):
             sns.histplot(
-                data=filtered_data[filtered_data['casting'] == casting],
+                data=df[df['casting'] == casting],
                 x='type',
                 ax=ax,
                 shrink=0.8,
@@ -73,27 +72,26 @@ class Viz:
             ax.set_xlabel('')
             ax.set_ylabel('Count')
             ax.set_ylim(0, max_count)
+            ax.yaxis.set_minor_locator(ticker.MultipleLocator(5))
 
             for bar in ax.patches:
-                height = bar.get_height()
-                if height > 0:  # Only label non-zero bars
-                    ax.annotate(f'{int(height)}',
-                                xy=(bar.get_x() + bar.get_width() / 2, height / 2),
-                                xytext=(0, 0),  # Center the text inside the bar
-                                textcoords="offset points",
-                                ha='center', va='center', fontsize=8, color='black',
-                                bbox=dict(boxstyle="round,pad=0.2", facecolor='white', edgecolor='black'))
+                    height = bar.get_height()
+                    if height > 0:
+                        ax.annotate(f'{int(height)}',
+                                    xy=(bar.get_x() + bar.get_width() / 2, height / 2),
+                                    xytext=(0, 0),
+                                    textcoords="offset points",
+                                    ha='center', va='center', fontsize=8, color='black',
+                                    bbox=dict(boxstyle="round,pad=0.2", facecolor='white', edgecolor='black'))
 
-        # Adjust layout for a clean look
         plt.tight_layout()
-
         out = self.__get_file_name("hist")
         plt.savefig(out)
         plt.close()
-
         return out
 
-    def plot_complexity(self):
+    def plot_violin(self, include_strip=False):
+        type_palette = self.config.color_palette
         df_filtered = self.data[self.data["casting"] == "self"]
         agg_columns = df_filtered.filter(like=".agg.").columns.tolist()
         df_long = pd.melt(
@@ -104,7 +102,6 @@ class Viz:
             value_name="value",
         )
 
-        # Calculate mean and median values for annotations
         stats_values = (
             df_long.groupby(["type", "aggregation"])["value"]
             .agg(["mean", "median", "count", "std"])
@@ -114,21 +111,20 @@ class Viz:
         y_min = df_long["value"].min()
         y_max = df_long["value"].max() + 4.5
 
-        # Create a 2x2 grid of subplots
         fig, axes = plt.subplots(
             nrows=2, ncols=2, figsize=(9, 7), sharex=True, sharey=True
         )
-        axes = axes.flatten()  # Flatten the axes array for easier iteration
-        plt.subplots_adjust(hspace=0.1, wspace=0.1)
+        axes = axes.flatten()
+        plt.subplots_adjust(hspace=0.05, wspace=0.05)
         i = 1
-        # Plot each aggregation in a separate subplot
+
         for ax, agg in zip(axes, agg_columns):
             violin = sns.violinplot(
                 x="type",
                 y="value",
                 data=df_long[df_long["aggregation"] == agg],
                 hue="type",
-                palette="colorblind",
+                palette=type_palette,
                 bw_method=0.5,
                 edgecolor="black",
                 linewidth=1,
@@ -141,9 +137,9 @@ class Viz:
                 x="type",
                 y="value",
                 hue="type",
-                palette="colorblind",
+                palette=type_palette,
                 data=df_long[df_long["aggregation"] == agg],
-                width=0.12,  # Adjust the box width
+                width=0.12,
                 showcaps=True,
                 showbox=True,
                 whiskerprops={"linewidth": 1.2, "color": "black"},
@@ -151,39 +147,36 @@ class Viz:
                 ax=ax,
                 fliersize=5,
             )
-            # Make violins slightly transparent
-            for violin_part in violin.collections:
-                violin_part.set_alpha(0.5)
 
-            # sns.stripplot(
-            #     x="type",
-            #     y="value",
-            #     hue="type",
-            #     data=df_long[df_long["aggregation"] == agg],
-            #     alpha=0.4,
-            #     size=5,
-            #     marker="o",
-            #     edgecolor="black",
-            #     linewidth=1,
-            #     ax=ax,
-            #     dodge=False,
-            # )
+            for violin_part in violin.collections:
+                violin_part.set_alpha(0.6)
+
+            if include_strip:
+                sns.stripplot(
+                    x="type",
+                    y="value",
+                    hue="type",
+                    data=df_long[df_long["aggregation"] == agg],
+                    alpha=0.3,
+                    palette=type_palette,
+                    size=3,
+                    marker="d",
+                    edgecolor="black",
+                    linewidth=1,
+                    ax=ax,
+                    dodge=False,
+                )
+
             ax.set_xlabel("")
             ax.yaxis.set_minor_locator(ticker.MultipleLocator(1))
 
-            # Annotate mean and median values on the plot above each violin
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():
-                # Position the annotations above the maximum data point with some padding
                 annotation_y = y_max - 0.5
-
-                # Prepare formatted string for annotation
                 annotation_text = (
-                    # f"n={row['count']}\n"
                     f"μ={row['mean']:.1f}\n"
                     f"M={row['median']:.1f}\n"
                     f"σ={row['std']:.1f}"
                 )
-
                 ax.text(
                     row["type"],
                     annotation_y,
@@ -193,24 +186,17 @@ class Viz:
                     va="bottom",
                 )
 
-            # Place the count 'n' below the x-axis tick marks
             if i > 2:
                 for x_category in df_long["type"].unique():
-                    # Get the specific count 'n' for this aggregation and type
                     filtered_values = stats_values.loc[
                         (stats_values["aggregation"] == agg)
                         & (stats_values["type"] == x_category),
                         "count",
                     ]
-
                     n_value = (
                         int(filtered_values.iloc[0]) if not filtered_values.empty else 0
                     )
-
-                    # Find the x position of the category
                     x_position = list(df_long["type"].unique()).index(x_category)
-
-                    # Annotate n value below the x-tick
                     ax.text(
                         x_position,
                         y_min - 8,
@@ -225,19 +211,17 @@ class Viz:
             ax.set_ylabel("Count")
             ax.set_ylim(y_min - 5, y_max + 5)
 
-        # Hide any unused subplots if number of agg_columns is less than 4
         for i in range(len(agg_columns), len(axes)):
             axes[i].set_visible(False)
 
         fig.tight_layout()
-
-        out = self.__get_file_name("violine")
+        out = self.__get_file_name("viol")
         plt.savefig(out)
         plt.close()
         return out
 
-
     def plot_pairplot(self):
+        type_palette = self.config.color_palette
         df = self.data[self.data["casting"] == "self"]
         agg_columns = df.filter(like=".agg.").columns.tolist()
         df_pairplot = df[agg_columns + ["type"]]
@@ -248,45 +232,28 @@ class Viz:
         g = sns.pairplot(
             df_pairplot,
             hue="type",
-            palette="colorblind",
+            palette=type_palette,
             diag_kind="kde",
             markers=markers,
         )
 
-        for ax in g.axes.flat:
+        for i, ax in enumerate(g.axes.flat):
+            row_var = g.x_vars[i % len(g.x_vars)]
+            col_var = g.y_vars[i // len(g.x_vars)]
+            ax.set_xlabel(self.title_map.get(row_var, row_var))
+            ax.set_ylabel(self.title_map.get(col_var, col_var))
             for artist in ax.collections:
                 artist.set_edgecolor("black")
                 artist.set_alpha(0.6)
-        g._legend.set_title("Logic")
 
-        out = self.__get_file_name("pairplot")
+        g._legend.set_title("")
+        out = self.__get_file_name("pairp")
         plt.savefig(out)
         plt.close()
         return out
-
-
-    def plot_cast_classes(self):
-        df = self.data[self.data["casting"] == "self"]
-        col_name = "castclass"
-        casting_key_counts = df[col_name].value_counts().reset_index()
-        casting_key_counts.columns = [col_name, "count"]
-
-        plt.figure(figsize=(10, 6))
-        sns.barplot(data=casting_key_counts, x=col_name, y="count")
-        plt.xlabel("Casting Classes")
-        plt.ylabel("Count")
-        plt.title("Number of Properties per Casting Class")
-        plt.tight_layout()
-
-        out = self.__get_file_name(col_name)
-        plt.savefig(out)
-        plt.close()
-        return out
-
 
     def plot_sankey(self):
-        df = self.data
-
+        df = self.data.copy()
         flow_counts = {"yes": {}, "no": {}, "unknown": {}}
         for id_value, group in df.groupby("id"):
             source_type = group[group["casting"] == "self"]["type"].values[0]
@@ -323,6 +290,7 @@ class Viz:
         fig = go.Figure(
             data=[
                 go.Sankey(
+                    arrangement="freeform",
                     node=dict(
                         pad=15,
                         thickness=20,
@@ -330,11 +298,12 @@ class Viz:
                         label=labels,
                     ),
                     link=dict(
+                        arrowlen=15,
                         source=source,
                         target=target,
                         value=value,
-                        label=link_labels,  # Add labels to links
-                        color=link_colors,  # Color the links based on casting type
+                        label=link_labels,
+                        color=link_colors,
                     ),
                 )
             ]
@@ -348,13 +317,11 @@ class Viz:
         pio.write_image(fig, out, format="pdf")
         return out
 
-
     def plot_chord(self):
         outs = []
         for target in ["yes", "no", "unknown"]:
-
-            df = self.data
-            d3 = D3Blocks(chart="chord", frame=True, verbose="critical")
+            df = self.data.copy()
+            d3 = D3Blocks(chart="chord", frame=True, verbose=50)
             links = []
 
             for _, group in df.groupby("id"):
@@ -367,7 +334,8 @@ class Viz:
                     for _, row in yes_targets.iterrows():
                         target_type = row["type"]
                         links.append(
-                            {"source": source_type, "target": target_type, "weight": 1}
+                            {"source": source_type, "target": target_type, "weight": 1, "color":
+                                self.config.color_palette.get(source_type)}
                         )
             if len(links) > 0:
                 links_df = pd.DataFrame(links)
@@ -377,18 +345,28 @@ class Viz:
                     .reset_index(name="weight")
                 )
 
+                d3.chord(
+                    links_df,
+                    ordering=self.__get_reduced_logic_order(),
+                    reset_properties=False,
+                )
+
+                for label, color in self.config.color_palette.items():
+                    if label in d3.node_properties.index:
+                        d3.node_properties.loc[label, 'color'] = color
+
                 out = self.__get_file_name(f"chord_{target}", ".html")
                 d3.chord(
                     links_df,
                     title=f"Chord Diagram (self -> {target})",
-                    filepath=out,
                     save_button=True,
+                    filepath=out,
                     ordering=self.__get_reduced_logic_order(),
-                    cmap="tab10",
-                    figsize=(500, 500),
-                    reset_properties=True,
-                    arrowhead=30,
+                    figsize=(550, 550),
+                    reset_properties=False,
+                    arrowhead=20,
                     fontsize=13,
                 )
                 outs.append(out)
+
         return "\n".join(outs)
