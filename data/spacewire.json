@@ -2757,8 +2757,8 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((NChar sent) \\mathcal{S} (Run \\ state) \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
-        "f_code": "",
+        "f_latex": "\\Box(( (Run \\ state \\ started) \to (min \\ one \\ NChar \\ sent)  \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
+        "f_code": "G(  ((Run_state_started) --> (NChar_sent) and not(last_char_EOP or EEP))  --> X(((read_transmit_FIFO) and (discard_characters)) U ((EOP_read or EEP_read) and (EOP_discard or EEP_discarded)))  )",
         "casting": "self",
         "reasoning": "until/next operator"
       },
