@@ -3695,8 +3695,8 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
-        "f_code": "G(((Started_state) --> F(ErrorReset_state))) and G((Connecting_state) --> F(not (FCT_received) --> (ErrorReset_state)))",
+        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))--> (no_eeror)) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
+        "f_code": "G( (((Started_state) --> F(ErrorReset_state)) --> (no_error)) and ((Connecting_state) --> (F(not (FCT_received)) --> (ErrorReset_state))))",
         "casting": "self",
         "reasoning": "bounded diamond operator"
       },
