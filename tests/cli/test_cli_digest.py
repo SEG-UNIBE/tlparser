@@ -38,7 +38,9 @@ def test_digest_command():
 
     # Identify the newly created file(s)
     new_files = files_after - files_before
-    assert len(new_files) == 1, "Expected exactly one new file, but found: {}".format(
+    assert (
+        len(new_files) == 1
+    ), "Expected exactly one new file, but found: {}".format(  ## HERE IT FAILS ALWAYS, IT SEEMS THAT THERE IS NO FILE GENERATED
         new_files
     )
 
@@ -58,6 +60,6 @@ def test_digest_command():
     assert not df.empty, "The output file is empty."
 
 
-def teardown_module():
-    if os.path.isdir(WORKING_DIR):
-        shutil.rmtree(WORKING_DIR)
+# def teardown_module():
+#     if os.path.isdir(WORKING_DIR):
+#         shutil.rmtree(WORKING_DIR)
