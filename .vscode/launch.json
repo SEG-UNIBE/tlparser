@@ -5,13 +5,13 @@
             "name": "pytest (all)",
             "type": "debugpy",
             "request": "launch",
-            "module": "pytest", // Use `module` instead of `program`
+            "module": "pytest",
             "args": [
-                "-s", // Ensures that `stdout` and `stderr` are not captured
-                "--maxfail=1", // Stop after the first failure
-                "${workspaceFolder}/tests" // Path to the tests folder
+                "-s",
+                "--maxfail=1",
+                "${workspaceFolder}/tests"
             ],
-            "console": "integratedTerminal", // You can also use "internalConsole"
+            "console": "integratedTerminal",
             "justMyCode": true,
             "cwd": "${workspaceFolder}",
             "env": {
