@@ -2757,8 +2757,8 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((NChar sent) \\mathcal{S} (Run \\ state) \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
-        "f_code": "",
+        "f_latex": "\\Box(( (Run \\ state \\ started) \to (min \\ one \\ NChar \\ sent)  \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
+        "f_code": "G(  ((Run_state_started) --> (NChar_sent) and not(last_char_EOP or EEP))  --> X(((read_transmit_FIFO) and (discard_characters)) U ((EOP_read or EEP_read) and (EOP_discard or EEP_discarded)))  )",
         "casting": "self",
         "reasoning": "until/next operator"
       },
@@ -3695,8 +3695,8 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
-        "f_code": "G(((Started_state) --> F(ErrorReset_state))) and G((Connecting_state) --> F(not (FCT_received) --> (ErrorReset_state)))",
+        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))--> (no_eeror)) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
+        "f_code": "G( (((Started_state) --> F(ErrorReset_state)) --> (no_error)) and ((Connecting_state) --> (F(not (FCT_received)) --> (ErrorReset_state))))",
         "casting": "self",
         "reasoning": "bounded diamond operator"
       },
@@ -3892,7 +3892,7 @@
       {
         "type": "MTLb",
         "f_latex": "\\Box((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond_I (interrupt \\ code \\ sent) \\to (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out",
-        "f_code": "G((interrupt_mode) --> ((interrupt_code_sent) --> F((interrupt_code_sent) --> (new_interrupt_code_discard)))) and I == corresponding_interrupt_timeout",
+        "f_code": "G(  (interrupt_mode) --> ( (interrupt_code_sent) --> (F(interrupt_code_sent) --> (new_interrupt_code_discard)) )) and I == corresponding_interrupt_timeout",
         "casting": "self",
         "reasoning": "bounded diamond"
       },
@@ -4039,7 +4039,7 @@
       {
         "type": "MTLb",
         "f_latex": "\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0, t)} (interrupt \\ ack) \\ generated), \\newline t \\leq max interrupt \\ ack \\ time",
-        "f_code": "G((interrupt_code_arriving) --> F(interrupt_ack_generated)) and t <= max_interrupt_ack_time",
+        "f_code": "G( (interrupt_code_arriving) --> F (interrupt_ack_generated) ) and t <= max_interrupt_ack_time",
         "casting": "self",
         "reasoning": "bounded diamond"
       },
@@ -4158,7 +4158,7 @@
       {
         "type": "STL",
         "f_latex": "\\Box((reset \\vee disconnect)\\to \\newline \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))",
-        "f_code": "G((reset or disconnect) --> X(S_data__t >= 9 and S_data__t <= 11))",
+        "f_code": "G( (reset or disconnect) --> X(S_data_t >= 9 and S_data_t <= 11) )",
         "casting": "self",
         "reasoning": ""
       }
@@ -4207,7 +4207,7 @@
       {
         "type": "STL",
         "f_latex": "\\Box((\\ 9\\leq S_{data} (t)\\leq 11) \\ \\newline \\until \\ (set \\ different \\ rate))",
-        "f_code": "G((S_data_t >= 9 and S_data_t <= 11) U (set_different_rate))",
+        "f_code": "G( ((S_data_t >= 9) and (S_data_t <= 11)) U (set_different_rate))",
         "casting": "self",
         "reasoning": ""
       }
@@ -4255,8 +4255,8 @@
       },
       {
         "type": "STL",
-        "f_latex": "\\Box((state: \\ Run) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
-        "f_code": "G(state_Run --> ((S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) and x == initial_data_signaling_rate and y == intended_data_signaling_rate))",
+        "f_latex": "\\Box((Run \\ state) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
+        "f_code": "G( (Run_state) --> ( (S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) ) and (x == initial_data_signaling_rate and y == intended_data_signaling_rate))",
         "casting": "self",
         "reasoning": ""
       }
