@@ -4039,7 +4039,7 @@
       {
         "type": "MTLb",
         "f_latex": "\\Box((interrupt \\ code \\ arriving) \\to \\Diamond_{(0, t)} (interrupt \\ ack) \\ generated), \\newline t \\leq max interrupt \\ ack \\ time",
-        "f_code": "G((interrupt_code_arriving) --> F(interrupt_ack_generated)) and t <= max_interrupt_ack_time",
+        "f_code": "G( (interrupt_code_arriving) --> F (interrupt_ack_generated) ) and t <= max_interrupt_ack_time",
         "casting": "self",
         "reasoning": "bounded diamond"
       },
