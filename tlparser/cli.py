@@ -31,7 +31,7 @@ def get_working_directory():
 @click.group()
 @click.version_option()
 def cli():
-    "Temporal Logic Parser"
+    """Temporal Logic Parser"""
 
 
 @cli.command(name="digest")

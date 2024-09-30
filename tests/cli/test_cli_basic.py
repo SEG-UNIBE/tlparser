@@ -1,7 +1,5 @@
 from click.testing import CliRunner
 from tlparser.cli import cli
-import os
-import shutil
 
 def test_version():
     runner = CliRunner()

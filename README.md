@@ -7,8 +7,8 @@
 
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
-```python
-"G((x and (u == 9) and (i < 3)) --> G(not y or x))"
+```
+G((x and (u == 9) and (i < 3)) --> G(not y or x))
 ```
 
 And returns some statistics about it:
@@ -92,40 +92,40 @@ tlparser digest ../tlparser/tests/data/test.json
 The Excel file will serve as basis for generating the plots.
 It contains the following columns:
 
-| Column           | Meaning |
-|------------------|---------|
-| id               | Unique requirement identifier |
-| text             | Requirement in human language |
-| type             | Temporal logic (supported are `INV`, `LTL`, `MTLb`, `MITL`, `TPTL`, `CTLS`, `STL`)|
-| reasoning        | Thought decisive for formalizing the requirement in this logic |
-| casting          | Specified whether the requirement can theoretically be formalized in (*casted to*) another logic (possible values are `self`, `yes`, `no`, `unknown`) |
-| castclass        | Category name derived by concatenating first letters of all casting answers per requirement |
-| stats.formula_raw    | Formalization with comparison operators (e.g. `G((x <= 7) --> (not (y)))`) |
-| stats.formula_parsable | Formalization without comparison operators (e.g. `G((x_leq_7) --> (not (y)))`) |
-| stats.formula_parsed    | Interpreted formalization using [`pyModelChecking`](https://github.com/albertocasagrande/pyModelChecking) (e.g. `G((x_leq_7 --> not y))`) |
-| stats.asth       | Height (or *depth* or *nesting*) of the abstract syntax tree |
-| stats.ap         | Set of all atomic propositions |
-| stats.cops.eq    | Number of `==` (equals) comparisons |
-| stats.cops.ge    | Number of `>=` (greater-or-equal-than) comparisons |
-| stats.cops.gt    | Number of `>` (greater-than) comparisons |
-| stats.cops.leq   | Number of `<=`less-or-equal-than comparisons |
-| stats.cops.lt    | Number of `<` (less-than) comparisons  |
-| stats.cops.ne    | Number of `!=` (not-equals) comparisons |
-| stats.lops.and   | Number of `∧` (and) operators |
-| stats.lops.imp   | Number of `-->` (implies) operators|
-| stats.lops.not   | Number of `¬` (not) operators |
-| stats.lops.or    | Number of `∨` (or) operators |
-| stats.tops.A     | Number of `for all paths` operators |
-| stats.tops.E     | Number of `there exists a path` operators  |
-| stats.tops.F     | Number of `eventually` (diamond symbol) operators |
-| stats.tops.G     | Number of `globally` (square symbol) operators |
-| stats.tops.R     | Number of `release` operators |
-| stats.tops.U     | Number of `until` operators |
-| stats.tops.X     | Number of `next` operators |
-| stats.agg.aps    | Total number of atomic propositions |
-| stats.agg.cops   | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`) |
-| stats.agg.lops   | Total number of logical operators (`∧`, `∨`, `-->`, `¬`) |
-| stats.agg.tops   | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`) |
+| Column                 | Meaning                                                                                                                                               |
+|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                     | Unique requirement identifier                                                                                                                         |
+| text                   | Requirement in human language                                                                                                                         |
+| type                   | Temporal logic (supported are `INV`, `LTL`, `MTLb`, `MITL`, `TPTL`, `CTLS`, `STL`)                                                                    |
+| reasoning              | Thought decisive for formalizing the requirement in this logic                                                                                        |
+| casting                | Specified whether the requirement can theoretically be formalized in (*casted to*) another logic (possible values are `self`, `yes`, `no`, `unknown`) |
+| castclass              | Category name derived by concatenating first letters of all casting answers per requirement                                                           |
+| stats.formula_raw      | Formalization with comparison operators (e.g. `G((x <= 7) --> (not (y)))`)                                                                            |
+| stats.formula_parsable | Formalization without comparison operators (e.g. `G((x_leq_7) --> (not (y)))`)                                                                        |
+| stats.formula_parsed   | Interpreted formalization using [`pyModelChecking`](https://github.com/albertocasagrande/pyModelChecking) (e.g. `G((x_leq_7 --> not y))`)             |
+| stats.asth             | Height (or *depth* or *nesting*) of the abstract syntax tree                                                                                          |
+| stats.ap               | Set of all atomic propositions                                                                                                                        |
+| stats.cops.eq          | Number of `==` (equals) comparisons                                                                                                                   |
+| stats.cops.ge          | Number of `>=` (greater-or-equal-than) comparisons                                                                                                    |
+| stats.cops.gt          | Number of `>` (greater-than) comparisons                                                                                                              |
+| stats.cops.leq         | Number of `<=`less-or-equal-than comparisons                                                                                                          |
+| stats.cops.lt          | Number of `<` (less-than) comparisons                                                                                                                 |
+| stats.cops.ne          | Number of `!=` (not-equals) comparisons                                                                                                               |
+| stats.lops.and         | Number of `∧` (and) operators                                                                                                                         |
+| stats.lops.imp         | Number of `-->` (implies) operators                                                                                                                   |
+| stats.lops.not         | Number of `¬` (not) operators                                                                                                                         |
+| stats.lops.or          | Number of `∨` (or) operators                                                                                                                          |
+| stats.tops.A           | Number of `for all paths` operators                                                                                                                   |
+| stats.tops.E           | Number of `there exists a path` operators                                                                                                             |
+| stats.tops.F           | Number of `eventually` (diamond symbol) operators                                                                                                     |
+| stats.tops.G           | Number of `globally` (square symbol) operators                                                                                                        |
+| stats.tops.R           | Number of `release` operators                                                                                                                         |
+| stats.tops.U           | Number of `until` operators                                                                                                                           |
+| stats.tops.X           | Number of `next` operators                                                                                                                            |
+| stats.agg.aps          | Total number of atomic propositions                                                                                                                   |
+| stats.agg.cops         | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)                                                                               |
+| stats.agg.lops         | Total number of logical operators (`∧`, `∨`, `-->`, `¬`)                                                                                              |
+| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)                                                                                |
 
 To generate all plots of the latest Excel file execute the following command:
 

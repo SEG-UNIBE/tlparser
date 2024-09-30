@@ -47,7 +47,7 @@ class Utils:
         df["type"] = pd.Categorical(df["type"], categories=type_order, ordered=True)
         df_sorted = df.sort_values(by=["id", "type"])
         df["castclass"] = df_sorted.groupby("id")["casting"].transform(
-            lambda x: "".join([value[0] for value in x])
+            lambda x: "".join([v[0] for v in x])
         )
 
         flattened_data = df.to_dict(orient="records")

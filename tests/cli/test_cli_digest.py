@@ -54,6 +54,6 @@ def test_digest_command():
     assert not df.empty, "The output file is empty."
 
 
-def teardown_module(module):
+def teardown_module():
     if os.path.isdir(WORKING_DIR):
         shutil.rmtree(WORKING_DIR)

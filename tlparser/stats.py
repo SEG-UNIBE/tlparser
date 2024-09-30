@@ -51,7 +51,8 @@ class Stats:
             self.analyze_formula(self.formula_parsed)
             self.agg = self.update_aggregates()
 
-    def analyse_comparison_ops(self, formula_str):
+    @staticmethod
+    def analyse_comparison_ops(formula_str):
         # Patterns for comparison operators
         patterns = {
             'eq': re.compile(r'=='),
@@ -69,7 +70,7 @@ class Stats:
         # Sub-function to replace comparison operators
         def replace_comparisons(match):
             expression = match.group().replace(' ', '')
-            expression = re.sub(r'-', 'n', expression)
+            expression =  re.sub(r'-', 'n', expression)
             if '<=' in expression:
                 return expression.replace('<=', '_leq_')
             elif '>=' in expression:
@@ -84,18 +85,13 @@ class Stats:
                 return expression.replace('>', '_gt_')
 
         # Replace comparison operators (allowing for any amount of space)
-        modified_string = re.sub(r'\b[\w\.]+ *[<>!=]=? *-?\w+\b', replace_comparisons, formula_str)
+        modified_string = re.sub(r'\b[\w.]+ *[<>!=]=? *-?\w+\b', replace_comparisons, formula_str)
 
         return counts, modified_string
 
     def analyze_formula(self, node, level=0):
         if level == 0:
             self.asth = node.height
-
-        # print(f"Node:\t\t{node}")
-        # print(f"Symbol:\t\t{node.symbols[0]}")  if hasattr(node, '_subformula') else print(f"Symbol:\t\tAP")
-        # print(f"Subform:\t{node._subformula}") if hasattr(node, '_subformula') else print(f"Subform:\tAP")
-        # print()
 
         if isinstance(node, CTLS.AtomicProposition):
             self.ap.add(str(node))

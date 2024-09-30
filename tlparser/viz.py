@@ -1,18 +1,18 @@
 import os
-import pandas as pd
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import seaborn as sns
+import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+import seaborn as sns
 from d3blocks import D3Blocks
 
-from tlparser.utils import Utils
 from tlparser.config import Configuration
+from tlparser.utils import Utils
 
 
 class Viz:
-
     title_map = {
         "stats.agg.aps": "Atomic Propositions",
         "stats.agg.cops": "Comparison Operators",
@@ -197,8 +197,6 @@ class Viz:
                     color="black",
                     ha="center",
                     va="bottom",
-                    # fontfamily="monospace",
-                    # size=8,
                 )
 
             # Place the count 'n' below the x-axis tick marks
@@ -371,7 +369,7 @@ class Viz:
                     source_type = source_type_row["type"].values[0]
                     yes_targets = group[
                         (group["casting"] == target) & (group["type"] != source_type)
-                    ]
+                        ]
                     for _, row in yes_targets.iterrows():
                         target_type = row["type"]
                         links.append(
@@ -393,7 +391,7 @@ class Viz:
                     save_button=True,
                     ordering=self.__get_reduced_logic_order(),
                     cmap="tab10",
-                    figsize=[500, 500],
+                    figsize=(500, 500),
                     reset_properties=True,
                     arrowhead=30,
                     fontsize=13,
