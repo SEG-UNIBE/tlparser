@@ -20,19 +20,10 @@ class TestStats(TestCase):
             TestCaseData(f_code='(ics) --> F((ics) --> (new))', asth=3, aps=2, cops=0, lops=2, tops=1),
             TestCaseData(f_code='G((mode) --> ((ics) --> F((ics) --> (new)))) and I == cit', asth=6, aps=4, cops=1, lops=4, tops=2),
             TestCaseData(f_code='G(sr --> ((s == x or s == y) and (not (s == x and s == y)) and x == n and y == m))', asth=5, aps=5, cops=6, lops=7, tops=1),
+            TestCaseData(f_code='G(((a) --> ((b) and not(c or EEP))) --> X(((d) and (f)) U((EOPr or EEPr) and (EOPd or EEPc))))', asth=6, aps=10, cops=0, lops=9, tops=3),
         }
 
 class TestInit(TestStats):
-
-    # def test_json_import(self):
-    #     config = Configuration.from_json('config.unittest.json')
-    #     config = Configuration(
-    #         file_data_in=json_file, 
-    #         folder_data_out=working_dir,
-    #         only_with_status=DEFAULT_STATI)
-    #     util = Utils(config)
-    #     formulas = util.read_formulas_from_json()
-    #     self.assertGreater(len(formulas), 0)
 
     def test_ast(self):
             for case in self.data:
