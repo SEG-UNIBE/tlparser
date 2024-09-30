@@ -4158,7 +4158,7 @@
       {
         "type": "STL",
         "f_latex": "\\Box((reset \\vee disconnect)\\to \\newline \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))",
-        "f_code": "G((reset or disconnect) --> X(S_data__t >= 9 and S_data__t <= 11))",
+        "f_code": "G( (reset or disconnect) --> X(S_data_t >= 9 and S_data_t <= 11) )",
         "casting": "self",
         "reasoning": ""
       }
