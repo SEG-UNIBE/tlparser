@@ -17,7 +17,7 @@ DEFAULT_COLOR = [
     "#20d8fd",
     "#8750a6",
     "#696969",
-    "#ac9c3d"
+    "#ac9c3d",
 ]
 COLOR_PALETTE = dict(zip(DEFAULT_ORDER, DEFAULT_COLOR))
 
@@ -59,7 +59,8 @@ def digest_file(json_file):
     util = Utils(config)
     formulas = util.read_formulas_from_json()
     out_file = util.write_to_excel(formulas)
-
+    print(f"***** digested:{json_file}")
+    print(f"***** saved:{out_file}")
     click.echo(f"Processed {json_file} and saved results to {out_file}")
 
 
@@ -100,7 +101,11 @@ def visualize_data(file, latest, plot):
         latest = False
 
     working_dir = get_working_directory()
-    config = Configuration(folder_data_out=working_dir, logic_order=DEFAULT_ORDER, color_palette=COLOR_PALETTE)
+    config = Configuration(
+        folder_data_out=working_dir,
+        logic_order=DEFAULT_ORDER,
+        color_palette=COLOR_PALETTE,
+    )
     util = Utils(config)
 
     # If --latest is used, find the latest file
@@ -143,9 +148,9 @@ def cleanup_folder():
 
     # Prompt user for confirmation
     if click.confirm(
-            f"Execution of this command will remove {file_count} files inside of '{working_dir}'."
-            + "\nDo you want to proceed?",
-            default=False,
+        f"Execution of this command will remove {file_count} files inside of '{working_dir}'."
+        + "\nDo you want to proceed?",
+        default=False,
     ):
         for filename in files_to_delete:
             file_path = os.path.join(working_dir, filename)
