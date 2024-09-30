@@ -2745,7 +2745,7 @@
   },
   {
     "id": 2025,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "If one or more N-Chars have been sent since the link reached the Run state AND the last character sent was not an EOP or EEP, read the transmit FIFO and discard the characters read until an EOP or EEP has been read and discarded",
     "logics": [
       {
@@ -2758,7 +2758,7 @@
       {
         "type": "LTL",
         "f_latex": "\\Box(( (Run \\ state \\ started) \to (min \\ one \\ NChar \\ sent)  \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
-        "f_code": "G(  ((Run_state_started) --> (NChar_sent) and not(last_char_EOP or EEP))  --> X(((read_transmit_FIFO) and (discard_characters)) U ((EOP_read or EEP_read) and (EOP_discard or EEP_discarded)))  )",
+        "f_code": "G(  ((Run_state_started) --> ((NChar_sent) and not(last_char_EOP or EEP)))  --> X(((read_transmit_FIFO) and (discard_characters)) U ((EOP_read or EEP_read) and (EOP_discard or EEP_discarded)))  )",
         "casting": "self",
         "reasoning": "until/next operator"
       },
@@ -3676,7 +3676,7 @@
   },
   {
     "id": 3007,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "The transition from the Started state to the ErrorReset state has “after 12,8 µs” in black (dark text) which is intentional as this transition is normal operation and not an error condition. It occurs when this end of the line is trying to start and the other end is disabled. The transition from the Connecting state to the ErrorReset state has “after 12,8 µs” in red (lighter text) because it is an error: although a Null has been received indicating that the other end of the link is active, no FCT is received within 12,8 µs so it is a fault.",
     "logics": [
       {
@@ -3872,7 +3872,7 @@
   },
   {
     "id": 3011,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "If an interrupt is used in interrupt mode and the host system requests to send an interrupt too fast after the previous identical interrupt was sent, i.e. before the corresponding interrupt time-out timer in the routing switches has expired, the new interrupt code that the node sends is discarded by a router.",
     "logics": [
       {
@@ -4019,7 +4019,7 @@
   },
   {
     "id": 3014,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "The delay between the interrupt code arriving and the interrupt acknowledgement being generated shall be less than the maximum time determined for a node to generate an interrupt acknowledgement code",
     "logics": [
       {
@@ -4117,7 +4117,7 @@
   },
   {
     "id": 4001,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "After a reset or disconnect (see clause 5.4.8) an output port shall start operating at a data signalling rate of 10 ±1 Mb/s.",
     "logics": [
       {
@@ -4166,7 +4166,7 @@
   },
   {
     "id": 4002,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "The SpaceWire output port shall operate at 10 ±1 Mb/s until set to operate at a different data signalling rate.",
     "logics": [
       {
@@ -4215,7 +4215,7 @@
   },
   {
     "id": 4003,
-    "status": "REVIEW",
+    "status": "OK",
     "text": "Once in the Run state it is possible to change the output port data signalling rate from the initial data signalling rate to the intended operating data signalling rate",
     "logics": [
       {
@@ -4256,7 +4256,7 @@
       {
         "type": "STL",
         "f_latex": "\\Box((Run \\ state) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
-        "f_code": "G( (Run_state) --> ( (S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) ) and (x == initial_data_signaling_rate and y == intended_data_signaling_rate))",
+        "f_code": "G( (Run_state) --> (( (S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) ) and (x == initial_data_signaling_rate and y == intended_data_signaling_rate)))",
         "casting": "self",
         "reasoning": ""
       }
