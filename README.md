@@ -56,7 +56,23 @@ And returns some statistics about it:
 
 ## How to use
 
-To contribute to this tool, first `git clone` this repository and `cd` into the folder.
+First, `git clone` this repository and `cd` into the folder.
+Listing the contents of this directory (e.g., using `ls -la` on Unix or `dir /a` on Windows) should return the following items:
+
+```bash
+.
+├── .git              (folder)
+├── .github           (folder)
+├── .gitignore
+├── .vscode           (folder)
+├── LICENSE
+├── README.md
+├── data              (folder)
+├── pyproject.toml
+├── pytest.ini
+├── tests             (folder)
+└── tlparser          (folder)
+```
 
 > [!NOTE]  
 > This tool requires **Python 3.10 or later**. Ensure you have the correct version [installed](https://www.python.org/downloads/).
@@ -140,7 +156,7 @@ It contains the following columns:
 | stats.agg.aps          | Total number of atomic propositions                                                                                                                   |
 | stats.agg.cops         | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)                                                                               |
 | stats.agg.lops         | Total number of logical operators (`∧`, `∨`, `-->`, `¬`)                                                                                              |
-| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)   
+| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)
 
 To generate all plots of the latest Excel file execute the following command:
 
