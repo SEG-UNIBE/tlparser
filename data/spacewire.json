@@ -3892,7 +3892,7 @@
       {
         "type": "MTLb",
         "f_latex": "\\Box((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond_I (interrupt \\ code \\ sent) \\to (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out",
-        "f_code": "G((interrupt_mode) --> ((interrupt_code_sent) --> F((interrupt_code_sent) --> (new_interrupt_code_discard)))) and I == corresponding_interrupt_timeout",
+        "f_code": "G(  (interrupt_mode) --> ( (interrupt_code_sent) --> (F(interrupt_code_sent) --> (new_interrupt_code_discard)) )) and I == corresponding_interrupt_timeout",
         "casting": "self",
         "reasoning": "bounded diamond"
       },
