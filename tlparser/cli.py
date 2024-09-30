@@ -22,11 +22,15 @@ DEFAULT_COLOR = [
 COLOR_PALETTE = dict(zip(DEFAULT_ORDER, DEFAULT_COLOR))
 
 
-def get_working_directory():
+def get_working_directory(custom_working_dir=None):
     """Get or create the working directory"""
-    # Create the path for the working directory in the same folder as the script
+
     script_location = os.path.dirname(os.path.abspath(__file__))
-    working_dir = os.path.join(script_location, DEFAULT_WD)
+    working_dir = (
+        os.path.join(script_location, DEFAULT_WD)
+        if custom_working_dir is None
+        else custom_working_dir
+    )
 
     # Check if the working directory exists
     if not os.path.exists(working_dir):
@@ -47,9 +51,16 @@ def cli():
 
 @cli.command(name="digest")
 @click.argument("json_file", type=click.Path(exists=True))
-def digest_file(json_file):
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(writable=True),
+    default=None,
+    help="Path to the output directory.",
+)
+def digest_file(json_file, output):
     """Processes the JSON file and outputs a CSV"""
-    working_dir = get_working_directory()
+    working_dir = get_working_directory(output)
     config = Configuration(
         file_data_in=json_file,
         folder_data_out=working_dir,
@@ -59,8 +70,6 @@ def digest_file(json_file):
     util = Utils(config)
     formulas = util.read_formulas_from_json()
     out_file = util.write_to_excel(formulas)
-    print(f"***** digested:{json_file}")
-    print(f"***** saved:{out_file}")
     click.echo(f"Processed {json_file} and saved results to {out_file}")
 
 
