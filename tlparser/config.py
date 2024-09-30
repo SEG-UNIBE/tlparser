@@ -10,11 +10,13 @@ class Configuration:
         folder_data_out="",
         only_with_status=None,
         logic_order=None,
+        color_palette=None,
     ):
         self.file_data_in = file_data_in
         self.folder_data_out = folder_data_out
         self.only_with_status = only_with_status if only_with_status is not None else []
         self.logic_order = logic_order if logic_order is not None else []
+        self.color_palette = color_palette if color_palette is not None else {}
 
     @classmethod
     def from_json(cls, file_path):

@@ -1,6 +1,7 @@
-import click
 import os
 import shutil
+
+import click
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
@@ -9,6 +10,16 @@ from tlparser.viz import Viz
 DEFAULT_WD = "workingdir"
 DEFAULT_STATI = ["OK"]
 DEFAULT_ORDER = ["INV", "LTL", "MTLb", "MITL", "TPTL", "CTLS", "STL"]
+DEFAULT_COLOR = [
+    "#687dd6",
+    "#56ac67",
+    "#ba543d",
+    "#20d8fd",
+    "#8750a6",
+    "#696969",
+    "#ac9c3d"
+]
+COLOR_PALETTE = dict(zip(DEFAULT_ORDER, DEFAULT_COLOR))
 
 
 def get_working_directory():
@@ -67,8 +78,7 @@ def digest_file(json_file):
     "-p",
     type=click.Choice(
         [
-            "distnat",
-            "distcomb",
+            "hist",
             "complexity",
             "pairplot",
             "castclass",
@@ -91,7 +101,7 @@ def visualize_data(file, latest, plot):
         latest = False
 
     working_dir = get_working_directory()
-    config = Configuration(folder_data_out=working_dir, logic_order=DEFAULT_ORDER)
+    config = Configuration(folder_data_out=working_dir, logic_order=DEFAULT_ORDER, color_palette=COLOR_PALETTE)
     util = Utils(config)
 
     # If --latest is used, find the latest file
@@ -105,8 +115,7 @@ def visualize_data(file, latest, plot):
     # Read the Excel file
     viz = Viz(config, file)
     plot_methods = {
-        "distnat": viz.plot_distribution_natural,
-        "distcomb": viz.plot_distribution_combined,
+        "hist": viz.plot_histogram,
         "complexity": viz.plot_complexity,
         "pairplot": viz.plot_pairplot,
         "castclass": viz.plot_cast_classes,
@@ -136,9 +145,9 @@ def cleanup_folder():
 
     # Prompt user for confirmation
     if click.confirm(
-        f"Execution of this command will remove {file_count} files inside of '{working_dir}'."
-        + "\nDo you want to proceed?",
-        default=False,
+            f"Execution of this command will remove {file_count} files inside of '{working_dir}'."
+            + "\nDo you want to proceed?",
+            default=False,
     ):
         for filename in files_to_delete:
             file_path = os.path.join(working_dir, filename)
