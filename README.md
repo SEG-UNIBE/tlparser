@@ -81,7 +81,7 @@ tlparser --help
 ```
 
 <details>
-<summary>Read and plot test data (optional)</summary>
+<summary>Process and plot test data (optional)</summary>
 
 First, digest the test data file to create an Excel file.
 
@@ -90,6 +90,21 @@ tlparser digest ../tlparser/tests/data/test.json
 ```
 
 The Excel file will serve as basis for generating the plots.
+To generate all plots of the latest Excel file execute the following command:
+
+```bash
+tlparser visualize -l -p all
+```
+
+</details>
+
+You can parse the `spacewire` requirements using the following command:
+
+```bash
+tlparser digest ../tlparser/data/spacewire.json
+```
+
+The resulting Excel file serves as basis for generating the plots.
 It contains the following columns:
 
 | Column                 | Meaning                                                                                                                                               |
@@ -125,24 +140,9 @@ It contains the following columns:
 | stats.agg.aps          | Total number of atomic propositions                                                                                                                   |
 | stats.agg.cops         | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)                                                                               |
 | stats.agg.lops         | Total number of logical operators (`∧`, `∨`, `-->`, `¬`)                                                                                              |
-| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)                                                                                |
+| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)   
 
 To generate all plots of the latest Excel file execute the following command:
-
-```bash
-tlparser visualize -l -p all
-```
-
-</details>
-</br>
-
-You can parse the `spacewire` requirements using the following command:
-
-```bash
-tlparser digest ../tlparser/data/spacewire.json
-```
-
-The resulting Excel file serves as basis for generating the plots.
 
 ```bash
 tlparser visualize -l -p all
