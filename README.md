@@ -156,7 +156,7 @@ It contains the following columns:
 | stats.agg.aps          | Total number of atomic propositions                                                                                                                   |
 | stats.agg.cops         | Total number of comparison operators (`==`, `!=`, `<`, `>`, `=>`, `<=`)                                                                               |
 | stats.agg.lops         | Total number of logical operators (`∧`, `∨`, `-->`, `¬`)                                                                                              |
-| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)
+| stats.agg.tops         | Total number of temporal operators (`A`, `E`, `F`, `G`, `R`, `U`, `X`)                                                                                |
 
 To generate all plots of the latest Excel file execute the following command:
 
