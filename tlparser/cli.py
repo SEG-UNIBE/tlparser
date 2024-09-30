@@ -71,7 +71,7 @@ def digest_file(json_file):
             "distcomb",
             "complexity",
             "pairplot",
-            "projclass",
+            "castclass",
             "sankey",
             "chord",
             "all",
@@ -109,7 +109,7 @@ def visualize_data(file, latest, plot):
         "distcomb": viz.plot_distribution_combined,
         "complexity": viz.plot_complexity,
         "pairplot": viz.plot_pairplot,
-        "projclass": viz.plot_projection_classes,
+        "castclass": viz.plot_cast_classes,
         "sankey": viz.plot_sankey,
         "chord": viz.plot_chord,
     }

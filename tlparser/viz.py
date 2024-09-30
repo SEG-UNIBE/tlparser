@@ -42,7 +42,7 @@ class Viz:
 
         reduced_order = self.__get_reduced_logic_order()
         empty_counts = (
-            self.data[self.data["projection"] == "self"]
+            self.data[self.data["casting"] == "self"]
             .groupby("type")
             .size()
             .reindex(reduced_order, fill_value=0)
@@ -65,14 +65,14 @@ class Viz:
     def plot_distribution_combined(self):
 
         reduced_order = self.__get_reduced_logic_order()
-        projection_counts = (
-            self.data.groupby(["type", "projection"])
+        casting_counts = (
+            self.data.groupby(["type", "casting"])
             .size()
             .unstack(fill_value=0)
             .reindex(reduced_order, fill_value=0)
         )
 
-        projection_colors = {
+        casting_colors = {
             "self": "blue",
             "yes": "green",
             "no": "red",
@@ -80,19 +80,17 @@ class Viz:
         }
 
         plt.figure(figsize=(10, 6))
-        projection_counts.plot(
+        casting_counts.plot(
             kind="bar",
             stacked=False,  # grouped bars
-            color=[
-                projection_colors.get(col, "black") for col in projection_counts.columns
-            ],
+            color=[casting_colors.get(col, "black") for col in casting_counts.columns],
         )
 
         plt.xlabel("Logic")
         plt.ylabel("Requirements")
-        plt.title("Histogram of Natural Formalizations by Logic and Projection Status")
+        plt.title("Histogram of Natural Formalizations by Logic and Casting Status")
         plt.xticks(rotation=0)
-        plt.legend(title="Projection Status")
+        plt.legend(title="Casting Status")
 
         out = self.__get_file_name("distcomb")
         plt.savefig(out)
@@ -102,7 +100,7 @@ class Viz:
 
     def plot_complexity(self):
 
-        df_filtered = self.data[self.data["projection"] == "self"]
+        df_filtered = self.data[self.data["casting"] == "self"]
         agg_columns = df_filtered.filter(like=".agg.").columns.tolist()
         df_long = pd.melt(
             df_filtered,
@@ -248,7 +246,7 @@ class Viz:
 
     def plot_pairplot(self):
 
-        df = self.data[self.data["projection"] == "self"]
+        df = self.data[self.data["casting"] == "self"]
         agg_columns = df.filter(like=".agg.").columns.tolist()
         df_pairplot = df[agg_columns + ["type"]]
 
@@ -274,21 +272,21 @@ class Viz:
         plt.close()
         return out
 
-    def plot_projection_classes(self):
+    def plot_cast_classes(self):
 
-        df = self.data[self.data["projection"] == "self"]
-
-        projection_key_counts = df["projclass"].value_counts().reset_index()
-        projection_key_counts.columns = ["projclass", "count"]
+        df = self.data[self.data["casting"] == "self"]
+        col_name = "castclass"
+        casting_key_counts = df[col_name].value_counts().reset_index()
+        casting_key_counts.columns = [col_name, "count"]
 
         plt.figure(figsize=(10, 6))
-        sns.barplot(data=projection_key_counts, x="projclass", y="count")
-        plt.xlabel("Projection Key")
+        sns.barplot(data=casting_key_counts, x=col_name, y="count")
+        plt.xlabel("Casting Classes")
         plt.ylabel("Count")
-        plt.title("Counts per Projection Class")
+        plt.title("Number of Properties per Casting Class")
         plt.tight_layout()
 
-        out = self.__get_file_name("projclass")
+        out = self.__get_file_name(col_name)
         plt.savefig(out)
         plt.close()
         return out
@@ -299,16 +297,14 @@ class Viz:
 
         flow_counts = {"yes": {}, "no": {}, "unknown": {}}
         for id_value, group in df.groupby("id"):
-            source_type = group[group["projection"] == "self"]["type"].values[0]
+            source_type = group[group["casting"] == "self"]["type"].values[0]
             for _, row in group.iterrows():
                 target_type = row["type"]
-                projection_type = row["projection"]
-                if projection_type in ["yes", "no", "unknown"]:
-                    if (source_type, target_type) not in flow_counts[projection_type]:
-                        flow_counts[projection_type][(source_type, target_type)] = set()
-                    flow_counts[projection_type][(source_type, target_type)].add(
-                        id_value
-                    )
+                casting_type = row["casting"]
+                if casting_type in ["yes", "no", "unknown"]:
+                    if (source_type, target_type) not in flow_counts[casting_type]:
+                        flow_counts[casting_type][(source_type, target_type)] = set()
+                    flow_counts[casting_type][(source_type, target_type)].add(id_value)
 
         labels = df["type"].unique().tolist()
         source = []
@@ -317,20 +313,20 @@ class Viz:
         link_labels = []
         link_colors = []
 
-        projection_colors = {
+        casting_colors = {
             "yes": "rgba(0, 128, 0, 0.7)",
             "no": "rgba(255, 0, 0, 0.7)",
             "unknown": "rgba(128, 128, 128, 0.7)",
         }
 
         label_to_index = {label: idx for idx, label in enumerate(labels)}
-        for projection_type, flows in flow_counts.items():
+        for casting_type, flows in flow_counts.items():
             for (src, tgt), ids_set in flows.items():
                 source.append(label_to_index[src])
                 target.append(label_to_index[tgt])
                 value.append(len(ids_set))
-                link_labels.append(f"{len(ids_set)} ids ({projection_type})")
-                link_colors.append(projection_colors[projection_type])
+                link_labels.append(f"{len(ids_set)} ids ({casting_type})")
+                link_colors.append(casting_colors[casting_type])
 
         fig = go.Figure(
             data=[
@@ -346,14 +342,14 @@ class Viz:
                         target=target,
                         value=value,
                         label=link_labels,  # Add labels to links
-                        color=link_colors,  # Color the links based on projection type
+                        color=link_colors,  # Color the links based on casting type
                     ),
                 )
             ]
         )
 
         fig.update_layout(
-            title_text="Sankey Diagram of Projections with Unique ID Counts",
+            title_text="Sankey Diagram of Castings",
             font_size=10,
         )
         out = self.__get_file_name("sankey")
@@ -370,11 +366,11 @@ class Viz:
             links = []
 
             for _, group in df.groupby("id"):
-                source_type_row = group[group["projection"] == "self"]
+                source_type_row = group[group["casting"] == "self"]
                 if not source_type_row.empty:
                     source_type = source_type_row["type"].values[0]
                     yes_targets = group[
-                        (group["projection"] == target) & (group["type"] != source_type)
+                        (group["casting"] == target) & (group["type"] != source_type)
                     ]
                     for _, row in yes_targets.iterrows():
                         target_type = row["type"]

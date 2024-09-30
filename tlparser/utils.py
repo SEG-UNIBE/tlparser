@@ -31,7 +31,7 @@ class Utils:
                             "id": entry["id"],
                             "text": entry["text"],
                             "type": logic["type"],
-                            "projection": logic["projection"],
+                            "casting": logic["casting"],
                             "reasoning": logic["reasoning"],
                             "stats": s.get_stats(),
                         }
@@ -41,12 +41,12 @@ class Utils:
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
 
-        # Derive and append projclass
+        # Derive and append castclass
         df = pd.DataFrame(flattened_data)
         type_order = self.config.logic_order
         df["type"] = pd.Categorical(df["type"], categories=type_order, ordered=True)
         df_sorted = df.sort_values(by=["id", "type"])
-        df["projclass"] = df_sorted.groupby("id")["projection"].transform(
+        df["castclass"] = df_sorted.groupby("id")["casting"].transform(
             lambda x: "".join([value[0] for value in x])
         )
 
@@ -134,8 +134,8 @@ class Utils:
             "text",
             "type",
             "reasoning",
-            "projection",
-            "projclass",
+            "casting",
+            "castclass",
             "stats.formula_raw",
             "stats.formula_parsable",
             "stats.formula_parsed",
