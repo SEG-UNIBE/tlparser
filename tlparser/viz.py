@@ -45,13 +45,13 @@ class Viz:
         type_palette = self.config.color_palette
         df = self.data.copy()
         df['type'] = pd.Categorical(df['type'], categories=reduced_order, ordered=True)
-        _, axes = plt.subplots(4, 1, figsize=(7, 8), sharex=True)
-
+        _, axes = plt.subplots(2, 2, figsize=(8, 4), sharex=True, sharey=True)
+        axes = axes.flatten()
         titles = {
-            'self': 'Naturally Chosen Formalization',
-            'yes': 'Casting Possible',
-            'no': 'Casting Not Possible',
-            'unknown': 'Casting Status Uncertain'
+            'self': '(a) Naturally Chosen Formalization',
+            'yes': '(b) Casting Possible',
+            'no': '(c) Casting Not Possible',
+            'unknown': '(d) Casting Status Uncertain'
         }
 
         max_count = df['type'].value_counts().max() + 5
@@ -77,8 +77,9 @@ class Viz:
             for bar in ax.patches:
                     height = bar.get_height()
                     if height > 0:
+                        y = height / 2 if height > 14 else height + 8
                         ax.annotate(f'{int(height)}',
-                                    xy=(bar.get_x() + bar.get_width() / 2, height / 2),
+                                    xy=(bar.get_x() + bar.get_width() / 2, y),
                                     xytext=(0, 0),
                                     textcoords="offset points",
                                     ha='center', va='center', fontsize=8, color='black',
@@ -112,7 +113,7 @@ class Viz:
         y_max = df_long["value"].max() + 4.5
 
         fig, axes = plt.subplots(
-            nrows=2, ncols=2, figsize=(9, 7), sharex=True, sharey=True
+            nrows=2, ncols=2, figsize=(8, 7), sharex=True, sharey=True
         )
         axes = axes.flatten()
         plt.subplots_adjust(hspace=0.05, wspace=0.05)
@@ -364,7 +365,7 @@ class Viz:
                     ordering=self.__get_reduced_logic_order(),
                     figsize=(550, 550),
                     reset_properties=False,
-                    arrowhead=20,
+                    arrowhead=26,
                     fontsize=13,
                 )
                 outs.append(out)
