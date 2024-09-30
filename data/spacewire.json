@@ -4207,7 +4207,7 @@
       {
         "type": "STL",
         "f_latex": "\\Box((\\ 9\\leq S_{data} (t)\\leq 11) \\ \\newline \\until \\ (set \\ different \\ rate))",
-        "f_code": "G((S_data_t >= 9 and S_data_t <= 11) U (set_different_rate))",
+        "f_code": "G( ((S_data_t >= 9) and (S_data_t <= 11)) U (set_different_rate))",
         "casting": "self",
         "reasoning": ""
       }
