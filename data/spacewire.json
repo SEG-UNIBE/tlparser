@@ -4255,8 +4255,8 @@
       },
       {
         "type": "STL",
-        "f_latex": "\\Box((state: \\ Run) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
-        "f_code": "G(state_Run --> ((S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) and x == initial_data_signaling_rate and y == intended_data_signaling_rate))",
+        "f_latex": "\\Box((Run \\ state) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
+        "f_code": "G( (Run_state) --> ( (S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) ) and (x == initial_data_signaling_rate and y == intended_data_signaling_rate))",
         "casting": "self",
         "reasoning": ""
       }
