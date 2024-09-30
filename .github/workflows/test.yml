@@ -22,21 +22,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install '.[test]'
-    - name: Create temp folder
-      id: temp_dir_setup
+      - name: Run tests
       run: |
-        export TEMP_DIR="${{ runner.temp }}/my-temp-dir"
-        mkdir -p "$TEMP_DIR"
-        echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_ENV
-        echo "Temporary folder created: $TEMP_DIR"
-    - name: Run tests
-      run: |
-        echo "Using temporary directory: $TEMP_DIR"
         pytest
-      env:
-        TEMP_DIR: ${{ env.TEMP_DIR }}
-    - name: Clean up temp folder
-      if: always()
-      run: |
-        echo "Cleaning up temporary directory: $TEMP_DIR"
-        rm -rf "$TEMP_DIR"

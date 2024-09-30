@@ -13,6 +13,9 @@ WORKING_DIR = os.path.abspath(
 def test_digest_command():
     runner = CliRunner()
 
+    print(f"***TEST_DATAD_DIR: {TEST_DATA_DIR}")
+    print(f"***WORKING_DIR: {WORKING_DIR}")
+
     # Path to test input JSON
     test_json = os.path.join(TEST_DATA_DIR, "test.json")
 
@@ -31,6 +34,7 @@ def test_digest_command():
 
     # List files in the working directory after running digest
     files_after = set(os.listdir(WORKING_DIR))
+    print(f"***files_after: {files_after}")
 
     # Identify the newly created file(s)
     new_files = files_after - files_before
