@@ -46,7 +46,7 @@ class Viz:
         type_palette = self.config.color_palette
         df = self.data.copy()
         df["type"] = pd.Categorical(df["type"], categories=reduced_order, ordered=True)
-        _, axes = plt.subplots(2, 2, figsize=(8, 4), sharex=True, sharey=True)
+        _, axes = plt.subplots(2, 2, figsize=(7, 4), sharex=True, sharey=True)
         axes = axes.flatten()
         titles = {
             "self": "(a) Naturally Chosen Formalization",
