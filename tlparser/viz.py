@@ -2,10 +2,10 @@ import os
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from matplotlib.colors import ListedColormap
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+
 pio.kaleido.scope.mathjax = None
 
 import seaborn as sns
@@ -13,6 +13,7 @@ from d3blocks import D3Blocks
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
+
 
 class Viz:
     title_map = {
@@ -44,46 +45,55 @@ class Viz:
         reduced_order = self.__get_reduced_logic_order()
         type_palette = self.config.color_palette
         df = self.data.copy()
-        df['type'] = pd.Categorical(df['type'], categories=reduced_order, ordered=True)
+        df["type"] = pd.Categorical(df["type"], categories=reduced_order, ordered=True)
         _, axes = plt.subplots(2, 2, figsize=(8, 4), sharex=True, sharey=True)
         axes = axes.flatten()
         titles = {
-            'self': '(a) Naturally Chosen Formalization',
-            'yes': '(b) Casting Possible',
-            'no': '(c) Casting Not Possible',
-            'unknown': '(d) Casting Status Uncertain'
+            "self": "(a) Naturally Chosen Formalization",
+            "yes": "(b) Translation Possible",
+            "no": "(c) Translation Not Possible",
+            "unknown": "(d) Translation Status Uncertain",
         }
 
-        max_count = df['type'].value_counts().max() + 5
+        max_count = df["type"].value_counts().max() + 5
 
-        for ax, casting in zip(axes, ['self', 'yes', 'no', 'unknown']):
+        for ax, translation in zip(axes, ["self", "yes", "no", "unknown"]):
             sns.histplot(
-                data=df[df['casting'] == casting],
-                x='type',
+                data=df[df["translation"] == translation],
+                x="type",
                 ax=ax,
                 shrink=0.8,
                 discrete=True,
-                hue='type',
-                multiple='stack',
+                hue="type",
+                multiple="stack",
                 palette=type_palette,
-                legend=False
+                legend=False,
             )
-            ax.set_title(titles.get(casting, f"Casting: {casting}"))
-            ax.set_xlabel('')
-            ax.set_ylabel('Count')
+            ax.set_title(titles.get(translation, f"Translatable: {translation}"))
+            ax.set_xlabel("")
+            ax.set_ylabel("Count")
             ax.set_ylim(0, max_count)
             ax.yaxis.set_minor_locator(ticker.MultipleLocator(5))
 
             for bar in ax.patches:
-                    height = bar.get_height()
-                    if height > 0:
-                        y = height / 2 if height > 14 else height + 8
-                        ax.annotate(f'{int(height)}',
-                                    xy=(bar.get_x() + bar.get_width() / 2, y),
-                                    xytext=(0, 0),
-                                    textcoords="offset points",
-                                    ha='center', va='center', fontsize=8, color='black',
-                                    bbox=dict(boxstyle="round,pad=0.2", facecolor='white', edgecolor='black'))
+                height = bar.get_height()
+                if height > 0:
+                    y = height / 2 if height > 14 else height + 8
+                    ax.annotate(
+                        f"{int(height)}",
+                        xy=(bar.get_x() + bar.get_width() / 2, y),
+                        xytext=(0, 0),
+                        textcoords="offset points",
+                        ha="center",
+                        va="center",
+                        fontsize=8,
+                        color="black",
+                        bbox=dict(
+                            boxstyle="round,pad=0.2",
+                            facecolor="white",
+                            edgecolor="black",
+                        ),
+                    )
 
         plt.tight_layout()
         out = self.__get_file_name("hist")
@@ -93,7 +103,7 @@ class Viz:
 
     def plot_violin(self, include_strip=False):
         type_palette = self.config.color_palette
-        df_filtered = self.data[self.data["casting"] == "self"]
+        df_filtered = self.data[self.data["translation"] == "self"]
         agg_columns = df_filtered.filter(like=".agg.").columns.tolist()
         df_long = pd.melt(
             df_filtered,
@@ -223,7 +233,7 @@ class Viz:
 
     def plot_pairplot(self):
         type_palette = self.config.color_palette
-        df = self.data[self.data["casting"] == "self"]
+        df = self.data[self.data["translation"] == "self"]
         agg_columns = df.filter(like=".agg.").columns.tolist()
         df_pairplot = df[agg_columns + ["type"]]
 
@@ -257,14 +267,18 @@ class Viz:
         df = self.data.copy()
         flow_counts = {"yes": {}, "no": {}, "unknown": {}}
         for id_value, group in df.groupby("id"):
-            source_type = group[group["casting"] == "self"]["type"].values[0]
+            source_type = group[group["translation"] == "self"]["type"].values[0]
             for _, row in group.iterrows():
                 target_type = row["type"]
-                casting_type = row["casting"]
-                if casting_type in ["yes", "no", "unknown"]:
-                    if (source_type, target_type) not in flow_counts[casting_type]:
-                        flow_counts[casting_type][(source_type, target_type)] = set()
-                    flow_counts[casting_type][(source_type, target_type)].add(id_value)
+                translation_type = row["translation"]
+                if translation_type in ["yes", "no", "unknown"]:
+                    if (source_type, target_type) not in flow_counts[translation_type]:
+                        flow_counts[translation_type][
+                            (source_type, target_type)
+                        ] = set()
+                    flow_counts[translation_type][(source_type, target_type)].add(
+                        id_value
+                    )
 
         labels = df["type"].unique().tolist()
         source = []
@@ -273,20 +287,20 @@ class Viz:
         link_labels = []
         link_colors = []
 
-        casting_colors = {
+        translation_colors = {
             "yes": "rgba(0, 128, 0, 0.7)",
             "no": "rgba(255, 0, 0, 0.7)",
             "unknown": "rgba(128, 128, 128, 0.7)",
         }
 
         label_to_index = {label: idx for idx, label in enumerate(labels)}
-        for casting_type, flows in flow_counts.items():
+        for translation_type, flows in flow_counts.items():
             for (src, tgt), ids_set in flows.items():
                 source.append(label_to_index[src])
                 target.append(label_to_index[tgt])
                 value.append(len(ids_set))
-                link_labels.append(f"{len(ids_set)} ids ({casting_type})")
-                link_colors.append(casting_colors[casting_type])
+                link_labels.append(f"{len(ids_set)} ids ({translation_type})")
+                link_colors.append(translation_colors[translation_type])
 
         fig = go.Figure(
             data=[
@@ -311,7 +325,7 @@ class Viz:
         )
 
         fig.update_layout(
-            title_text="Sankey Diagram of Castings",
+            title_text="Sankey Diagram of Translations",
             font_size=10,
         )
         out = self.__get_file_name("sankey")
@@ -326,17 +340,22 @@ class Viz:
             links = []
 
             for _, group in df.groupby("id"):
-                source_type_row = group[group["casting"] == "self"]
+                source_type_row = group[group["translation"] == "self"]
                 if not source_type_row.empty:
                     source_type = source_type_row["type"].values[0]
                     yes_targets = group[
-                        (group["casting"] == target) & (group["type"] != source_type)
-                        ]
+                        (group["translation"] == target)
+                        & (group["type"] != source_type)
+                    ]
                     for _, row in yes_targets.iterrows():
                         target_type = row["type"]
                         links.append(
-                            {"source": source_type, "target": target_type, "weight": 1, "color":
-                                self.config.color_palette.get(source_type)}
+                            {
+                                "source": source_type,
+                                "target": target_type,
+                                "weight": 1,
+                                "color": self.config.color_palette.get(source_type),
+                            }
                         )
             if len(links) > 0:
                 links_df = pd.DataFrame(links)
@@ -354,7 +373,7 @@ class Viz:
 
                 for label, color in self.config.color_palette.items():
                     if label in d3.node_properties.index:
-                        d3.node_properties.loc[label, 'color'] = color
+                        d3.node_properties.loc[label, "color"] = color
 
                 out = self.__get_file_name(f"chord_{target}", ".html")
                 d3.chord(

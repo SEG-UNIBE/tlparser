@@ -129,8 +129,8 @@ It contains the following columns:
 | text                   | Requirement in human language                                                                                                                         |
 | type                   | Temporal logic (supported are `INV`, `LTL`, `MTLb`, `MITL`, `TPTL`, `CTLS`, `STL`)                                                                    |
 | reasoning              | Thought decisive for formalizing the requirement in this logic                                                                                        |
-| casting                | Specified whether the requirement can theoretically be formalized in (*casted to*) another logic (possible values are `self`, `yes`, `no`, `unknown`) |
-| castclass              | Category name derived by concatenating first letters of all casting answers per requirement                                                           |
+| translation                | Specified whether the requirement can theoretically be formalized in (*translated to*) another logic (possible values are `self`, `yes`, `no`, `unknown`) |
+| translation class              | Category name derived by concatenating first letters of all translation cases per requirement                                                           |
 | stats.formula_raw      | Formalization with comparison operators (e.g. `G((x <= 7) --> (not (y)))`)                                                                            |
 | stats.formula_parsable | Formalization without comparison operators (e.g. `G((x_leq_7) --> (not (y)))`)                                                                        |
 | stats.formula_parsed   | Interpreted formalization using [`pyModelChecking`](https://github.com/albertocasagrande/pyModelChecking) (e.g. `G((x_leq_7 --> not y))`)             |

@@ -31,7 +31,7 @@ class Utils:
                             "id": entry["id"],
                             "text": entry["text"],
                             "type": logic["type"],
-                            "casting": logic["casting"],
+                            "translation": logic["translation"],
                             "reasoning": logic["reasoning"],
                             "stats": s.get_stats(),
                         }
@@ -46,7 +46,7 @@ class Utils:
         type_order = self.config.logic_order
         df["type"] = pd.Categorical(df["type"], categories=type_order, ordered=True)
         df_sorted = df.sort_values(by=["id", "type"])
-        df["castclass"] = df_sorted.groupby("id")["casting"].transform(
+        df["castclass"] = df_sorted.groupby("id")["translation"].transform(
             lambda x: "".join([v[0] for v in x])
         )
 
@@ -134,7 +134,7 @@ class Utils:
             "text",
             "type",
             "reasoning",
-            "casting",
+            "translation",
             "castclass",
             "stats.formula_raw",
             "stats.formula_parsable",
