@@ -1,7 +1,9 @@
 # Temporal Logic Parser
 
-[![Test](https://github.com/ranonymousse/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/ranonymousse/tlparser/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ranonymousse/tlparser/blob/master/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/tlparser.svg)](https://pypi.org/project/tlparser/)
+[![Changelog](https://img.shields.io/github/v/release/RomanBoegli/tlparser?include_prereleases&label=changelog)](https://github.com/RomanBoegli/tlparser/releases)
+[![Test](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/master/LICENSE)
 
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 

@@ -24,10 +24,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ranonymousse/tlparser"
-Changelog = "https://github.com/ranonymousse/tlparser/releases"
-Issues = "https://github.com/ranonymousse/tlparser/issues"
-CI = "https://github.com/ranonymousse/tlparser/actions"
+Homepage = "https://github.com/RomanBoegli/tlparser"
+Changelog = "https://github.com/RomanBoegli/tlparser/releases"
+Issues = "https://github.com/RomanBoegli/tlparser/issues"
+CI = "https://github.com/RomanBoegli/tlparser/actions"
 
 [project.scripts]
 tlparser = "tlparser.cli:cli"
