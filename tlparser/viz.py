@@ -123,7 +123,7 @@ class Viz:
         y_max = df_long["value"].max() + 4.5
 
         fig, axes = plt.subplots(
-            nrows=2, ncols=2, figsize=(8, 7), sharex=True, sharey=True
+            nrows=2, ncols=2, figsize=(7, 7), sharex=True, sharey=True
         )
         axes = axes.flatten()
         plt.subplots_adjust(hspace=0.05, wspace=0.05)
