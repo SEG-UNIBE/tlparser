@@ -41,12 +41,12 @@ class Utils:
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
 
-        # Derive and append castclass
+        # Derive and append translation class
         df = pd.DataFrame(flattened_data)
         type_order = self.config.logic_order
         df["type"] = pd.Categorical(df["type"], categories=type_order, ordered=True)
         df_sorted = df.sort_values(by=["id", "type"])
-        df["castclass"] = df_sorted.groupby("id")["translation"].transform(
+        df["translationclass"] = df_sorted.groupby("id")["translation"].transform(
             lambda x: "".join([v[0] for v in x])
         )
 
@@ -135,7 +135,7 @@ class Utils:
             "type",
             "reasoning",
             "translation",
-            "castclass",
+            "translationclass",
             "stats.formula_raw",
             "stats.formula_parsable",
             "stats.formula_parsed",
