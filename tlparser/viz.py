@@ -49,12 +49,11 @@ class Viz:
         _, axes = plt.subplots(2, 2, figsize=(7, 4), sharex=True, sharey=True)
         axes = axes.flatten()
         titles = {
-            "self": "(a) Naturally Chosen Formalization",
+            "self": "(a) Natural Formalization",
             "yes": "(b) Translation Possible",
             "no": "(c) Translation Not Possible",
             "unknown": "(d) Translation Status Uncertain",
         }
-
         max_count = df["type"].value_counts().max() + 5
 
         for ax, translation in zip(axes, ["self", "yes", "no", "unknown"]):
@@ -69,7 +68,8 @@ class Viz:
                 palette=type_palette,
                 legend=False,
             )
-            ax.set_title(titles.get(translation, f"Translatable: {translation}"))
+            n = df[df['translation'] == translation].shape[0]
+            ax.set_title(titles.get(translation, f"Translatable: {translation}") + f' (n={n})')
             ax.set_xlabel("")
             ax.set_ylabel("Count")
             ax.set_ylim(0, max_count)
