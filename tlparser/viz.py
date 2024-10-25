@@ -23,9 +23,12 @@ class Viz:
         "stats.agg.tops": "Temporal Operators",
     }
 
-    def __init__(self, config: Configuration, file):
+    def __init__(self, config: Configuration, file, selfonly=False):
         self.config = config
         self.data = pd.read_excel(file)
+        if selfonly:
+            selftypes = self.data[self.data['translation'] == 'self']['type'].unique()
+            self.data = self.data[self.data['type'].isin(selftypes)]
 
     def __get_file_name(self, prefix, suffix=".pdf"):
         os.makedirs(self.config.folder_data_out, exist_ok=True)
