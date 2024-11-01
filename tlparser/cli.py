@@ -99,6 +99,7 @@ def digest_file(json_file, output):
             "pair",
             "chord",
             "sankey",
+            "dag",
             "all",
         ],
         case_sensitive=False,
@@ -139,6 +140,7 @@ def visualize_data(file, latest, selfonly, plot):
         "pairp": viz.plot_pairplot,
         "chord": viz.plot_chord,
         "sankey": viz.plot_sankey,
+        "dag": viz.plot_dag_interactive,
     }
 
     if "all" in plot or not plot:

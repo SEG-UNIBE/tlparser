@@ -1,4 +1,5 @@
 import os
+import math
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -8,6 +9,8 @@ import plotly.io as pio
 
 pio.kaleido.scope.mathjax = None
 
+import networkx as nx
+from pyvis.network import Network
 import seaborn as sns
 from d3blocks import D3Blocks
 
@@ -22,6 +25,7 @@ class Viz:
         "stats.agg.lops": "Logical Operators",
         "stats.agg.tops": "Temporal Operators",
     }
+    translatability = ["yes", "no", "depends"]
 
     def __init__(self, config: Configuration, file, selfonly=False):
         self.config = config
@@ -53,13 +57,14 @@ class Viz:
         axes = axes.flatten()
         titles = {
             "self": "(a) Natural Formalization",
-            "yes": "(b) Translation Possible",
-            "no": "(c) Translation Not Possible",
-            "unknown": "(d) Translation Status Uncertain",
+            "yes": "(b) Possible",
+            "no": "(c) Not Possible",
+            "depends": "(d) Conditional",
         }
         max_count = df["type"].value_counts().max() + 5
+        translations_ordered = sorted(df['translation'].unique(), key=lambda x: list(titles.keys()).index(x))
 
-        for ax, translation in zip(axes, ["self", "yes", "no", "unknown"]):
+        for ax, translation in zip(axes, translations_ordered):
             sns.histplot(
                 data=df[df["translation"] == translation],
                 x="type",
@@ -268,13 +273,13 @@ class Viz:
 
     def plot_sankey(self):
         df = self.data.copy()
-        flow_counts = {"yes": {}, "no": {}, "unknown": {}}
+        flow_counts = {"yes": {}, "no": {}, "depends": {}}
         for id_value, group in df.groupby("id"):
             source_type = group[group["translation"] == "self"]["type"].values[0]
             for _, row in group.iterrows():
                 target_type = row["type"]
                 translation_type = row["translation"]
-                if translation_type in ["yes", "no", "unknown"]:
+                if translation_type in self.translatability:
                     if (source_type, target_type) not in flow_counts[translation_type]:
                         flow_counts[translation_type][
                             (source_type, target_type)
@@ -293,7 +298,7 @@ class Viz:
         translation_colors = {
             "yes": "rgba(0, 128, 0, 0.7)",
             "no": "rgba(255, 0, 0, 0.7)",
-            "unknown": "rgba(128, 128, 128, 0.7)",
+            "depends": "rgba(128, 128, 128, 0.7)",
         }
 
         label_to_index = {label: idx for idx, label in enumerate(labels)}
@@ -337,7 +342,7 @@ class Viz:
 
     def plot_chord(self):
         outs = []
-        for target in ["yes", "no", "unknown"]:
+        for target in self.translatability:
             df = self.data.copy()
             d3 = D3Blocks(chart="chord", frame=True, verbose=50)
             links = []
@@ -387,9 +392,127 @@ class Viz:
                     ordering=self.__get_reduced_logic_order(),
                     figsize=(550, 550),
                     reset_properties=False,
-                    arrowhead=26,
+                    arrowhead=38,
                     fontsize=13,
                 )
                 outs.append(out)
 
         return "\n".join(outs)
+
+    def plot_dag(self):
+        outs = []
+        for target in self.translatability:
+            df = self.data.copy()
+            G = nx.DiGraph()  # Create a directed graph
+
+            for _, group in df.groupby("id"):
+                source_type_row = group[group["translation"] == "self"]
+                if not source_type_row.empty:
+                    source_type = source_type_row["type"].values[0]
+                    yes_targets = group[
+                        (group["translation"] == target)
+                        & (group["type"] != source_type)
+                        ]
+                    for _, row in yes_targets.iterrows():
+                        target_type = row["type"]
+                        # Add edge with initial weight 1
+                        if G.has_edge(source_type, target_type):
+                            # If the edge already exists, increment the weight
+                            G[source_type][target_type]["weight"] += 1
+                        else:
+                            # Otherwise, create a new edge with weight 1
+                            G.add_edge(
+                                source_type,
+                                target_type,
+                                weight=1,
+                                color=self.config.color_palette.get(source_type, "black")
+                            )
+
+            if G.number_of_edges() > 0:
+                # Plotting the DAG
+                pos = nx.spring_layout(G)  # Positioning nodes
+                edge_colors = [G[u][v]["color"] for u, v in G.edges()]
+                edge_weights = [G[u][v]["weight"] for u, v in G.edges()]
+
+                plt.figure(figsize=(10, 8))
+                nx.draw(
+                    G, pos, with_labels=True, node_size=1500, font_size=10, font_weight="bold",
+                    edge_color=edge_colors, node_color="lightblue", edge_cmap=plt.cm.Blues
+                )
+                # Draw edge labels showing weights
+                edge_labels = {(u, v): G[u][v]["weight"] for u, v in G.edges()}
+                nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+
+                # Save the plot
+                out = self.__get_file_name(f"dag_{target}", ".png")
+                plt.title(f"Directed Acyclic Graph (self -> {target})")
+                plt.savefig(out, format="png")
+                plt.close()
+                outs.append(out)
+
+            return outs
+
+    def plot_dag_interactive(self):
+        outs = []
+        for target in self.translatability:
+            df = self.data.copy()
+            G = nx.DiGraph()
+
+            # constructing the directed graph
+            for _, group in df.groupby("id"):
+                source_type_row = group[group["translation"] == "self"]
+                if not source_type_row.empty:
+                    source_type = source_type_row["type"].values[0]
+                    yes_targets = group[
+                        (group["translation"] == target)
+                        & (group["type"] != source_type)
+                        ]
+                    for _, row in yes_targets.iterrows():
+                        target_type = row["type"]
+                        if G.has_edge(source_type, target_type):
+                            G[source_type][target_type]["weight"] += 1
+                        else:
+                            G.add_edge(
+                                source_type,
+                                target_type,
+                                weight=1,
+                                color=self.config.color_palette.get(source_type, "black")
+                            )
+
+            if G.number_of_edges() > 0:
+                # using PyVis for interactive plotting
+                net = Network(notebook=True, directed=True, height="600px", width="100%")
+                net.from_nx(G)
+                net.show_buttons(filter_=['physics'])
+
+                for node in net.nodes:
+                    node['color'] = self.config.color_palette.get(node['label'], "black")
+                    node['font'] = {"color": "black", "size": 28}
+                    node['borderWidth'] =  2
+                    node['shape'] = "box"
+
+                for edge in net.edges:
+                    weight = G[edge['from']][edge['to']].get('width', 1)
+                    color = G[edge['from']][edge['to']].get('color', "black")
+                    edge['value'] = math.log10(weight)
+                    edge['title'] = f"Weight: {weight}"
+                    edge['arrowStrikethrough'] = True
+                    edge['color'] = color
+                    edge['label'] = str(weight)
+                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0.6)", "strokeWidth": 0}
+                    edge['arrows'] = {"to": {"enabled": True, "scaleFactor": 1.5}}
+
+                net.set_edge_smooth('dynamic')
+                net.repulsion(
+                    node_distance=100,
+                    central_gravity=0.05,
+                    spring_length=80,
+                    spring_strength=0.005
+                )
+
+                # save as HTML
+                out = self.__get_file_name(f"dag_{target}", ".html")
+                net.show(out)
+                outs.append(out)
+
+        return outs
