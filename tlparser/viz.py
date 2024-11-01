@@ -399,59 +399,6 @@ class Viz:
 
         return "\n".join(outs)
 
-    def plot_dag(self):
-        outs = []
-        for target in self.translatability:
-            df = self.data.copy()
-            G = nx.DiGraph()  # Create a directed graph
-
-            for _, group in df.groupby("id"):
-                source_type_row = group[group["translation"] == "self"]
-                if not source_type_row.empty:
-                    source_type = source_type_row["type"].values[0]
-                    yes_targets = group[
-                        (group["translation"] == target)
-                        & (group["type"] != source_type)
-                        ]
-                    for _, row in yes_targets.iterrows():
-                        target_type = row["type"]
-                        # Add edge with initial weight 1
-                        if G.has_edge(source_type, target_type):
-                            # If the edge already exists, increment the weight
-                            G[source_type][target_type]["weight"] += 1
-                        else:
-                            # Otherwise, create a new edge with weight 1
-                            G.add_edge(
-                                source_type,
-                                target_type,
-                                weight=1,
-                                color=self.config.color_palette.get(source_type, "black")
-                            )
-
-            if G.number_of_edges() > 0:
-                # Plotting the DAG
-                pos = nx.spring_layout(G)  # Positioning nodes
-                edge_colors = [G[u][v]["color"] for u, v in G.edges()]
-                edge_weights = [G[u][v]["weight"] for u, v in G.edges()]
-
-                plt.figure(figsize=(10, 8))
-                nx.draw(
-                    G, pos, with_labels=True, node_size=1500, font_size=10, font_weight="bold",
-                    edge_color=edge_colors, node_color="lightblue", edge_cmap=plt.cm.Blues
-                )
-                # Draw edge labels showing weights
-                edge_labels = {(u, v): G[u][v]["weight"] for u, v in G.edges()}
-                nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
-
-                # Save the plot
-                out = self.__get_file_name(f"dag_{target}", ".png")
-                plt.title(f"Directed Acyclic Graph (self -> {target})")
-                plt.savefig(out, format="png")
-                plt.close()
-                outs.append(out)
-
-            return outs
-
     def plot_dag_interactive(self):
         outs = []
         for target in self.translatability:
@@ -481,7 +428,7 @@ class Viz:
 
             if G.number_of_edges() > 0:
                 # using PyVis for interactive plotting
-                net = Network(notebook=True, directed=True, height="600px", width="100%")
+                net = Network(notebook=True, directed=True, height="600px", width="100%", cdn_resources='in_line')
                 net.from_nx(G)
                 net.show_buttons(filter_=['physics'])
 
