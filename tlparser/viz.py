@@ -20,10 +20,12 @@ from tlparser.utils import Utils
 
 class Viz:
     title_map = {
-        "stats.agg.aps": "Atomic Propositions",
-        "stats.agg.cops": "Comparison Operators",
-        "stats.agg.lops": "Logical Operators",
-        "stats.agg.tops": "Temporal Operators",
+        "stats.agg.aps": ["Atomic Propositions", "Count"],
+        "stats.agg.cops": ["Comparison Operators", "Count"],
+        "stats.agg.lops": ["Logical Operators", "Count"],
+        "stats.agg.tops": ["Temporal Operators", "Count"],
+        "stats.asth": ["Abstract Syntrax Tree", "Depth"],
+        "stats.entropy.lops_tops": ["Entropy (Logical & Temporal Ops.)", "Entropy (base 2)"],
     }
     translatability = ["yes", "no", "depends"]
 
@@ -112,11 +114,12 @@ class Viz:
     def plot_violin(self, include_strip=False):
         type_palette = self.config.color_palette
         df_filtered = self.data[self.data["translation"] == "self"]
-        agg_columns = df_filtered.filter(like=".agg.").columns.tolist()
+        metrics = df_filtered.filter(like=".agg.").columns.tolist()
+        metrics = metrics + ['stats.asth', 'stats.entropy.lops_tops']
         df_long = pd.melt(
             df_filtered,
             id_vars=["id", "type"],
-            value_vars=agg_columns,
+            value_vars=metrics,
             var_name="aggregation",
             value_name="value",
         )
@@ -126,18 +129,17 @@ class Viz:
             .agg(["mean", "median", "count", "std"])
             .reset_index()
         )
-
-        y_min = df_long["value"].min()
-        y_max = df_long["value"].max() + 4.5
+        number_of_types = df_long["type"].unique().size
 
         fig, axes = plt.subplots(
-            nrows=2, ncols=2, figsize=(7, 7), sharex=True, sharey=True
+            nrows=3, ncols=2, figsize=(8, 11), sharex=True, sharey=False
         )
         axes = axes.flatten()
         plt.subplots_adjust(hspace=0.05, wspace=0.05)
         i = 1
 
-        for ax, agg in zip(axes, agg_columns):
+        for ax, agg in zip(axes, metrics):
+            y_max = df_long[df_long["aggregation"] == agg]["value"].max() * 1.8
             violin = sns.violinplot(
                 x="type",
                 y="value",
@@ -189,23 +191,25 @@ class Viz:
             ax.set_xlabel("")
             ax.yaxis.set_minor_locator(ticker.MultipleLocator(1))
 
+            x_shift = 1 / number_of_types / 2
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():
-                annotation_y = y_max - 0.5
                 annotation_text = (
                     f"μ={row['mean']:.1f}\n"
                     f"M={row['median']:.1f}\n"
                     f"σ={row['std']:.1f}"
                 )
                 ax.text(
-                    row["type"],
-                    annotation_y,
+                    x_shift,
+                    0.83,
                     annotation_text,
                     color="black",
                     ha="center",
                     va="bottom",
+                    transform=ax.transAxes
                 )
+                x_shift += 1 / number_of_types
 
-            if i > 2:
+            if i > 4:
                 for x_category in df_long["type"].unique():
                     filtered_values = stats_values.loc[
                         (stats_values["aggregation"] == agg)
@@ -218,7 +222,7 @@ class Viz:
                     x_position = list(df_long["type"].unique()).index(x_category)
                     ax.text(
                         x_position,
-                        y_min - 8,
+                        -0.18*y_max,
                         f"n={n_value}",
                         color="black",
                         ha="center",
@@ -226,11 +230,11 @@ class Viz:
                     )
 
             i += 1
-            ax.set_title(self.title_map.get(agg, agg))
-            ax.set_ylabel("Count")
-            ax.set_ylim(y_min - 5, y_max + 5)
+            ax.set_title(self.title_map.get(agg, agg)[0])
+            ax.set_ylabel(self.title_map.get(agg, agg)[1])
+            ax.set_ylim(-0.09*y_max, y_max)
 
-        for i in range(len(agg_columns), len(axes)):
+        for i in range(len(metrics), len(axes)):
             axes[i].set_visible(False)
 
         fig.tight_layout()
@@ -259,8 +263,8 @@ class Viz:
         for i, ax in enumerate(g.axes.flat):
             row_var = g.x_vars[i % len(g.x_vars)]
             col_var = g.y_vars[i // len(g.x_vars)]
-            ax.set_xlabel(self.title_map.get(row_var, row_var))
-            ax.set_ylabel(self.title_map.get(col_var, col_var))
+            ax.set_xlabel(self.title_map.get(row_var, row_var)[0])
+            ax.set_ylabel(self.title_map.get(col_var, col_var)[0])
             for artist in ax.collections:
                 artist.set_edgecolor("black")
                 artist.set_alpha(0.6)

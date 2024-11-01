@@ -162,4 +162,7 @@ class Utils:
             "stats.agg.cops",
             "stats.agg.lops",
             "stats.agg.tops",
+            "stats.entropy.lops",
+            "stats.entropy.tops",
+            "stats.entropy.lops_tops",
         ]

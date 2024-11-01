@@ -1,6 +1,8 @@
 from pyModelChecking import CTLS
 import re
 import pprint
+from scipy.stats import entropy
+from collections import Counter
 
 class Stats:
     def __init__(self, formula_str):
@@ -50,6 +52,7 @@ class Stats:
             self.formula_parsed = p(self.formula_parsable)
             self.analyze_formula(self.formula_parsed)
             self.agg = self.update_aggregates()
+            self.entropy = self.calc_entropy()
 
     @staticmethod
     def analyse_comparison_ops(formula_str):
@@ -134,6 +137,18 @@ class Stats:
             'cops': sum(self.cops.values()),
             'lops': sum(self.lops.values()),
             'tops': sum(self.tops.values())
+        }
+
+    def calc_entropy(self):
+        entr_tops = entropy(list(self.tops.values()), base=2)
+        entr_lops = entropy(list(self.lops.values()), base=2)
+        tops_lops = Counter(self.tops) + Counter(self.lops)
+        entr_tops_lops = entropy(list(tops_lops.values()), base=2)
+
+        return {
+            'lops': entr_tops,
+            'tops': entr_lops,
+            'lops_tops': entr_tops_lops,
         }
 
     def get_stats(self):
