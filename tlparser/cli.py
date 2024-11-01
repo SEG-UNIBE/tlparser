@@ -137,7 +137,7 @@ def visualize_data(file, latest, selfonly, plot):
     plot_methods = {
         "hist": viz.plot_histogram,
         "viol": viz.plot_violin,
-        "pairp": viz.plot_pairplot,
+        "pair": viz.plot_pairplot,
         "chord": viz.plot_chord,
         "sankey": viz.plot_sankey,
         "dag": viz.plot_dag_interactive,

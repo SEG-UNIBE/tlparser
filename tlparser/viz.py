@@ -246,8 +246,8 @@ class Viz:
     def plot_pairplot(self):
         type_palette = self.config.color_palette
         df = self.data[self.data["translation"] == "self"]
-        agg_columns = df.filter(like=".agg.").columns.tolist()
-        df_pairplot = df[agg_columns + ["type"]]
+        metrics = df.filter(like=".agg.").columns.tolist()
+        df_pairplot = df[metrics + ['type','stats.asth', 'stats.entropy.lops_tops']]
 
         unique_types = df_pairplot["type"].nunique()
         markers = ["o", "s", "D", "^", "v", "P"][:unique_types]
