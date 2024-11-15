@@ -2795,7 +2795,7 @@
   {
     "id": 2026,
     "status": "OK",
-    "text": "If the receive FIFO is full it is not possible for the transmitter to send an FCT, hence the link initialisation cannot be completed. The link state machine cycles through the ErrorReset, ErrorWait, Ready and Started state and then times out in the Connecting state because no FCT can be received. When there is room for at least eight N-Chars, at least one FCT can be sent so the link initialisation process is then able to complete successfully",
+    "text": "If the receive FIFO is full it is not possible for the transmitter to send an FCT, hence the link initialisation cannot be completed. The link state machine cycles through the ErrorReset, ErrorWait, Ready and Started state and then times out in the Connecting state because no FCT can be received. When there is room for at least eight N-Chars, at least one FCT can be sent so the link initialisation process is then able to complete successfully.",
     "logics": [
       {
         "type": "INV",
@@ -3548,7 +3548,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box((reset \\ strobe \\ signal) \\to \\Diamond_{(0,500 ns)} (reset \\ data \\ signal)) ",
+        "f_latex": "\\Box((reset \\ strobe \\ signal) \\to \\Diamond_{(p,500 ns)} (reset \\ data \\ signal)) ",
         "f_code": "G((reset_strobe_signal) --> F(reset_data_signal))",
         "translation": "self",
         "reasoning": "bounded diamond"
