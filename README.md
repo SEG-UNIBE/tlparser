@@ -6,49 +6,53 @@
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
 ```
-G((x and (u == 9) and (i < 3)) --> G(not y or x))
+G((y and u == 9) --> F(not y or i < 3))
 ```
 
 And returns some statistics about it:
 
 ```json
 {
-    "ap": [
-        "u_eq_9",
-        "x",
-        "y",
-        "i_lt_3"
-    ],
-    "asth": 5,
-    "cops": {
-        "eq": 1,
-        "geq": 0,
-        "gt": 0,
-        "leq": 0,
-        "lt": 1,
-        "neq": 0
-    },
-    "lops": {
-        "and": 2,
-        "impl": 1,
-        "not": 1,
-        "or": 1
-    },
-    "tops": {
-        "A": 0,
-        "E": 0,
-        "F": 0,
-        "G": 2,
-        "R": 0,
-        "U": 0,
-        "X": 0
-    },
-    "agg": {
-        "aps": 4,
-        "cops": 2,
-        "lops": 5,
-        "tops": 2
-    }
+  "agg": {
+    "aps": 3,
+    "cops": 2,
+    "lops": 4,
+    "tops": 2
+  },
+  "ap": [
+    "i_lt_3",
+    "u_eq_9",
+    "y"
+  ],
+  "asth": 5,
+  "cops": {
+    "eq": 1,
+    "geq": 0,
+    "gt": 0,
+    "leq": 0,
+    "lt": 1,
+    "neq": 0
+  },
+  "entropy": {
+    "lops": 1,
+    "lops_tops": 2.585,
+    "tops": 2
+  },
+  "lops": {
+    "and": 1,
+    "impl": 1,
+    "not": 1,
+    "or": 1
+  },
+  "tops": {
+    "A": 0,
+    "E": 0,
+    "F": 1,
+    "G": 1,
+    "R": 0,
+    "U": 0,
+    "X": 0
+  }
 }
 ```
 

@@ -84,6 +84,12 @@ def digest_file(json_file, output):
     help="Use the latest Excel file in the working directory",
 )
 @click.option(
+    "--selfonly",
+    "-s",
+    is_flag=True,
+    help="Only focus on natural formalizations (omitting projections)",
+)
+@click.option(
     "--plot",
     "-p",
     type=click.Choice(
@@ -93,6 +99,7 @@ def digest_file(json_file, output):
             "pair",
             "chord",
             "sankey",
+            "dag",
             "all",
         ],
         case_sensitive=False,
@@ -100,7 +107,7 @@ def digest_file(json_file, output):
     multiple=True,
     help="Specify the plot types to generate",
 )
-def visualize_data(file, latest, plot):
+def visualize_data(file, latest, selfonly, plot):
     """Creates a PDF plot from the Excel file"""
 
     if not (file or latest):
@@ -126,13 +133,14 @@ def visualize_data(file, latest, plot):
         click.echo(f"Using latest file: {file}")
 
     # Read the Excel file
-    viz = Viz(config, file)
+    viz = Viz(config, file, selfonly)
     plot_methods = {
         "hist": viz.plot_histogram,
         "viol": viz.plot_violin,
-        "pairp": viz.plot_pairplot,
+        "pair": viz.plot_pairplot,
         "chord": viz.plot_chord,
         "sankey": viz.plot_sankey,
+        "dag": viz.plot_dag_interactive,
     }
 
     if "all" in plot or not plot:

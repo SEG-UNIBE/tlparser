@@ -13,6 +13,8 @@ dependencies = [
     "click",
     "pandas",
     "matplotlib",
+    "networkx",
+    "pyvis",
     "seaborn",
     "plotly",
     "kaleido",
