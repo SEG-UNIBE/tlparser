@@ -4264,7 +4264,7 @@
   },
   {
     "id": 5001,
-    "status": "TBD",
+    "status": "NOK",
     "text": "Received characters and control codes shall be passed to the data link layer in the order in which they are received.",
     "logics": [
       {
@@ -4313,7 +4313,7 @@
   },
   {
     "id": 5002,
-    "status": "TBD",
+    "status": "NOK",
     "text": "If the host system tries to send an interrupt acknowledgement too soon after a corresponding interrupt code has been received, i.e. before the interrupt code has propagated across the entire network, the result is indeterminate for that specific interrupt. The new interrupt acknowledgement code that the node sends can either be discarded by a router, or repeatedly propagated through the network if the network has circular connections.",
     "logics": [
       {
