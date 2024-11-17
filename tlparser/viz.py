@@ -20,12 +20,12 @@ from tlparser.utils import Utils
 
 class Viz:
     title_map = {
-        "stats.agg.aps": ["Atomic Propositions", "Count"],
-        "stats.agg.cops": ["Comparison Operators", "Count"],
-        "stats.agg.lops": ["Logical Operators", "Count"],
-        "stats.agg.tops": ["Temporal Operators", "Count"],
-        "stats.asth": ["Abstract Syntrax Tree", "Depth"],
-        "stats.entropy.lops_tops": ["Entropy (Logical & Temporal Ops.)", "Entropy (base 2)"],
+        "stats.agg.aps": ["Atomic Propositions (APs)", "Count"],
+        "stats.agg.cops": ["Comparison Operators (COPs)", "Count"],
+        "stats.agg.lops": ["Logical Operators (LOPs)", "Count"],
+        "stats.agg.tops": ["Temporal Operators (TOPs)", "Count"],
+        "stats.asth": ["Abstract Syntrax Tree (AST)", "Depth"],
+        "stats.entropy.lops_tops": ["Entropy (LOPs & TOPs)", "Entropy (base 2)"],
     }
     translatability = ["yes", "no", "depends"]
 
