@@ -1,8 +1,5 @@
 # Temporal Logic Parser
 
-[![Test](https://github.com/ranonymousse/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/ranonymousse/tlparser/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ranonymousse/tlparser/blob/master/LICENSE)
-
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
 ```
@@ -119,7 +116,7 @@ tlparser visualize -l -p all
 You can parse the `spacewire` requirements using the following command:
 
 ```bash
-tlparser digest ../tlparser/data/spacewire.json
+tlparser digest ./data/spacewire.json
 ```
 
 The resulting Excel file serves as basis for generating the plots.
@@ -164,6 +161,12 @@ To generate all plots of the latest Excel file execute the following command:
 
 ```bash
 tlparser visualize -l -p all
+```
+
+To clean-up all generated files again, execute the following command and confirm with `y`:
+
+```bash
+tlparser cleanup
 ```
 
 Exit the virtual environment again using this command:
