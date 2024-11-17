@@ -101,7 +101,7 @@ tlparser --help
 First, digest the test data file to create an Excel file.
 
 ```bash
-tlparser digest ../tlparser/tests/data/test.json
+tlparser digest ./tests/data/test.json
 ```
 
 The Excel file will serve as basis for generating the plots.
@@ -110,6 +110,8 @@ To generate all plots of the latest Excel file execute the following command:
 ```bash
 tlparser visualize -l -p all
 ```
+
+All plots are saved to `./tlparser/workingdir/`.
 
 </details>
 
@@ -162,6 +164,8 @@ To generate all plots of the latest Excel file execute the following command:
 ```bash
 tlparser visualize -l -p all
 ```
+
+All plots are saved to `./tlparser/workingdir/`.
 
 To clean-up all generated files again, execute the following command and confirm with `y`:
 
