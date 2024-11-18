@@ -128,6 +128,16 @@ class Utils:
         return file
 
     @staticmethod
+    def lighten_color(hex_color, opacity=0.6):
+        hex_color = hex_color.lstrip('#')
+        r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+        white = (255, 255, 255)
+        new_r = int((1 - opacity) * white[0] + opacity * r)
+        new_g = int((1 - opacity) * white[1] + opacity * g)
+        new_b = int((1 - opacity) * white[2] + opacity * b)
+        return f"#{new_r:02x}{new_g:02x}{new_b:02x}"
+
+    @staticmethod
     def get_column_order():
         return [
             "id",

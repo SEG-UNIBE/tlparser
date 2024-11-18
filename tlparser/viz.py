@@ -17,7 +17,6 @@ from d3blocks import D3Blocks
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 
-
 class Viz:
     title_map = {
         "stats.agg.aps": ["Atomic Propositions (APs)", "Count"],
@@ -427,7 +426,9 @@ class Viz:
                                 source_type,
                                 target_type,
                                 weight=1,
-                                color=self.config.color_palette.get(source_type, "black")
+                                color= Utils.lighten_color(
+                                    hex_color=self.config.color_palette.get(source_type, "black"),
+                                    opacity=0.8)
                             )
 
             if G.number_of_edges() > 0:
@@ -437,7 +438,10 @@ class Viz:
                 net.show_buttons(filter_=['physics'])
 
                 for node in net.nodes:
-                    node['color'] = self.config.color_palette.get(node['label'], "black")
+                    node['color'] = Utils.lighten_color(
+                        hex_color=self.config.color_palette.get(node['label'], "black"),
+                        opacity=0.8)
+                    #node['opacity'] = 0.6
                     node['font'] = {"color": "black", "size": 28}
                     node['borderWidth'] =  2
                     node['shape'] = "box"
@@ -450,7 +454,8 @@ class Viz:
                     edge['arrowStrikethrough'] = True
                     edge['color'] = color
                     edge['label'] = str(weight)
-                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0.6)", "strokeWidth": 0}
+                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0)",
+                                    "strokeWidth": 0}
                     edge['arrows'] = {"to": {"enabled": True, "scaleFactor": 1.5}}
 
                 net.set_edge_smooth('dynamic')
