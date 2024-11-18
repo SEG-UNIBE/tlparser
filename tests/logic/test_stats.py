@@ -101,6 +101,14 @@ class TestStats(TestCase):
                 lops=9,
                 tops=3,
             ),
+            TestCaseData(
+                f_code="G( (receive_i --> X(F(receive_j))) --> (send_i and X(send_j)) )",
+                asth=5,
+                aps=4,
+                cops=0,
+                lops=3,
+                tops=4,
+            ),
         }
 
 

@@ -3046,35 +3046,35 @@
   },
   {
     "id": 5001,
-    "status": "NOK",
+    "status": "OK",
     "text": "Received characters and control codes shall be passed to the data link layer in the order in which they are received.",
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box((test) \\to",
+        "f_latex": "",
         "f_code": "",
-        "translation": "",
+        "translation": "no",
         "reasoning": ""
       },
       {
         "type": "LTL",
-        "f_latex": "",
-        "f_code": "",
-        "translation": "",
+        "f_latex": "\\Box (\\bigwedge_{j=1} ^{n} \\bigwedge_{i=1} ^{n} (Receive_i \\to  \\nex \\Diamond Receive_j) \\to (Send_i \\wedge \\nex Send_j)), \\newline n = number\\ of\\ characters",
+        "f_code": "G( (receive_i --> X(F(receive_j))) --> (send_i and X(send_j)) )",
+        "translation": "self",
         "reasoning": ""
       },
       {
         "type": "MTLb",
         "f_latex": "",
         "f_code": "",
-        "translation": "",
+        "translation": "no",
         "reasoning": ""
       },
       {
         "type": "STL",
         "f_latex": "",
         "f_code": "",
-        "translation": "",
+        "translation": "depends",
         "reasoning": ""
       }
     ]
