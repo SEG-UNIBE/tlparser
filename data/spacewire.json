@@ -41,7 +41,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box(((Transmit \\ asserted) \\to (enable: (encoder \\ \\wedge \\ serialiser \\ \\wedge data \\ strobe \\ encoder \\wedge \\ line \\ driver)))\\newline\n    \\vee ((Transmit \\ de-asserted)\\to (reset: (encoder \\ \\wedge \\ serialiser \\ \\wedge data \\ strobe \\ encoder \\wedge \\ line \\ driver))))",
+        "f_latex": "\\Box(((Transmit \\ asserted) \\to \\newline (enable: (encoder \\ \\wedge \\ serialiser \\ \\wedge data \\ strobe \\ encoder \\newline  \\wedge \\ line \\ driver)))   \\vee ((Transmit \\ de-asserted)\\to \\newline  (reset: (encoder \\ \\wedge \\ serialiser \\ \\wedge data \\ strobe \\ encoder \\wedge \\ line \\ driver))))",
         "f_code": "G(((Transmit_asserted) --> (enable_encoder and enable_serialiser and enable_data_strobe_encoder and enable_line_driver)) or  ((Transmit_de_asserted) --> (reset_encoder and reset_serialiser and reset_data_strobe_encoder and reset_line_driver)))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -76,7 +76,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box(((Receive \\ asserted) \\to (enable: (line \\ receiver \\ \\wedge \\ de-serialiser \\ \\wedge data-strobe \\ decoder \\wedge \\ character\\ decoder)) \\newline\n    \\vee ((Receive \\ de-asserted)\\to (reset:(line \\ receiver \\ \\wedge \\ de-serialiser \\ \\wedge data-strobe \\ decoder \\wedge \\ character\\ decoder))))",
+        "f_latex": "\\Box(((Receive \\ asserted) \\to \\newline   (enable: (line \\ receiver \\ \\wedge \\ de-serialiser \\ \\wedge data-strobe \\ decoder \\wedge \\ character\\ decoder)) \\newline   \\vee ((Receive \\ de-asserted) \\to \\newline  (reset:(line \\ receiver \\ \\wedge \\ de-serialiser \\ \\wedge data-strobe \\ decoder \\wedge \\ character\\ decoder))))",
         "f_code": "G(((Receive_asserted) --> (enable_line_receiver and enable_de_serialiser and enable_data_strobe_decoder and enable_character_decoder)) or ((Receive_de_asserted) --> (reset_line_receiver and reset_de_serialiser and reset_data_strobe_decoder and reset_character_decoder)))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -741,7 +741,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box((enough \\ room \\ for \\ 8 \\ Nchar) \\wedge ((receive \\ credit := 8 ) \\vee (receive \\ credit \\geq max)) , \\to (send \\ FCT))",
+        "f_latex": "\\Box((enough \\ room \\ for \\ 8 \\ Nchar) \\wedge ((receive \\ credit := 8 ) \\vee (receive \\ credit \\geq max)) , \\newline \\to  (send \\ FCT))",
         "f_code": "G(((enough_room_for_8_NChar) and ((receive_credit == 8 ) or (receive_credit >= max))) --> (send_FCT))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -776,7 +776,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box(((Nchar \\ received \\wedge credit \\ counter :=0) \\vee (transmit \\ counter \\geq max)) \\to (credit \\ error \\ detected)) ",
+        "f_latex": "\\Box(((Nchar \\ received \\wedge credit \\ counter :=0) \\vee (transmit \\ counter \\geq max)) \\newline \\to (credit \\ error \\ detected)) ",
         "f_code": "G(((NChar_received and credit_counter ==0) or (transmit_counter >= max)) --> (credit_error_detected)) ",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -916,7 +916,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box((ErrorReset \\ state) \\to ((De-assert \\ control \\ flag) \\wedge (De-assert\\ Receive \\ enable \\ flag) \\wedge (set \\ transnit \\ credit := 0) \\wedge (set \\ receive \\ credit :=0) \\wedge (clear \\ gotFCT) \\wedge (start \\ timer_{6.4}) ))",
+        "f_latex": "\\Box((ErrorReset \\ state) \\to \\newline ((De-assert \\ control \\ flag) \\wedge (De-assert\\ Receive \\ enable \\ flag) \\newline \\wedge (set \\ transnit \\ credit {:=} 0) \\wedge (set \\ receive \\ credit :=0) \\wedge (clear \\ gotFCT) \\newline  \\wedge (start \\ timer_{6.4}) ))",
         "f_code": "G((ErrorReset_state) --> ((De_assert_control_flag) and (De_assert_Receive_enable_flag) and (set_transnit_credit == 0) and (set_receive_credit ==0) and (clear_gotFCT) and (start_timer6) ))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -986,7 +986,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box((interrupt \\ codes \\ supported) \\wedge (interrupt \\ send \\ request) \\to (interrupt \\ code \\ passed))",
+        "f_latex": "\\Box((interrupt \\ codes \\ supported) \\wedge (interrupt \\ send \\ request) \\to \\newline  (interrupt \\ code \\ passed))",
         "f_code": "G(((interrupt_codes_supported) and (interrupt_send_request)) --> (interrupt_code_passed))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -1021,7 +1021,7 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "\\Box((Connecting \\ state) \\to ((start \\ timer) \\wedge (assert \\ transmit \\ enable \\ flag) \\wedge ((assert \\ receive \\ enable \\ flag) \\wedge \\neg(NChar \\in RX \\ FIFO) \\wedge \\neg (register \\ broadcast \\ code))))",
+        "f_latex": "\\Box((Connecting \\ state) \\to \\newline  ((start \\ timer) \\wedge (assert \\ transmit \\ enable \\ flag) \\wedge ((assert \\ receive \\ enable \\ flag) \\wedge \\neg(NChar \\in RX \\ FIFO) \\newline  \\wedge \\neg (register \\ broadcast \\ code))))",
         "f_code": "G((Connecting_state) --> ((start_timer) and (assert_transmit_enable_flag) and ((assert_receive_enable_flag) and not(NChar_in_RX_FIFO) and not(register_broadcast_code))))",
         "translation": "self",
         "reasoning": "just one temporal operator, simple, minimal"
@@ -1238,8 +1238,8 @@
       },
       {
         "type": "LTL",
-        "f_latex": "(output \\ port \\ reset) \\ \\to \\ \\Box \\neg(data \\ transition \\wedge \\ Strobe \\ signal \\ transition) , \\newline\n \\Box( (transmition \\ stoped) \\to (\\nex (reset \\ strobe \\ signal) \\wedge \\nex \\nex (reset \\ data \\ signal)))",
-        "f_code": "((output_port_reset) --> G (not(data_transition) and not(Strobe_signal_transition))) and G( (transmition_stoped) --> (X (reset_strobe_signal) and X X(reset_data_signal)))",
+        "f_latex": "(output \\ port \\ reset) \\ \\to \\newline \\Box \\neg(data \\ transition \\wedge \\ Strobe \\ signal \\ transition) , \\newline \\Box( (transmition \\ stopped) \\to (\\nex (reset \\ strobe \\ signal) \\wedge \\nex \\nex (reset \\ data \\ signal)))",
+        "f_code": "((output_port_reset) --> G (not(data_transition) and not(Strobe_signal_transition))) and G( (transmition_stopped) --> (X (reset_strobe_signal) and X X(reset_data_signal)))",
         "translation": "self",
         "reasoning": "until/next operator"
       },
@@ -1308,7 +1308,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box((state \\ machine \\ leaves \\ ErrorReset) \\to (\\neg (disconnect \\ detection \\ enable) \\until ( data \\ edge \\ detected) \\vee (Strobe \\ line \\ edge \\ detected)))",
+        "f_latex": "\\Box((state \\ machine \\ leaves \\ ErrorReset) \\to \\newline (\\neg (disconnect \\ detection \\ enable) \\until ( data \\ edge \\ detected) \\newline  \\vee (Strobe \\ line \\ edge \\ detected)))",
         "f_code": "G( (state_machine_leaves_ErrorReset) --> (not(disconnect_detection_enable) U ((data_edge_detected) or (Strobe_ine_edge_detected))) )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1343,7 +1343,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((ESC \\ received \\ \\wedge \\nex ESC \\ received ) \\vee (ESC \\ received \\ \\wedge \\ \\nex EOP) \\vee (ESC \\ received \\ \\wedge \\ \\nex EEP \\ received )) \\to (ESC \\ error)) \\newline \n\\Box((ESC \\ received \\ \\wedge \\ \\nex FCT \\ received) \\to (Null), \\Box((ESC \\ received \\ \\wedge \\nex data \\ received) \\to (broadcast \\ code))",
+        "f_latex": "\\Box(((ESC \\ received \\ \\wedge \\nex ESC \\ received ) \\vee (ESC \\ received \\ \\wedge \\ \\nex EOP) \\vee (ESC \\ received \\ \\wedge \\ \\nex EEP \\ received )) \\to (ESC \\ error)) \\newline \n\\Box((ESC \\ received \\ \\wedge \\ \\nex FCT \\ received) \\to (Null), \\newline  \\Box((ESC \\ received \\ \\wedge \\nex data \\ received) \\to (broadcast \\ code))",
         "f_code": "G( (((ESC_received and X ESC_received) or (ESC_received and X EOP_received)) or (ESC_received and X EEP_received )) --> (ESC_error) ) and G( (ESC_received and X FCT_received) --> Null) and G((ESC_received and X data_received) --> (broadcast_code) )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1448,7 +1448,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((first \\ data \\ transition)\\vee (first \\ strobe \\ line \\ transition )) \\to \\nex (Disconnect \\ Error \\ enable) )",
+        "f_latex": "\\Box(((first \\ data \\ transition)\\vee (first \\ strobe \\ line \\ transition )) \\to \\newline  \\nex (Disconnect \\ Error \\ enable) )",
         "f_code": "G(((first_data_transition) or (first_strobe_line_transition )) --> X (Disconnect_Error_enable) )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1483,7 +1483,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box((Port \\ Reset \\ asserted) \\to ((TX \\ FIFO \\ cleared) \\ \\wedge \\ (RX \\ FIFO \\ cleared) \\wedge \\nex (ErrorReset \\ state)))",
+        "f_latex": "\\Box((Port \\ Reset \\ asserted) \\to \\newline  ((TX \\ FIFO \\ cleared) \\ \\wedge \\ (RX \\ FIFO \\ cleared) \\wedge \\nex (ErrorReset \\ state)))",
         "f_code": "G((Port_Reset_asserted) --> ((TX_FIFO_cleared) and (RX_FIFO_cleared) and X (ErrorReset_state)))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1553,7 +1553,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box((link \\ state:(initialised \\vee \\ reinitialised)) \\to (((8 \\ NChar \\ held) \\to \\nex(one \\ FCT \\ sent)) \\ \\until \\ (Num \\ sent \\ FCT \\leq 7)))",
+        "f_latex": "\\Box((link \\ state:(initialised \\vee \\ reinitialised)) \\to \\newline  (((8 \\ NChar \\ held) \\to \\nex(one \\ FCT \\ sent)) \\ \\until \\ (Num \\ sent \\ FCT \\leq 7)))",
         "f_code": "G( (link_state_initialised or link_state_reinitialised) --> ( ((eight_NChar_held) --> X(one_FCT_sent)) U (Num_sent_FCT <= 7) ) )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1588,7 +1588,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box (((LinkDisabled \\vee (disconnect) \\vee (parity \\ error) \\vee (ESC error) \\vee (credit error)) \\to \\nex (ErrorReset \\ state))",
+        "f_latex": "\\Box (((LinkDisabled \\vee (disconnect) \\vee (parity \\ error) \\newline \\vee (ESC error) \\vee (credit error)) \\to \\nex (ErrorReset \\ state))",
         "f_code": "G ( ( ((((LinkDisabled or disconnect) or parity_error) or ESC_error) or credit_error) ) --> X (ErrorReset_state) )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1623,7 +1623,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((link \\ machine : Run \\ state) \\wedge (broadcast \\ code \\ requested)) \\to ((current \\ character \\ finished) \\to \\nex (broadcast \\ code sent)))",
+        "f_latex": "\\Box(((link \\ machine : Run \\ state) \\wedge (broadcast \\ code \\ requested)) \\to \\newline  ((current \\ character \\ finished) \\to \\nex (broadcast \\ code sent)))",
         "f_code": "G(((link_machine_Run_state) and (broadcast_code_requested)) --> ((current_character_finished) --> X (broadcast_code_sent)))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1693,7 +1693,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((link \\ machine \\ state: Run) \\wedge (N Char \\ available)) \\to (\\neg (send \\ NChar) \\ \\until \\ ((current \\ Char \\ sent)\\wedge (No \\ waiting \\ code) \\wedge (No \\ waiting \\ FCT) \\wedge (transmit \\ credit \\geq 0))))",
+        "f_latex": "\\Box(((link \\ machine \\ state: Run) \\wedge (N Char \\ available)) \\to \\newline  (\\neg (send \\ NChar) \\ \\until \\ ((current \\ Char \\ sent) \\newline  \\wedge (No \\ waiting \\ code) \\wedge (No \\ waiting \\ FCT) \\wedge (transmit \\ credit \\geq 0))))",
         "f_code": "G(((link_machine_state_Run) and (NChar_available)) --> (not (send_NChar) U ((current_Char_sent)and (No_waiting_code) and (No_waiting_FCT) and (transmit_credit >= 0))))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1798,7 +1798,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box((LinkDisabled) \\to \\nex (ErrorReset)), \\Box((disconnect) \\to \\nex (ErrorReset)), \\Box((parity) \\to \\nex (ErrorReset)), \\Box((ESC Error) \\to \\nex (ErrorReset)), \\Box( (FCT \\ received) \\vee (N-char \\ received) \\vee (broadcast \\ received)) \\to \\nex (ErrorReset)), \\Box((LinkStart \\ asserted) \\to \\nex(Started \\ state)), \\Box(((AutoStart \\ asserted) \\vee (gotNull \\ asserted )) \\to \\nex (Started \\ state))",
+        "f_latex": "\\Box((LinkDisabled) \\to \\nex (ErrorReset)), \\newline  \\Box((disconnect) \\to \\nex (ErrorReset)), \\Box((parity) \\to \\nex (ErrorReset)), \\newline  \\Box((ESC Error) \\to \\nex (ErrorReset)), \\newline  \\Box( (FCT \\ received) \\vee (N-char \\ received) \\vee (broadcast \\ received)) \\newline \\to  \\nex (ErrorReset)), \\newline \\Box((LinkStart \\ asserted)\\to\\nex(Started \\ state)), \\newline  \\Box(((AutoStart \\ asserted) \\vee (gotNull \\ asserted )) \\to \\nex (Started \\ state))",
         "f_code": "G((LinkDisabled) --> X (ErrorReset)) and G((disconnect) --> X (ErrorReset)) and G((parity) --> X (ErrorReset)) and G((ESC_Error) --> (ErrorReset)) and G(((FCT_received) or (NChar_received) or (broadcast_received)) --> X(ErrorReset)) and G((LinkStart_asserted) --> X(Started_state)) and G(((AutoStart_asserted) or (gotNull_asserted)) --> X(Started_state))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1833,8 +1833,8 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box ((receiver \\ Disable \\ asserted ) \\to \\nex (\\Box(ErrorReset \\ Stete)))",
-        "f_code": "G ((receiver_Disable_asserted ) --> X (G(ErrorReset_Stete)))",
+        "f_latex": "\\Box ((receiver \\ Disable \\ asserted ) \\to \\nex (\\Box(ErrorReset \\ State)))",
+        "f_code": "G ((receiver_Disable_asserted ) --> X (G(ErrorReset_State)))",
         "translation": "self",
         "reasoning": "until/next operator"
       },
@@ -1868,7 +1868,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box ((PortReset \\ asserted) \\to \\nex (Link \\ Error \\ Recovery \\ state \\ machine \\ state: Normal))",
+        "f_latex": "\\Box ((PortReset \\ asserted) \\to \\newline  \\nex (Link \\ Error \\ Recovery \\ state \\ machine \\ state: Normal))",
         "f_code": "G ((PortReset_asserted) --> X (Link_Error_Recovery_state_machine_Normal))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1903,7 +1903,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box (((Run \\ State) \\wedge (LinkDisabled \\ asserted))\\to \\nex(Recovery \\ state)),\\newline \n \\Box(((Run \\ state ) \\wedge ((Disconnect) \\vee (Parity \\ Error) \\vee (ESC \\ Error) \\vee (Credit \\ Error)))\\to \\nex(Recovery \\ state))",
+        "f_latex": "\\Box (((Run \\ State) \\wedge (LinkDisabled \\ asserted))\\to  \\nex(Recovery \\ state)),\\newline \\Box(((Run \\ state ) \\wedge ((Disconnect) \\vee (Parity \\ Error) \\vee (ESC \\ Error) \\vee (Credit \\ Error)))\\to  \\newline \\nex(Recovery \\ state))",
         "f_code": "G (((Run_State) and (LinkDisabled_asserted)) --> X(Recovery_state)) and G( ( (Run_state ) and ((Disconnect) or ((Parity_Error) or ((ESC_Error) or (Credit_Error))) ) ) --> X(Recovery_state))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -1973,7 +1973,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(( (Run \\ state \\ started) \to (min \\ one \\ NChar \\ sent)  \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
+        "f_latex": "\\Box(( (Run \\ state \\ started) \to (min \\ one \\ NChar \\ sent)  \\wedge \\neg(last \\ char \\ (EOP \\vee EEP))) \\to  \\newline \\nex(((read \\ transmit \\ FIFO) \\wedge (discard \\ characters)) \\ \\newline \\until \\ ((EOP \\vee EEP \\ read) \\wedge (EOP \\vee EEP \\ discarded))))",
         "f_code": "G(  ((Run_state_started) --> ((NChar_sent) and not(last_char_EOP or EEP)))  --> X(((read_transmit_FIFO) and (discard_characters)) U ((EOP_read or EEP_read) and (EOP_discard or EEP_discarded)))  )",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -2183,7 +2183,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(\\neg (N-Char \\ accepted) \\to ((input \\ port \\ wait) \\wedge (\\neg (N-Char \\ sent) \\until (multicast \\ output \\ ports \\ ready))))",
+        "f_latex": "\\Box(\\neg (N-Char \\ accepted) \\to  \\newline ((input \\ port \\ wait) \\wedge (\\neg (N-Char \\ sent) \\ \\until (multicast \\ output \\ ports \\ ready))))",
         "f_code": "G(not (NChar_accepted) --> ((input_port_wait) and (not (NChar_sent) U (multicast_output_ports_ready))))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -2253,7 +2253,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box((BROADCAST-CODE \\ received) \\to ((Character \\ sent) \\to \\nex (broadcast \\ code \\ sent)))",
+        "f_latex": "\\Box((BROADCAST-CODE \\ received) \\to  \\newline ((Character \\ sent) \\to \\nex (broadcast \\ code \\ sent)))",
         "f_code": "G((BROADCAST_CODE_received) --> ((Character_sent) --> X (broadcast_code_sent)))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -2393,7 +2393,7 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((receiver \\ enabled) \\to (\\Diamond (first Null \\ received) \\wedge \\neg (error))) \\to (gotNull \\ passed))",
+        "f_latex": "\\Box(((receiver \\ enabled) \\to  \\newline (\\Diamond (first Null \\ received) \\wedge \\neg (error))) \\to (gotNull \\ passed))",
         "f_code": "G(((receiver_enabled) --> (F(first_Null_received) and not (error))) --> (gotNull_passed))",
         "translation": "self",
         "reasoning": "until/next operator"
@@ -2470,7 +2470,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box((output \\ port \\ transmitting) \\wedge (ErrorReset \\ state) \\to \\Diamond_{(0,delay)} (reset \\ (data \\wedge Strobe))) \\newline delay:= (t_2 - t_1) \\vee (t_1 - t_2), t_1 := strobe \\ reset, t_2 := data \\ reset",
+        "f_latex": "\\Box((output \\ port \\ transmitting) \\wedge (ErrorReset \\ state) \\to   \\newline \\Diamond_{(0,delay)} (reset \\ (data \\wedge Strobe))) \\newline delay {:=} (t_2 - t_1) \\vee (t_1 - t_2), t_1 \\newline  {:=} strobe \\ reset, t_2 \\newline  {:=} data \\ reset",
         "f_code": "G(((output_port_transmitting) and (ErrorReset_state)) --> F(reset_data and reset_Strobe)) ",
         "translation": "self",
         "reasoning": "bounded diamond"
@@ -2505,7 +2505,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box(((LinkDisabled) \\to \\nex(ErrorReset \\ state)) \\vee (Disconnect \\to \\nex (ErrorReset \\ state)) \\vee ((Parity \\ Error) \\to \\nex (ErrorReset \\ state)) \\vee ((ESC \\ Error) \\to \\nex (ErroeReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) \\ received) \\to \\nex (ErrorReset \\ state)) \\vee (\\Diamond_{12.8} (Ready \\ state)))",
+        "f_latex": "\\Box(((LinkDisabled) \\to \\newline  \\nex(ErrorReset \\ state)) \\vee (Disconnect \\to \\nex (ErrorReset \\ state)) \\vee ((Parity \\ Error) \\to \\nex (ErrorReset \\ state)) \\vee ((ESC \\ Error) \\to  \\newline  \\nex (ErroeReset \\ state)) \\vee (((FCT \\vee NChar \\vee broadcast \\ code) \\ received) \\to \\newline \\nex (ErrorReset \\ state)) \\vee (\\Diamond_{12.8} (Ready \\ state)))",
         "f_code": "G(((LinkDisabled)--> X(ErrorReset_state)) or (Disconnect --> X(ErrorReset_state)) or ((Parity_Error) --> X (ErrorReset_state)) or ((ESC_Error) --> X (ErrorReset_state)) or ((FCT or NChar or broadcast_code) --> X(ErrorReset_state)) or (F(Ready_state)))",
         "translation": "self",
         "reasoning": "bounded diamond"
@@ -2645,7 +2645,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state))--> (no_eeror)) , \\newline \\Box((Connecting \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
+        "f_latex": "\\Box(((Started \\ state) \\to \\Diamond_{(0, 14.33 \\mu s)}(ErrorReset \\ state)) \\to (no_error)) , \\newline \\Box((Connecting \\ state) \\to \\newline \\Diamond_{(0, 14.33 \\mu s)} \\neg(FCT \\ received) \\to (ErrorReset \\ state)))",
         "f_code": "G( (((Started_state) --> F(ErrorReset_state)) --> (no_error)) and ((Connecting_state) --> (F(not (FCT_received)) --> (ErrorReset_state))))",
         "translation": "self",
         "reasoning": "bounded diamond operator"
@@ -2785,7 +2785,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box((interrupt \\ mode) \\to ((interrupt \\ code \\ sent) \\to \\Diamond_I (interrupt \\ code \\ sent) \\to (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out",
+        "f_latex": "\\Box((interrupt \\ mode) \\to \\newline  ((interrupt \\ code \\ sent) \\to \\newline \\Diamond_I (interrupt \\ code \\ sent) \\to \\newline (new \\ interrupt \\ code \\ discard) )), \\newline I = corresponding \\ interrupt \\ time-out",
         "f_code": "G(  (interrupt_mode) --> ( (interrupt_code_sent) --> (F(interrupt_code_sent) --> (new_interrupt_code_discard)) )) and I == corresponding_interrupt_timeout",
         "translation": "self",
         "reasoning": "bounded diamond"
@@ -2820,7 +2820,7 @@
       },
       {
         "type": "MTLb",
-        "f_latex": "\\Box((interrupt \\ ack \\ mode) \\to ((send \\ interrupt \\ code \\ A) \\to \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time",
+        "f_latex": "\\Box((interrupt \\ ack \\ mode) \\to \\newline ((send \\ interrupt \\ code \\ A) \\to \\newline \\Diamond_{(0,t)} (sent \\ interrupt \\ code \\ A))), \\newline t \\geq maximum \\ propagation \\ time",
         "f_code": "G((interrupt_ack_mode) --> ((send_interrupt_code_A) --> F(sent_interrupt_code_A))) and t >= maximum_propagation_time",
         "translation": "self",
         "reasoning": "bounded diamond"
@@ -2967,7 +2967,7 @@
       },
       {
         "type": "STL",
-        "f_latex": "\\Box((reset \\vee disconnect)\\to \\newline \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))",
+        "f_latex": "\\Box((reset \\vee disconnect)\\to \\nex ( \\ 9\\leq S_{data} (t)\\leq 11))",
         "f_code": "G( (reset or disconnect) --> X(S_data_t >= 9 and S_data_t <= 11) )",
         "translation": "self",
         "reasoning": ""
@@ -3002,7 +3002,7 @@
       },
       {
         "type": "STL",
-        "f_latex": "\\Box((\\ 9\\leq S_{data} (t)\\leq 11) \\ \\newline \\until \\ (set \\ different \\ rate))",
+        "f_latex": "\\Box((\\ 9\\leq S_{data} (t)\\leq 11) \\ \\until \\ (set \\ different \\ rate))",
         "f_code": "G( ((S_data_t >= 9) and (S_data_t <= 11)) U (set_different_rate))",
         "translation": "self",
         "reasoning": ""
@@ -3037,7 +3037,7 @@
       },
       {
         "type": "STL",
-        "f_latex": "\\Box((Run \\ state) \\to ( S_{data}(t) := |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) := |x| \\wedge S_{data}(t) := |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
+        "f_latex": "\\Box((Run \\ state) \\to \\newline ( S_{data}(t) {:=} |x| \\vee S_{data}(t) := |y|) \\wedge \\neg(S_{data}(t) {:=} |x| \\wedge S_{data}(t) {:=} |y|)), \\newline x:=initial \\ data \\ signaling \\ rate \\newline y:=intended \\ data \\ signaling \\ rate",
         "f_code": "G( (Run_state) --> (( (S_data_t == abs_x or S_data_t == abs_y) and (not (S_data_t == abs_x and S_data_t == abs_y)) ) and (x == initial_data_signaling_rate and y == intended_data_signaling_rate)))",
         "translation": "self",
         "reasoning": ""
@@ -3051,30 +3051,30 @@
     "logics": [
       {
         "type": "INV",
-        "f_latex": "",
+        "f_latex": "\\Box((test) \\to",
         "f_code": "",
-        "translation": "no",
+        "translation": "",
         "reasoning": ""
       },
       {
         "type": "LTL",
         "f_latex": "",
         "f_code": "",
-        "translation": "no",
+        "translation": "",
         "reasoning": ""
       },
       {
         "type": "MTLb",
         "f_latex": "",
         "f_code": "",
-        "translation": "no",
+        "translation": "",
         "reasoning": ""
       },
       {
         "type": "STL",
         "f_latex": "",
         "f_code": "",
-        "translation": "no",
+        "translation": "",
         "reasoning": ""
       }
     ]
