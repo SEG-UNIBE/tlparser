@@ -2382,7 +2382,7 @@
   {
     "id": 2037,
     "status": "OK",
-    "text": "The gotNull.indication primitive shall be passed to the data link layer, when the first Null is received without any errors after the receiver has been enabled",
+    "text": "The gotNull.indication primitive shall be passed to the data link layer, when the first Null is received without any errors after the receiver has been enabled.",
     "logics": [
       {
         "type": "INV",
@@ -2393,10 +2393,10 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box(((receiver \\ enabled) \\to  \\newline (\\Diamond (first Null \\ received) \\wedge \\neg (error))) \\to (gotNull \\ passed))",
-        "f_code": "G(((receiver_enabled) --> (F(first_Null_received) and not (error))) --> (gotNull_passed))",
+        "f_latex": "\\Box ( receiverEnabled \\to \\newline \\nex (\\Box (firstNullReceivedWithoutError)) \\to gotNullPassed))",
+        "f_code": "G( receiver_enabled --> X(G(first_null_received_without_error) --> got_null_passed))",
         "translation": "self",
-        "reasoning": "until/next operator"
+        "reasoning": "next operator"
       },
       {
         "type": "MTLb",
@@ -3081,7 +3081,7 @@
   },
   {
     "id": 5002,
-    "status": "NOK",
+    "status": "OK",
     "text": "If the host system tries to send an interrupt acknowledgement too soon after a corresponding interrupt code has been received, i.e. before the interrupt code has propagated across the entire network, the result is indeterminate for that specific interrupt. The new interrupt acknowledgement code that the node sends can either be discarded by a router, or repeatedly propagated through the network if the network has circular connections.",
     "logics": [
       {
@@ -3093,9 +3093,9 @@
       },
       {
         "type": "LTL",
-        "f_latex": "",
+        "f_latex": "\\Box\\big((corresponding interrupt code received) \\to \\nex \\neg\\big(\\neg (send interrupt acknowledgement) \\ \\until (interrupt code propagated)\\big) \\to (\\Box (new interrupt code discard) \\vee \\Box (\\Diamond (new interrupt code propagated))))",
         "f_code": "",
-        "translation": "no",
+        "translation": "self",
         "reasoning": ""
       },
       {
