@@ -23,7 +23,7 @@ class Viz:
         "stats.agg.cops": ["Comparison Operators (COPs)", "Count"],
         "stats.agg.lops": ["Logical Operators (LOPs)", "Count"],
         "stats.agg.tops": ["Temporal Operators (TOPs)", "Count"],
-        "stats.asth": ["Abstract Syntrax Tree (AST)", "Depth"],
+        "stats.asth": ["Abstract Syntrax Tree Height (ASTH)", "Height"],
         "stats.entropy.lops_tops": ["Entropy (LOPs & TOPs)", "Entropy (base 2)"],
     }
     translatability = ["yes", "no", "depends"]
@@ -57,10 +57,10 @@ class Viz:
         _, axes = plt.subplots(2, 2, figsize=(7, 4), sharex=True, sharey=True)
         axes = axes.flatten()
         titles = {
-            "self": "(a) Natural Formalization",
-            "yes": "(b) Possible",
-            "no": "(c) Not Possible",
-            "depends": "(d) Conditional",
+            "self": {"title": "(a) Natural Formalization", "var": "n"},
+            "yes": {"title": "(b) Possible", "var": "t_1"},
+            "no": {"title": "(c) Not Possible", "var": "t_2"},
+            "depends": {"title": "(d) Conditional", "var": "t_3"},
         }
         max_count = df["type"].value_counts().max() + 5
         translations_ordered = sorted(df['translation'].unique(), key=lambda x: list(titles.keys()).index(x))
@@ -78,7 +78,8 @@ class Viz:
                 legend=False,
             )
             n = df[df['translation'] == translation].shape[0]
-            ax.set_title(titles.get(translation, f"Translatable: {translation}") + f' (n={n})')
+            title_info = titles.get(translation, {"title": f"Translatable: {translation}", "var": ""})
+            ax.set_title(f"{title_info['title']} (${title_info['var']}={n}$)")
             ax.set_xlabel("")
             ax.set_ylabel("Count")
             ax.set_ylim(0, max_count)

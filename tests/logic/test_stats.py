@@ -17,6 +17,7 @@ class TestStats(TestCase):
                 cops=2,
                 lops=4,
                 tops=2,
+                entropy_lops_tops=2.585
             ),
             TestCaseData(
                 f_code="G((x and (u == 9) and (i < 3)) --> G(not y or x))",
@@ -145,3 +146,9 @@ class TestInit(TestStats):
         for case in self.data:
             f = Stats(case.f_code)
             self.assertEqual(case.tops, f.agg["tops"], case.f_code)
+
+    def test_entropy(self):
+        for case in self.data:
+            if case.entropy_lops_tops is not None:
+                f = Stats(case.f_code)
+                self.assertEqual(case.entropy_lops_tops, round(f.entropy["lops_tops"], 3), case.f_code)
