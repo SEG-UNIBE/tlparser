@@ -108,6 +108,13 @@ class TestStats(TestCase):
                 cops=0,
                 lops=3,
                 tops=4,
+            ),TestCaseData(
+                f_code="G(   ( ((cicr)) --> X not(not(sia) U(icp)) ) --> ( G(nicd) and G(F(nicp)) )   )",
+                asth=7,
+                aps=5,
+                cops=0,
+                lops=5,
+                tops=6,
             ),
         }
 

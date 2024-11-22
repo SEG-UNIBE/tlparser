@@ -3093,8 +3093,8 @@
       },
       {
         "type": "LTL",
-        "f_latex": "\\Box\\big((corresponding interrupt code received) \\to \\nex \\neg\\big(\\neg (send interrupt acknowledgement) \\ \\until (interrupt code propagated)\\big) \\to (\\Box (new interrupt code discard) \\vee \\Box (\\Diamond (new interrupt code propagated))))",
-        "f_code": "",
+        "f_latex": "\\Box\\big( ( (corresponding \\ interrupt \\ code \\ received) \\to \\nex \\neg\\big(\\neg (send \\ interrupt \\ acknowledgement) \\ \\until (interrupt \\ code \\ propagated)\\big) \\to (\\Box (new \\ interrupt \\ code \\ discard) \\vee \\Box (\\Diamond (new \\ interrupt \\ code \\ propagated))))",
+        "f_code": "G(((corr_interr_code_received) --> X( not( not(send_interr_ack) U(interr_code_prop)))) --> (G(new_interr_code_disc) and G(F(new_interr_code_prop))))",
         "translation": "self",
         "reasoning": ""
       },
