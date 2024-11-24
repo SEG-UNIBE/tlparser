@@ -194,9 +194,9 @@ class Viz:
             x_shift = 1 / number_of_types / 2
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():
                 annotation_text = (
-                    f"μ={row['mean']:.1f}\n"
-                    f"M={row['median']:.1f}\n"
-                    f"σ={row['std']:.1f}"
+                    f"$\mu={row['mean']:.1f}$\n"
+                    f"$M={row['median']:.1f}$\n"
+                    f"$\sigma={row['std']:.1f}$"
                 )
                 ax.text(
                     x_shift,
@@ -223,7 +223,7 @@ class Viz:
                     ax.text(
                         x_position,
                         -0.18*y_max,
-                        f"n={n_value}",
+                        f"$n={n_value}$",
                         color="black",
                         ha="center",
                         va="top",
