@@ -1,10 +1,10 @@
 [project]
 name = "tlparser"
-version = "0.1"
+version = "0.1.0-beta"
 description = "Temporal Logic Parser"
 readme = "README.md"
 authors = [{name = "null"}]
-license = {text = "MIT"}
+license = {text = "GPL-3.0-or-later"}
 requires-python = ">=3.10"
 classifiers = [
     "License :: OSI Approved :: MIT License"
