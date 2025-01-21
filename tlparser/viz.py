@@ -17,15 +17,14 @@ from d3blocks import D3Blocks
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 
-
 class Viz:
     title_map = {
-        "stats.agg.aps": ["Atomic Propositions", "Count"],
-        "stats.agg.cops": ["Comparison Operators", "Count"],
-        "stats.agg.lops": ["Logical Operators", "Count"],
-        "stats.agg.tops": ["Temporal Operators", "Count"],
-        "stats.asth": ["Abstract Syntrax Tree", "Depth"],
-        "stats.entropy.lops_tops": ["Entropy (Logical & Temporal Ops.)", "Entropy (base 2)"],
+        "stats.agg.aps": ["Atomic Propositions (APs)", "Count"],
+        "stats.agg.cops": ["Comparison Operators (COPs)", "Count"],
+        "stats.agg.lops": ["Logical Operators (LOPs)", "Count"],
+        "stats.agg.tops": ["Temporal Operators (TOPs)", "Count"],
+        "stats.asth": ["Abstract Syntrax Tree Height (ASTH)", "Height"],
+        "stats.entropy.lops_tops": ["Entropy (LOPs & TOPs)", "Entropy (base 2)"],
     }
     translatability = ["yes", "no", "depends"]
 
@@ -58,10 +57,10 @@ class Viz:
         _, axes = plt.subplots(2, 2, figsize=(7, 4), sharex=True, sharey=True)
         axes = axes.flatten()
         titles = {
-            "self": "(a) Natural Formalization",
-            "yes": "(b) Possible",
-            "no": "(c) Not Possible",
-            "depends": "(d) Conditional",
+            "self": {"title": "(a) Natural Formalization", "var": "n"},
+            "yes": {"title": "(b) Possible", "var": "t_1"},
+            "no": {"title": "(c) Not Possible", "var": "t_2"},
+            "depends": {"title": "(d) Conditional", "var": "t_3"},
         }
         max_count = df["type"].value_counts().max() + 5
         translations_ordered = sorted(df['translation'].unique(), key=lambda x: list(titles.keys()).index(x))
@@ -79,7 +78,8 @@ class Viz:
                 legend=False,
             )
             n = df[df['translation'] == translation].shape[0]
-            ax.set_title(titles.get(translation, f"Translatable: {translation}") + f' (n={n})')
+            title_info = titles.get(translation, {"title": f"Translatable: {translation}", "var": ""})
+            ax.set_title(f"{title_info['title']} (${title_info['var']}={n}$)")
             ax.set_xlabel("")
             ax.set_ylabel("Count")
             ax.set_ylim(0, max_count)
@@ -194,9 +194,9 @@ class Viz:
             x_shift = 1 / number_of_types / 2
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():
                 annotation_text = (
-                    f"μ={row['mean']:.1f}\n"
-                    f"M={row['median']:.1f}\n"
-                    f"σ={row['std']:.1f}"
+                    f"$\mu={row['mean']:.1f}$\n"
+                    f"$M={row['median']:.1f}$\n"
+                    f"$\sigma={row['std']:.1f}$"
                 )
                 ax.text(
                     x_shift,
@@ -223,7 +223,7 @@ class Viz:
                     ax.text(
                         x_position,
                         -0.18*y_max,
-                        f"n={n_value}",
+                        f"$n={n_value}$",
                         color="black",
                         ha="center",
                         va="top",
@@ -427,7 +427,9 @@ class Viz:
                                 source_type,
                                 target_type,
                                 weight=1,
-                                color=self.config.color_palette.get(source_type, "black")
+                                color= Utils.lighten_color(
+                                    hex_color=self.config.color_palette.get(source_type, "black"),
+                                    opacity=0.8)
                             )
 
             if G.number_of_edges() > 0:
@@ -437,7 +439,10 @@ class Viz:
                 net.show_buttons(filter_=['physics'])
 
                 for node in net.nodes:
-                    node['color'] = self.config.color_palette.get(node['label'], "black")
+                    node['color'] = Utils.lighten_color(
+                        hex_color=self.config.color_palette.get(node['label'], "black"),
+                        opacity=0.8)
+                    #node['opacity'] = 0.6
                     node['font'] = {"color": "black", "size": 28}
                     node['borderWidth'] =  2
                     node['shape'] = "box"
@@ -450,7 +455,8 @@ class Viz:
                     edge['arrowStrikethrough'] = True
                     edge['color'] = color
                     edge['label'] = str(weight)
-                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0.6)", "strokeWidth": 0}
+                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0)",
+                                    "strokeWidth": 0}
                     edge['arrows'] = {"to": {"enabled": True, "scaleFactor": 1.5}}
 
                 net.set_edge_smooth('dynamic')

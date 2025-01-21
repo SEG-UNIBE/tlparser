@@ -142,7 +142,8 @@ class Stats:
     def calc_entropy(self):
         entr_tops = entropy(list(self.tops.values()), base=2)
         entr_lops = entropy(list(self.lops.values()), base=2)
-        tops_lops = Counter(self.tops) + Counter(self.lops)
+        tops_lops = self.tops.copy()
+        tops_lops.update(self.lops)
         entr_tops_lops = entropy(list(tops_lops.values()), base=2)
 
         return {

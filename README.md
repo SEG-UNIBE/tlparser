@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/tlparser.svg)](https://pypi.org/project/tlparser/)
 [![Changelog](https://img.shields.io/github/v/release/RomanBoegli/tlparser?include_prereleases&label=changelog)](https://github.com/RomanBoegli/tlparser/releases)
 [![Test](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/main/LICENSE)
 
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
@@ -106,7 +106,7 @@ tlparser --help
 First, digest the test data file to create an Excel file.
 
 ```bash
-tlparser digest ../tlparser/tests/data/test.json
+tlparser digest ./tests/data/test.json
 ```
 
 The Excel file will serve as basis for generating the plots.
@@ -116,12 +116,14 @@ To generate all plots of the latest Excel file execute the following command:
 tlparser visualize -l -p all
 ```
 
+All plots are saved to `./tlparser/workingdir/`.
+
 </details>
 
 You can parse the `spacewire` requirements using the following command:
 
 ```bash
-tlparser digest ../tlparser/data/spacewire.json
+tlparser digest ./data/spacewire.json
 ```
 
 The resulting Excel file serves as basis for generating the plots.
@@ -166,6 +168,14 @@ To generate all plots of the latest Excel file execute the following command:
 
 ```bash
 tlparser visualize -l -p all
+```
+
+All plots are saved to `./tlparser/workingdir/`.
+
+To clean-up all generated files again, execute the following command and confirm with `y`:
+
+```bash
+tlparser cleanup
 ```
 
 Exit the virtual environment again using this command:
