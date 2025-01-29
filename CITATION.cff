@@ -1,0 +1,42 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: tlparser
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Roman
+    family-names: Bögli
+    email: roman.boegli@unibe.ch
+    affiliation: University of Bern
+    orcid: "https://orcid.org/0009-0004-8745-7800"
+  - given-names: Atefeh
+    family-names: Rohani
+    email: atefeh.rohani@unibe.ch
+    affiliation: University of Bern
+    orcid: "https://orcid.org/0000-0001-9828-2218"
+  - given-names: Thomas
+    family-names: Studer
+    email: thomas.studer@unibe.ch
+    affiliation: University of Bern
+    orcid: "https://orcid.org/0000-0002-0949-3302"
+  - given-names: Christos
+    family-names: Tsigkanos
+    email: christos.tsigkanos@unibe.ch
+    affiliation: University of Athens
+    orcid: "https://orcid.org/0000-0002-9493-3404"
+  - given-names: Timo
+    family-names: Kehrer
+    email: timo.kehrer@unibe.ch
+    affiliation: University of Bern
+    orcid: "https://orcid.org/0000-0002-2582-5557"
+repository-code: "https://github.com/SEG-UNIBE/tlparser"
+abstract: A CLI tool to parse and analyse temporal logic formulae.
+keywords:
+  - python
+  - temporal logics
+  - parser
+license: AGPL-3.0
