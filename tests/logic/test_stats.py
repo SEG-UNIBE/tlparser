@@ -116,6 +116,34 @@ class TestStats(TestCase):
                 cops=0,
                 lops=5,
                 tops=6,
+            ),TestCaseData(
+                f_code="G (not(five < waitCPU))",
+                asth=2,
+                aps=1,
+                cops=1,
+                lops=1,
+                tops=1,
+            ),TestCaseData(
+                f_code="G (not (waitCPU > five))",
+                asth=2,
+                aps=1,
+                cops=1,
+                lops=1,
+                tops=1,
+            ),TestCaseData(
+                f_code="G (not (5 < waitCPU))",
+                asth=2,
+                aps=1,
+                cops=1,
+                lops=1,
+                tops=1,
+            ),TestCaseData(
+                f_code="G (not (waitCPU > 5))",
+                asth=2,
+                aps=1,
+                cops=1,
+                lops=1,
+                tops=1,
             ),
         }
 

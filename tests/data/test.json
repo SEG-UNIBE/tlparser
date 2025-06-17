@@ -70,7 +70,7 @@
       {
         "type": "LTL",
         "f_latex": "",
-        "f_code": "G( (x and (u == 9) and (i < 3)) --> F(not y))",
+        "f_code": "G( (x and (9 == u) and (i < 3)) --> F(not y))",
         "translation": "self",
         "reasoning": ""
       },
