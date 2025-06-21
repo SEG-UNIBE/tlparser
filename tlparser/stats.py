@@ -6,10 +6,12 @@ from collections import Counter
 
 
 class Stats:
-    def __init__(self, formula_str):
+    def __init__(self, formula_str, req_text=None):
         self.formula_raw = formula_str
         self.formula_parsable = None
         self.formula_parsed = None
+        self.req_len = len(req_text) if req_text else None
+        self.req_word_count = len(req_text.split()) if req_text else None
 
         # Group: Comparison operators
         self.cops = {

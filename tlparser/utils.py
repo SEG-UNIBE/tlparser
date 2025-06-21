@@ -25,7 +25,7 @@ class Utils:
         for entry in data:
             if entry["status"] in self.config.only_with_status:
                 for logic in entry["logics"]:
-                    s = Stats(logic["f_code"])
+                    s = Stats(formula_str=logic["f_code"], req_text=entry["text"])
                     parsed_formulas.append(
                         {
                             "id": entry["id"],
