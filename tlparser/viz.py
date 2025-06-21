@@ -17,6 +17,7 @@ from d3blocks import D3Blocks
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 
+
 class Viz:
     title_map = {
         "stats.agg.aps": ["Atomic Propositions (APs)", "Count"],
@@ -25,6 +26,9 @@ class Viz:
         "stats.agg.tops": ["Temporal Operators (TOPs)", "Count"],
         "stats.asth": ["Abstract Syntrax Tree Height (ASTH)", "Height"],
         "stats.entropy.lops_tops": ["Entropy (LOPs & TOPs)", "Entropy (base 2)"],
+        "stats.req_len": ["Requirement Text Length", "Character Count"],
+        "stats.req_sentence_count": ["Requirement Sentences", "Sentence Count"],
+        "stats.req_word_count": ["Requirement Words", "Word Count"],
     }
     translatability = ["yes", "no", "depends"]
 
@@ -32,8 +36,8 @@ class Viz:
         self.config = config
         self.data = pd.read_excel(file)
         if selfonly:
-            selftypes = self.data[self.data['translation'] == 'self']['type'].unique()
-            self.data = self.data[self.data['type'].isin(selftypes)]
+            selftypes = self.data[self.data["translation"] == "self"]["type"].unique()
+            self.data = self.data[self.data["type"].isin(selftypes)]
 
     def __get_file_name(self, prefix, suffix=".pdf"):
         os.makedirs(self.config.folder_data_out, exist_ok=True)
@@ -63,7 +67,9 @@ class Viz:
             "depends": {"title": "(d) Conditional", "var": "t_3"},
         }
         max_count = df["type"].value_counts().max() + 5
-        translations_ordered = sorted(df['translation'].unique(), key=lambda x: list(titles.keys()).index(x))
+        translations_ordered = sorted(
+            df["translation"].unique(), key=lambda x: list(titles.keys()).index(x)
+        )
 
         for ax, translation in zip(axes, translations_ordered):
             sns.histplot(
@@ -77,13 +83,19 @@ class Viz:
                 palette=type_palette,
                 legend=False,
             )
-            n = df[df['translation'] == translation].shape[0]
-            title_info = titles.get(translation, {"title": f"Translatable: {translation}", "var": ""})
+            n = df[df["translation"] == translation].shape[0]
+            title_info = titles.get(
+                translation, {"title": f"Translatable: {translation}", "var": ""}
+            )
             ax.set_title(f"{title_info['title']} (${title_info['var']}={n}$)")
             ax.set_xlabel("")
             ax.set_ylabel("Count")
             ax.set_ylim(0, max_count)
-            ax.yaxis.set_minor_locator(ticker.MultipleLocator(5))
+            major_locs = ax.yaxis.get_majorticklocs()
+            if len(major_locs) > 1:
+                major_interval = major_locs[1] - major_locs[0]
+                minor_tick_interval = major_interval / 5
+                ax.yaxis.set_minor_locator(ticker.MultipleLocator(minor_tick_interval))
 
             for bar in ax.patches:
                 height = bar.get_height()
@@ -111,28 +123,18 @@ class Viz:
         plt.close()
         return out
 
-    def plot_violin(self, include_strip=False):
+    def _plot_violin(
+        self, df_long, stats_values, metrics, title_map, out_prefix, include_strip=False
+    ):
         type_palette = self.config.color_palette
-        df_filtered = self.data[self.data["translation"] == "self"]
-        metrics = df_filtered.filter(like=".agg.").columns.tolist()
-        metrics = metrics + ['stats.asth', 'stats.entropy.lops_tops']
-        df_long = pd.melt(
-            df_filtered,
-            id_vars=["id", "type"],
-            value_vars=metrics,
-            var_name="aggregation",
-            value_name="value",
-        )
-
-        stats_values = (
-            df_long.groupby(["type", "aggregation"])["value"]
-            .agg(["mean", "median", "count", "std"])
-            .reset_index()
-        )
         number_of_types = df_long["type"].unique().size
 
         fig, axes = plt.subplots(
-            nrows=3, ncols=2, figsize=(8, 11), sharex=True, sharey=False
+            nrows=2 if len(metrics) > 3 else 1,
+            ncols=3,
+            figsize=(11, 8) if len(metrics) > 3 else (11, 4),
+            sharex=False,
+            sharey=False,
         )
         axes = axes.flatten()
         plt.subplots_adjust(hspace=0.05, wspace=0.05)
@@ -205,11 +207,11 @@ class Viz:
                     color="black",
                     ha="center",
                     va="bottom",
-                    transform=ax.transAxes
+                    transform=ax.transAxes,
                 )
                 x_shift += 1 / number_of_types
 
-            if i > 4:
+            if i > 0:  # increase to print 'n=...' more sparsly
                 for x_category in df_long["type"].unique():
                     filtered_values = stats_values.loc[
                         (stats_values["aggregation"] == agg)
@@ -222,7 +224,7 @@ class Viz:
                     x_position = list(df_long["type"].unique()).index(x_category)
                     ax.text(
                         x_position,
-                        -0.18*y_max,
+                        -0.18 * y_max,
                         f"$n={n_value}$",
                         color="black",
                         ha="center",
@@ -230,24 +232,75 @@ class Viz:
                     )
 
             i += 1
-            ax.set_title(self.title_map.get(agg, agg)[0])
-            ax.set_ylabel(self.title_map.get(agg, agg)[1])
-            ax.set_ylim(-0.09*y_max, y_max)
+            ax.set_title(title_map.get(agg, agg)[0])
+            ax.set_ylabel(title_map.get(agg, agg)[1])
+            ax.set_ylim(-0.09 * y_max, y_max)
+            major_locs = ax.yaxis.get_majorticklocs()
+            if len(major_locs) > 1:
+                major_interval = major_locs[1] - major_locs[0]
+                minor_tick_interval = major_interval / 5
+                ax.yaxis.set_minor_locator(ticker.MultipleLocator(minor_tick_interval))
 
-        for i in range(len(metrics), len(axes)):
-            axes[i].set_visible(False)
+        for j in range(len(metrics), len(axes)):
+            axes[j].set_visible(False)
 
         fig.tight_layout()
-        out = self.__get_file_name("viol")
+        out = self.__get_file_name(out_prefix)
         plt.savefig(out)
         plt.close()
         return out
+
+    def plot_violin_engcompl(self, include_strip=False):
+        df_filtered = self.data[self.data["translation"] == "self"]
+        metrics = df_filtered.filter(like=".agg.").columns.tolist()
+        metrics = metrics + ["stats.asth", "stats.entropy.lops_tops"]
+        df_long = pd.melt(
+            df_filtered,
+            id_vars=["id", "type"],
+            value_vars=metrics,
+            var_name="aggregation",
+            value_name="value",
+        )
+
+        stats_values = (
+            df_long.groupby(["type", "aggregation"])["value"]
+            .agg(["mean", "median", "count", "std"])
+            .reset_index()
+        )
+        return self._plot_violin(
+            df_long,
+            stats_values,
+            metrics,
+            self.title_map,
+            "viol_engcompl",
+            include_strip,
+        )
+
+    def plot_violin_reqtext(self, include_strip=False):
+        df_filtered = self.data[self.data["translation"] == "self"]
+        metrics = df_filtered.filter(like=".req_").columns.tolist()
+        df_long = pd.melt(
+            df_filtered,
+            id_vars=["id", "type"],
+            value_vars=metrics,
+            var_name="aggregation",
+            value_name="value",
+        )
+
+        stats_values = (
+            df_long.groupby(["type", "aggregation"])["value"]
+            .agg(["mean", "median", "count", "std"])
+            .reset_index()
+        )
+        return self._plot_violin(
+            df_long, stats_values, metrics, self.title_map, "viol_req", include_strip
+        )
 
     def plot_pairplot(self):
         type_palette = self.config.color_palette
         df = self.data[self.data["translation"] == "self"]
         metrics = df.filter(like=".agg.").columns.tolist()
-        df_pairplot = df[metrics + ['type','stats.asth', 'stats.entropy.lops_tops']]
+        df_pairplot = df[metrics + ["type", "stats.asth", "stats.entropy.lops_tops"]]
 
         unique_types = df_pairplot["type"].nunique()
         markers = ["o", "s", "D", "^", "v", "P"][:unique_types]
@@ -417,7 +470,7 @@ class Viz:
                     yes_targets = group[
                         (group["translation"] == target)
                         & (group["type"] != source_type)
-                        ]
+                    ]
                     for _, row in yes_targets.iterrows():
                         target_type = row["type"]
                         if G.has_edge(source_type, target_type):
@@ -427,44 +480,58 @@ class Viz:
                                 source_type,
                                 target_type,
                                 weight=1,
-                                color= Utils.lighten_color(
-                                    hex_color=self.config.color_palette.get(source_type, "black"),
-                                    opacity=0.8)
+                                color=Utils.lighten_color(
+                                    hex_color=self.config.color_palette.get(
+                                        source_type, "black"
+                                    ),
+                                    opacity=0.8,
+                                ),
                             )
 
             if G.number_of_edges() > 0:
                 # using PyVis for interactive plotting
-                net = Network(notebook=True, directed=True, height="600px", width="100%", cdn_resources='in_line')
+                net = Network(
+                    notebook=True,
+                    directed=True,
+                    height="600px",
+                    width="100%",
+                    cdn_resources="in_line",
+                )
                 net.from_nx(G)
-                net.show_buttons(filter_=['physics'])
+                net.show_buttons(filter_=["physics"])
 
                 for node in net.nodes:
-                    node['color'] = Utils.lighten_color(
-                        hex_color=self.config.color_palette.get(node['label'], "black"),
-                        opacity=0.8)
-                    #node['opacity'] = 0.6
-                    node['font'] = {"color": "black", "size": 28}
-                    node['borderWidth'] =  2
-                    node['shape'] = "box"
+                    node["color"] = Utils.lighten_color(
+                        hex_color=self.config.color_palette.get(node["label"], "black"),
+                        opacity=0.8,
+                    )
+                    # node['opacity'] = 0.6
+                    node["font"] = {"color": "black", "size": 28}
+                    node["borderWidth"] = 2
+                    node["shape"] = "box"
 
                 for edge in net.edges:
-                    weight = G[edge['from']][edge['to']].get('width', 1)
-                    color = G[edge['from']][edge['to']].get('color', "black")
-                    edge['value'] = math.log10(weight)
-                    edge['title'] = f"Weight: {weight}"
-                    edge['arrowStrikethrough'] = True
-                    edge['color'] = color
-                    edge['label'] = str(weight)
-                    edge['font'] = {"color": "black", "size": 10, "background":  "rgba(255, 255, 255, 0)",
-                                    "strokeWidth": 0}
-                    edge['arrows'] = {"to": {"enabled": True, "scaleFactor": 1.5}}
+                    weight = G[edge["from"]][edge["to"]].get("width", 1)
+                    color = G[edge["from"]][edge["to"]].get("color", "black")
+                    edge["value"] = math.log10(weight)
+                    edge["title"] = f"Weight: {weight}"
+                    edge["arrowStrikethrough"] = True
+                    edge["color"] = color
+                    edge["label"] = str(weight)
+                    edge["font"] = {
+                        "color": "black",
+                        "size": 10,
+                        "background": "rgba(255, 255, 255, 0)",
+                        "strokeWidth": 0,
+                    }
+                    edge["arrows"] = {"to": {"enabled": True, "scaleFactor": 1.5}}
 
-                net.set_edge_smooth('dynamic')
+                net.set_edge_smooth("dynamic")
                 net.repulsion(
                     node_distance=100,
                     central_gravity=0.05,
                     spring_length=80,
-                    spring_strength=0.005
+                    spring_strength=0.005,
                 )
 
                 # save as HTML

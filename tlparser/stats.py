@@ -2,7 +2,7 @@ from pyModelChecking import CTLS
 import re
 import pprint
 from scipy.stats import entropy
-from collections import Counter
+from typing import Tuple
 
 
 class Stats:
@@ -10,8 +10,11 @@ class Stats:
         self.formula_raw = formula_str
         self.formula_parsable = None
         self.formula_parsed = None
-        self.req_len = len(req_text) if req_text else None
-        self.req_word_count = len(req_text.split()) if req_text else None
+
+        req_text_stats = self.get_requirement_text_stats(req_text)
+        self.req_len = req_text_stats[0]
+        self.req_word_count = req_text_stats[1]
+        self.req_sentence_count = req_text_stats[2]
 
         # Group: Comparison operators
         self.cops = {
@@ -169,3 +172,15 @@ class Stats:
 
     def __str__(self):
         return pprint.pformat(self.get_stats(), indent=2)
+
+    def get_requirement_text_stats(self, req_text:str) -> Tuple[int | None, int | None, int | None]:
+        if req_text:
+            cleaned_text = req_text.strip()
+            if cleaned_text and cleaned_text[-1] not in '.!?':
+                cleaned_text += '.'
+            char_count = len(cleaned_text)
+            word_count = len(cleaned_text.split())
+            sentence_count = len(re.findall(r'[.!?]+(?:\s|$)', cleaned_text))
+            return char_count, word_count, sentence_count
+        else:
+            return None, None, None
