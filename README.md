@@ -84,7 +84,11 @@ Listing the contents of this directory (e.g., using `ls -la` on Unix or `dir /a`
 Next, create a new virtual environment using the following commands:
 
 ```bash
+# macOS/Linux
 python3 -m venv venv && source venv/bin/activate
+
+# Windows
+# py -3 -m venv venv && venv\Scripts\activat
 ```
 
 Install and test the dependencies:
@@ -114,6 +118,7 @@ To generate all plots of the latest Excel file execute the following command:
 
 ```bash
 tlparser visualize -l -p all
+# plots are written to ./tlparser/workingdir/
 ```
 
 All plots are saved to `./tlparser/workingdir/`.
@@ -187,5 +192,9 @@ deactivate
 To activate it again, simply execute this command in the root folder of the repository:
 
 ```bash
+# from repo root
 source venv/bin/activate
+
+# or on Windows:
+# venv\Scripts\activate
 ```
