@@ -139,7 +139,7 @@ EXTENDED_CASES = (
     TestCaseDataExt(
         f_code="X p",
         aps=1,
-        syntactic_safety=True,
+        syntactic_safety=False,
         is_stutter_invariant_formula=False,
         manna_pnueli_class_contains="guarantee safety obligation persistence recurrence reactivity",
         tgba_state_count=3,
@@ -233,16 +233,12 @@ class TestStatsExtended(TestCase):
 
     def test_spot_respects_syntactic_safety(self):
         for case in self.data:
-            if case.syntactic_safety is None:
-                continue
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
                 self.assertEqual(case.syntactic_safety, stats.spot.get("syntactic_safety"), case.f_code)
 
     def test_spot_respects_stutter_invariance(self):
         for case in self.data:
-            if case.is_stutter_invariant_formula is None:
-                continue
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
                 self.assertEqual(
@@ -253,8 +249,6 @@ class TestStatsExtended(TestCase):
 
     def test_spot_reports_manna_pnueli_class(self):
         for case in self.data:
-            if case.manna_pnueli_class_contains is None:
-                continue
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
                 actual_class = stats.spot.get("manna_pnueli_class", "") or ""
@@ -262,8 +256,6 @@ class TestStatsExtended(TestCase):
 
     def test_aggregated_ap_matches_expectation(self):
         for case in self.data:
-            if case.aps is None:
-                continue
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
                 self.assertEqual(case.aps, stats.agg["aps"], case.f_code)
@@ -513,7 +505,5 @@ class TestStatsExtended(TestCase):
     def test_null_analyzer_keeps_ap_counts(self):
         _, stats_by_case = self._get_null_analyzer_results()
         for case in self.data:
-            if case.aps is None:
-                continue
             with self.subTest(formula=case.f_code):
                 self.assertEqual(case.aps, stats_by_case[case.f_code].agg["aps"], case.f_code)

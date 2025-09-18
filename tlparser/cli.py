@@ -1,12 +1,13 @@
 import os
 import shutil
 import sys
+from contextlib import nullcontext
+
 import click
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 from tlparser.viz import Viz
-
 
 DEFAULT_WD = "workingdir"
 DEFAULT_STATI = ["OK"]
@@ -80,10 +81,22 @@ def digest_file(json_file, output, extended, verbose):
         logic_order=DEFAULT_ORDER,
     )
     util = Utils(config)
-    formulas = util.read_formulas_from_json(extended=extended, verbose=verbose)
-    if extended and util.warnings:
+    label = "Spot classification" if extended else "Processing formulas"
+
+    def progress_factory(total: int):
+        if total <= 0:
+            return nullcontext()
+        return click.progressbar(length=total, label=label, show_pos=True)
+
+    formulas = util.read_formulas_from_json(
+        extended=extended,
+        verbose=verbose,
+        progress_factory=progress_factory,
+    )
+    if util.warnings:
         for warning in util.warnings:
             click.echo(warning, err=True)
+    util.echo_spot_summary(util.spot_issues, total=len(formulas))
     out_file = util.write_to_excel(formulas)
     click.echo(f"Processed {json_file} and saved results to {out_file}")
 
@@ -135,6 +148,7 @@ def evaluate_formula(formula_tokens, extended, verbose, requirement_text):
     if util.warnings:
         for warning in util.warnings:
             click.echo(warning, err=True)
+    util.echo_spot_summary(util.spot_issues, total=1)
 
 
 @cli.command(name="visualize")

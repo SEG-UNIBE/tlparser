@@ -2,8 +2,11 @@ import json
 import openpyxl
 import os
 import pandas as pd
+from contextlib import nullcontext
 from datetime import datetime
-from typing import Optional
+from typing import Callable, Sequence, Tuple
+
+import click
 
 from tlparser.config import Configuration
 from tlparser.stats import Stats
@@ -15,9 +18,17 @@ class Utils:
     def __init__(self, config: Configuration):
         self.config = config
         self.warnings: list[str] = []
+        self.spot_issues: list[tuple[str, list[str]]] = []
 
-    def read_formulas_from_json(self, *, extended: bool = False, verbose: bool = False):
+    def read_formulas_from_json(
+        self,
+        *,
+        extended: bool = False,
+        verbose: bool = False,
+        progress_factory: Callable[[int], object] | None = None,
+    ):
         self.warnings.clear()
+        self.spot_issues = []
 
         spot_analyzer = self._create_spot_analyzer(extended, verbose)
 
@@ -28,29 +39,41 @@ class Utils:
         ids = [item["id"] for item in data]
         if len(ids) != len(set(ids)):
             raise ValueError("Duplicate IDs found, abort...")
+        progress_cm = nullcontext()
+        if progress_factory is not None:
+            total = sum(
+                len(entry.get("logics", []))
+                for entry in data
+                if entry.get("status") in self.config.only_with_status
+            )
+            progress_cm = progress_factory(total)
 
-        for entry in data:
-            if entry["status"] in self.config.only_with_status:
-                for logic in entry["logics"]:
-                    s = Stats(
-                        formula_str=logic["f_code"],
-                        req_text=entry["text"],
-                        extended=extended,
-                        spot_analyzer=spot_analyzer,
-                        spot_verbose=verbose,
-                    )
-                    parsed_formulas.append(
-                        {
-                            "id": entry["id"],
-                            "text": entry["text"],
-                            "type": logic["type"],
-                            "translation": logic["translation"],
-                            "reasoning": logic["reasoning"],
-                            "stats": s.get_stats(),
-                        }
-                    )
+        with progress_cm as progress:
+            for entry in data:
+                if entry["status"] in self.config.only_with_status:
+                    for logic in entry["logics"]:
+                        s = Stats(
+                            formula_str=logic["f_code"],
+                            req_text=entry["text"],
+                            extended=extended,
+                            spot_analyzer=spot_analyzer,
+                            spot_verbose=verbose,
+                        )
+                        parsed_formulas.append(
+                            {
+                                "id": entry["id"],
+                                "text": entry["text"],
+                                "type": logic["type"],
+                                "translation": logic["translation"],
+                                "reasoning": logic["reasoning"],
+                                "stats": s.get_stats(),
+                            }
+                        )
+                        if progress is not None:
+                            progress.update(1)
         if spot_analyzer is not None:
             self.warnings.extend(spot_analyzer.diagnostics)
+            self.spot_issues.extend(spot_analyzer.issue_entries())
         return parsed_formulas
 
     def analyze_single_formula(
@@ -58,10 +81,11 @@ class Utils:
         formula: str,
         *,
         extended: bool = False,
-        requirement_text: Optional[str] = None,
+        requirement_text: str | None = None,
         verbose: bool = False,
     ) -> Stats:
         self.warnings.clear()
+        self.spot_issues = []
 
         spot_analyzer = self._create_spot_analyzer(extended, verbose)
 
@@ -75,10 +99,13 @@ class Utils:
 
         if spot_analyzer is not None:
             self.warnings.extend(spot_analyzer.diagnostics)
+            self.spot_issues.extend(spot_analyzer.issue_entries())
 
         return stats
 
-    def _create_spot_analyzer(self, extended: bool, verbose: bool) -> Optional[SpotAnalyzer]:
+    def _create_spot_analyzer(
+        self, extended: bool, verbose: bool
+    ) -> SpotAnalyzer | None:
         if not extended:
             return None
         try:
@@ -88,6 +115,36 @@ class Utils:
                 f"[tlparser] Spot analyzer initialization failed: {exc}"
             )
             return None
+
+    def echo_spot_summary(
+        self,
+        issues: Sequence[Tuple[str, Sequence[str]]],
+        *,
+        total: int | None = None,
+    ) -> None:
+        if not issues:
+            return
+        count = len(issues)
+        header = (
+            f"Spot analysis summary ({count} of {total})"
+            if total is not None
+            else "Spot analysis summary"
+        )
+        click.echo(f"\n{header}:", err=True)
+        for formula, problems in issues:
+            self._echo_labelled("Formula:", formula, fg="cyan")
+            issues_text = "\n".join(problems)
+            self._echo_labelled("Issue:", issues_text, fg="red")
+            click.echo("", err=True)
+
+    def _echo_labelled(self, label: str, value: str, *, fg: str) -> None:
+        styled_label = click.style(label, fg=fg, bold=True)
+        indent = " " * len(label)
+        lines = value.splitlines() or [""]
+        first, *rest = lines
+        click.echo(f"{styled_label} {first}", err=True)
+        for line in rest:
+            click.echo(f"{indent} {line}", err=True)
 
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]

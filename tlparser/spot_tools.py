@@ -7,7 +7,6 @@ import subprocess
 import json
 import shutil
 import os
-from typing import Optional
 
 SHOW_INVOCATIONS = False  # Set to True to print each command invoked to stderr
 
@@ -254,9 +253,8 @@ def check_ltl_property_type(ltl_formula, check_type="syntactic_safety"):
         output = invoke(["ltlfilt", "-f", ltl_formula, flag])
         return len(output) > 0
     except subprocess.CalledProcessError as e:
-        print(
-            f"Error checking {check_type.replace('_', ' ')} for '{ltl_formula}'. Stderr: {e.stderr.strip()}",
-            file=sys.stderr,
+        _debug(
+            f"Error checking {check_type.replace('_', ' ')} for '{ltl_formula}'. Stderr: {e.stderr.strip()}"
         )
         return "Error"
     except FileNotFoundError:
@@ -266,9 +264,8 @@ def check_ltl_property_type(ltl_formula, check_type="syntactic_safety"):
         )
         return "Error"
     except Exception as e:
-        print(
-            f"An unexpected error occurred during {check_type.replace('_', ' ')} check: {e}",
-            file=sys.stderr,
+        _debug(
+            f"An unexpected error occurred during {check_type.replace('_', ' ')} check: {e}"
         )
         return "Error"
 
@@ -286,9 +283,8 @@ def get_manna_pnueli_class(ltl_formula):
             return "Unclassified/Error (Format Issue)"
         return result
     except subprocess.CalledProcessError as e:
-        print(
-            f"Error determining Manna-Pnueli class for '{ltl_formula}'. Stderr: {e.stderr.strip()}",
-            file=sys.stderr,
+        _debug(
+            f"Error determining Manna-Pnueli class for '{ltl_formula}'. Stderr: {e.stderr.strip()}"
         )
         return "Error"
     except FileNotFoundError:
@@ -298,14 +294,13 @@ def get_manna_pnueli_class(ltl_formula):
         )
         return "Error"
     except Exception as e:
-        print(
-            f"An unexpected error occurred during Manna-Pnueli class check: {e}",
-            file=sys.stderr,
+        _debug(
+            f"An unexpected error occurred during Manna-Pnueli class check: {e}"
         )
         return "Error"
 
 
-def classify_ltl_property(ltl_formula, *, verbose: Optional[bool] = None):
+def classify_ltl_property(ltl_formula, *, verbose: bool | None = None):
     prev_verbose = get_verbose()
     if verbose is not None:
         set_verbose(verbose)
@@ -322,58 +317,49 @@ def classify_ltl_property(ltl_formula, *, verbose: Optional[bool] = None):
         }
 
         # Check syntactic safety
-        safety_result = check_ltl_property_type(ltl_formula, "syntactic_safety")
-        classification["syntactic_safety"] = safety_result
+        classification["syntactic_safety"] = check_ltl_property_type(
+            ltl_formula, "syntactic_safety"
+        )
 
         # Check stutter invariance
-        stutter_invariant_formula_result = check_ltl_property_type(
+        classification["is_stutter_invariant_formula"] = check_ltl_property_type(
             ltl_formula, "stutter_invariant"
-        )
-        classification["is_stutter_invariant_formula"] = (
-            stutter_invariant_formula_result
         )
 
         # Get Manna-Pnueli Class
-        manna_pnueli_result = get_manna_pnueli_class(ltl_formula)
-        classification["manna_pnueli_class"] = manna_pnueli_result
+        classification["manna_pnueli_class"] = get_manna_pnueli_class(ltl_formula)
 
         # Translate to default TGBA and analyze
         hoa_tgba, tgba_stats = get_automaton_and_stats(
             ltl_formula, to_buchi=False, to_deterministic=False
         )
         if "error" in tgba_stats:
-            print(
-                f"Falling back to autfilt for TGBA analysis: {tgba_stats['error']}",
-                file=sys.stderr,
-            )
+            _debug(f"Falling back to autfilt for TGBA analysis: {tgba_stats['error']}")
             classification["tgba_analysis"] = analyze_automaton_fallback(hoa_tgba)
         else:
             classification["tgba_analysis"] = tgba_stats
             tgba_automaton_stutter_check = analyze_automaton_fallback(hoa_tgba).get(
                 "is_stutter_invariant"
             )
-            classification["tgba_analysis"][
-                "is_stutter_invariant"
-            ] = tgba_automaton_stutter_check
+            classification["tgba_analysis"]["is_stutter_invariant"] = (
+                tgba_automaton_stutter_check
+            )
 
         # Translate to Buchi (if possible) and analyze
         hoa_buchi, buchi_stats = get_automaton_and_stats(
             ltl_formula, to_buchi=True, to_deterministic=False
         )
         if "error" in buchi_stats:
-            print(
-                f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}",
-                file=sys.stderr,
-            )
+            _debug(f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}")
             classification["buchi_analysis"] = analyze_automaton_fallback(hoa_buchi)
         else:
             classification["buchi_analysis"] = buchi_stats
             buchi_automaton_stutter_check = analyze_automaton_fallback(hoa_buchi).get(
                 "is_stutter_invariant"
             )
-            classification["buchi_analysis"][
-                "is_stutter_invariant"
-            ] = buchi_automaton_stutter_check
+            classification["buchi_analysis"]["is_stutter_invariant"] = (
+                buchi_automaton_stutter_check
+            )
 
         # Attempt to produce a deterministic automaton and analyze
         hoa_deterministic, deterministic_stats = get_automaton_and_stats(
@@ -382,9 +368,7 @@ def classify_ltl_property(ltl_formula, *, verbose: Optional[bool] = None):
 
         if "error" in deterministic_stats:
             classification["deterministic_attempt"]["success"] = False
-            classification["deterministic_attempt"]["error"] = deterministic_stats[
-                "error"
-            ]
+            classification["deterministic_attempt"]["error"] = deterministic_stats["error"]
         else:
             classification["deterministic_attempt"]["success"] = True
             classification["deterministic_attempt"][
