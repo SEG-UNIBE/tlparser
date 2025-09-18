@@ -201,7 +201,7 @@ source venv/bin/activate
 
 ## Extended Statistics
 
-For automaton-level insight, enable the optional Spot integration which will allow you to harvest extended statistics.
+For automaton-level insight, enable the optional Spot[^spot-citation] integration which will allow you to harvest extended statistics.
 Spot is not bundled with `tlparser`, so install the CLI tools (`ltl2tgba`, `ltlfilt`, `autfilt`) beforehand.
 You can find installation instructions on [Spot's webpage](https://spot.lre.epita.fr/).
 Homebrew users can also install it using the `brew install spot` command.
@@ -307,3 +307,7 @@ Sample output:
   }
 }
 ```
+
+</br>
+
+[^spot-citation]: Alexandre Duret-Lutz et al., “[From Spot 2.0 to Spot 2.10: What’s new?](https://doi.org/10.1007/978-3-031-13188-2\_9)”, Proc. CAV 2022, LNCS 13372, pp. 174–187, Haifa, Israel, Aug. 2022.
