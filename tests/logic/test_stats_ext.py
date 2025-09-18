@@ -12,6 +12,25 @@ EXTENDED_CASES = (
         syntactic_safety=True,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="Safety",
+        tgba_state_count=1,
+        tgba_transition_count=1,
+        tgba_is_complete=False,
+        tgba_is_deterministic=True,
+        tgba_acceptance_sets=0,
+        tgba_is_stutter_invariant=True,
+        buchi_state_count=1,
+        buchi_transition_count=1,
+        buchi_is_complete=False,
+        buchi_is_deterministic=True,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=True,
+        det_attempt_success=True,
+        det_state_count=1,
+        det_transition_count=1,
+        det_is_complete=False,
+        det_is_deterministic=True,
+        det_acceptance_sets=0,
+        det_is_stutter_invariant=True,
     ),
     TestCaseDataExt(
         f_code="F G s",
@@ -19,6 +38,25 @@ EXTENDED_CASES = (
         syntactic_safety=False,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="persistence reactivity",
+        tgba_state_count=2,
+        tgba_transition_count=4,
+        tgba_is_complete=False,
+        tgba_is_deterministic=False,
+        tgba_acceptance_sets=1,
+        tgba_is_stutter_invariant=True,
+        buchi_state_count=2,
+        buchi_transition_count=4,
+        buchi_is_complete=False,
+        buchi_is_deterministic=False,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=True,
+        det_attempt_success=True,
+        det_state_count=2,
+        det_transition_count=4,
+        det_is_complete=False,
+        det_is_deterministic=False,
+        det_acceptance_sets=1,
+        det_is_stutter_invariant=True,
     ),
     TestCaseDataExt(
         f_code="G (req --> F ack)",
@@ -26,6 +64,25 @@ EXTENDED_CASES = (
         syntactic_safety=False,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="recurrence reactivity",
+        tgba_state_count=2,
+        tgba_transition_count=8,
+        tgba_is_complete=True,
+        tgba_is_deterministic=True,
+        tgba_acceptance_sets=1,
+        tgba_is_stutter_invariant=True,
+        buchi_state_count=2,
+        buchi_transition_count=8,
+        buchi_is_complete=True,
+        buchi_is_deterministic=True,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=True,
+        det_attempt_success=True,
+        det_state_count=2,
+        det_transition_count=8,
+        det_is_complete=True,
+        det_is_deterministic=True,
+        det_acceptance_sets=1,
+        det_is_stutter_invariant=True,
     ),
     TestCaseDataExt(
         f_code="G (not(crit1 & crit2))",
@@ -33,6 +90,25 @@ EXTENDED_CASES = (
         syntactic_safety=True,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="Safety",
+        tgba_state_count=1,
+        tgba_transition_count=3,
+        tgba_is_complete=False,
+        tgba_is_deterministic=True,
+        tgba_acceptance_sets=0,
+        tgba_is_stutter_invariant=True,
+        buchi_state_count=1,
+        buchi_transition_count=3,
+        buchi_is_complete=False,
+        buchi_is_deterministic=True,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=True,
+        det_attempt_success=True,
+        det_state_count=1,
+        det_transition_count=3,
+        det_is_complete=False,
+        det_is_deterministic=True,
+        det_acceptance_sets=0,
+        det_is_stutter_invariant=True,
     ),
     TestCaseDataExt(
         f_code="GFa --> GFb",
@@ -40,6 +116,25 @@ EXTENDED_CASES = (
         syntactic_safety=False,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="reactivity",
+        tgba_state_count=3,
+        tgba_transition_count=14,
+        tgba_is_complete=False,
+        tgba_is_deterministic=False,
+        tgba_acceptance_sets=1,
+        tgba_is_stutter_invariant=True,
+        buchi_state_count=4,
+        buchi_transition_count=18,
+        buchi_is_complete=False,
+        buchi_is_deterministic=False,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=True,
+        det_attempt_success=True,
+        det_state_count=3,
+        det_transition_count=14,
+        det_is_complete=False,
+        det_is_deterministic=False,
+        det_acceptance_sets=1,
+        det_is_stutter_invariant=True,
     ),
     TestCaseDataExt(
         f_code="X p",
@@ -47,6 +142,25 @@ EXTENDED_CASES = (
         syntactic_safety=True,
         is_stutter_invariant_formula=False,
         manna_pnueli_class_contains="guarantee safety obligation persistence recurrence reactivity",
+        tgba_state_count=3,
+        tgba_transition_count=5,
+        tgba_is_complete=False,
+        tgba_is_deterministic=True,
+        tgba_acceptance_sets=0,
+        tgba_is_stutter_invariant=False,
+        buchi_state_count=3,
+        buchi_transition_count=5,
+        buchi_is_complete=False,
+        buchi_is_deterministic=True,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=False,
+        det_attempt_success=True,
+        det_state_count=3,
+        det_transition_count=5,
+        det_is_complete=False,
+        det_is_deterministic=True,
+        det_acceptance_sets=0,
+        det_is_stutter_invariant=False,
     ),
     TestCaseDataExt(
         f_code="F X p",
@@ -54,6 +168,25 @@ EXTENDED_CASES = (
         syntactic_safety=False,
         is_stutter_invariant_formula=False,
         manna_pnueli_class_contains="guarantee obligation persistence recurrence reactivity",
+        tgba_state_count=3,
+        tgba_transition_count=6,
+        tgba_is_complete=True,
+        tgba_is_deterministic=True,
+        tgba_acceptance_sets=1,
+        tgba_is_stutter_invariant=False,
+        buchi_state_count=3,
+        buchi_transition_count=6,
+        buchi_is_complete=True,
+        buchi_is_deterministic=True,
+        buchi_acceptance_sets=1,
+        buchi_is_stutter_invariant=False,
+        det_attempt_success=True,
+        det_state_count=3,
+        det_transition_count=6,
+        det_is_complete=True,
+        det_is_deterministic=True,
+        det_acceptance_sets=1,
+        det_is_stutter_invariant=False,
     ),
 )
 
@@ -151,6 +284,208 @@ class TestStatsExtended(TestCase):
                     self.assertEqual(case.f_code, spot_formula, case.f_code)
                 else:
                     self.assertIn(expected, spot_formula, case.f_code)
+
+    def test_tgba_state_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_state_count,
+                    stats.spot.get("tgba_analysis", {}).get("state_count"),
+                    case.f_code,
+                )
+
+    def test_tgba_transition_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_transition_count,
+                    stats.spot.get("tgba_analysis", {}).get("transition_count"),
+                    case.f_code,
+                )
+
+    def test_tgba_is_complete(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_is_complete,
+                    stats.spot.get("tgba_analysis", {}).get("is_complete"),
+                    case.f_code,
+                )
+
+    def test_tgba_is_deterministic(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_is_deterministic,
+                    stats.spot.get("tgba_analysis", {}).get("is_deterministic"),
+                    case.f_code,
+                )
+
+    def test_tgba_acceptance_sets(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_acceptance_sets,
+                    stats.spot.get("tgba_analysis", {}).get("acceptance_sets"),
+                    case.f_code,
+                )
+
+    def test_tgba_is_stutter_invariant(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_is_stutter_invariant,
+                    stats.spot.get("tgba_analysis", {}).get("is_stutter_invariant"),
+                    case.f_code,
+                )
+
+    def test_buchi_state_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_state_count,
+                    stats.spot.get("buchi_analysis", {}).get("state_count"),
+                    case.f_code,
+                )
+
+    def test_buchi_transition_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_transition_count,
+                    stats.spot.get("buchi_analysis", {}).get("transition_count"),
+                    case.f_code,
+                )
+
+    def test_buchi_is_complete(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_is_complete,
+                    stats.spot.get("buchi_analysis", {}).get("is_complete"),
+                    case.f_code,
+                )
+
+    def test_buchi_is_deterministic(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_is_deterministic,
+                    stats.spot.get("buchi_analysis", {}).get("is_deterministic"),
+                    case.f_code,
+                )
+
+    def test_buchi_acceptance_sets(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_acceptance_sets,
+                    stats.spot.get("buchi_analysis", {}).get("acceptance_sets"),
+                    case.f_code,
+                )
+
+    def test_buchi_is_stutter_invariant(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_is_stutter_invariant,
+                    stats.spot.get("buchi_analysis", {}).get("is_stutter_invariant"),
+                    case.f_code,
+                )
+
+    def test_deterministic_attempt_success(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_attempt_success,
+                    stats.spot.get("deterministic_attempt", {}).get("success"),
+                    case.f_code,
+                )
+
+    def test_deterministic_state_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_state_count,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("state_count"),
+                    case.f_code,
+                )
+
+    def test_deterministic_transition_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_transition_count,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("transition_count"),
+                    case.f_code,
+                )
+
+    def test_deterministic_is_complete(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_is_complete,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("is_complete"),
+                    case.f_code,
+                )
+
+    def test_deterministic_is_deterministic(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_is_deterministic,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("is_deterministic"),
+                    case.f_code,
+                )
+
+    def test_deterministic_acceptance_sets(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_acceptance_sets,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("acceptance_sets"),
+                    case.f_code,
+                )
+
+    def test_deterministic_is_stutter_invariant(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_is_stutter_invariant,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("is_stutter_invariant"),
+                    case.f_code,
+                )
 
     def _get_null_analyzer_results(self):
         analyzer = self._NullAnalyzer()
