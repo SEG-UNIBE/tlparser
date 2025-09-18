@@ -198,3 +198,112 @@ source venv/bin/activate
 # or on Windows:
 # venv\Scripts\activate
 ```
+
+## Extended Statistics
+
+For automaton-level insight, enable the optional Spot integration which will allow you to harvest extended statistics.
+Spot is not bundled with `tlparser`, so install the CLI tools (`ltl2tgba`, `ltlfilt`, `autfilt`) beforehand.
+You can find installation instructions on [Spot's webpage](https://spot.lre.epita.fr/).
+Homebrew users can also install it using the `brew install spot` command.
+
+With Spot on your `PATH`, add `--extended` to the `digest` or `evaluate` command:
+
+```bash
+tlparser digest ./data/spacewire.json --extended
+```
+
+Extended digests may also produce a companion `<filename>_errors.md` summarising formulas Spot could not analyse.
+You can experiment interactively as well:
+
+```bash
+tlparser evaluate "G (req --> F ack)" --extended
+```
+
+Sample output:
+
+```json
+{
+  "agg": {
+    "aps": 2,
+    "cops": 0,
+    "lops": 1,
+    "tops": 2
+  },
+  "ap": [
+    "ack",
+    "req"
+  ],
+  "asth": 3,
+  "cops": {
+    "eq": 0,
+    "geq": 0,
+    "gt": 0,
+    "leq": 0,
+    "lt": 0,
+    "neq": 0
+  },
+  "entropy": {
+    "lops": 1.0,
+    "lops_tops": 1.584962500721156,
+    "tops": 0.0
+  },
+  "formula_parsable": "G (req --> F ack)",
+  "formula_parsed": "G((req --> F(ack)))",
+  "formula_raw": "G (req --> F ack)",
+  "lops": {
+    "and": 0,
+    "impl": 1,
+    "not": 0,
+    "or": 0
+  },
+  "req_len": null,
+  "req_sentence_count": null,
+  "req_word_count": null,
+  "tops": {
+    "A": 0,
+    "E": 0,
+    "F": 1,
+    "G": 1,
+    "R": 0,
+    "U": 0,
+    "X": 0
+  },
+  "z_extended": {
+    "buchi_analysis": {
+      "acceptance_sets": 1,
+      "analysis_source": "ltl2tgba_stats",
+      "is_complete": true,
+      "is_deterministic": true,
+      "is_stutter_invariant": true,
+      "state_count": 2,
+      "transition_count": 8
+    },
+    "deterministic_attempt": {
+      "automaton_analysis": {
+        "acceptance_sets": 1,
+        "analysis_source": "ltl2tgba_stats",
+        "is_complete": true,
+        "is_deterministic": true,
+        "is_stutter_invariant": true,
+        "state_count": 2,
+        "transition_count": 8
+      },
+      "success": true
+    },
+    "formula": "G (req --> F ack)",
+    "is_stutter_invariant_formula": true,
+    "manna_pnueli_class": "recurrence reactivity",
+    "spot_formula": "G (req -> F ack)",
+    "syntactic_safety": false,
+    "tgba_analysis": {
+      "acceptance_sets": 1,
+      "analysis_source": "ltl2tgba_stats",
+      "is_complete": true,
+      "is_deterministic": true,
+      "is_stutter_invariant": true,
+      "state_count": 2,
+      "transition_count": 8
+    }
+  }
+}
+```
