@@ -139,7 +139,7 @@ EXTENDED_CASES = (
     TestCaseDataExt(
         f_code="X p",
         aps=1,
-        syntactic_safety=False,
+        syntactic_safety=True,
         is_stutter_invariant_formula=False,
         manna_pnueli_class_contains="guarantee safety obligation persistence recurrence reactivity",
         tgba_state_count=3,
