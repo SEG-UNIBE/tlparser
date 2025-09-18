@@ -263,7 +263,6 @@ class Utils:
             "stats.req_sentence_count",
             "stats.req_word_count",
             "stats.formula_raw",
-            "stats.formula_normalized",
             "stats.formula_parsable",
             "stats.formula_parsed",
             "stats.asth",

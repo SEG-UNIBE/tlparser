@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any, List
-
-from tlparser.formula_utils import normalize_formula_tokens
 
 
 class SpotAnalyzer:
@@ -16,6 +15,12 @@ class SpotAnalyzer:
         self._classify = None
         self._verbose = verbose
         self._issue_map: dict[str, set[str]] = {}
+        self._token_patterns = (
+            (re.compile(r"-->", re.IGNORECASE), "->"),
+            (re.compile(r"\bnot\b", re.IGNORECASE), "!"),
+            (re.compile(r"\band\b", re.IGNORECASE), "&"),
+            (re.compile(r"\bor\b", re.IGNORECASE), "|"),
+        )
 
     @property
     def diagnostics(self) -> List[str]:
@@ -109,7 +114,17 @@ class SpotAnalyzer:
 
     def _to_spot_syntax(self, formula: str) -> str:
         """Translate friendly syntax (not/and/or/-->) to Spot-compatible operators."""
-        return normalize_formula_tokens(formula)
+        translated = formula
+        for pattern, replacement in self._token_patterns:
+            translated = pattern.sub(replacement, translated)
+
+        # Collapse whitespace after unary negation to avoid '! p' forms Spot dislikes
+        translated = re.sub(r"!\s+", "!", translated)
+
+        # Normalise spacing around binary operators for readability
+        translated = re.sub(r"\s*(&|\||->)\s*", r" \1 ", translated)
+        translated = re.sub(r"\s+", " ", translated).strip()
+        return translated
 
     def _record_partial_warning(self, formula: str, result: dict[str, Any]) -> None:
         issues: list[str] = []
