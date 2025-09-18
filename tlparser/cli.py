@@ -64,7 +64,13 @@ def cli():
     is_flag=True,
     help="Include Spot-based extended columns when Spot CLI tools are available.",
 )
-def digest_file(json_file, output, extended):
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    help="Show Spot CLI progress when using --extended.",
+)
+def digest_file(json_file, output, extended, verbose):
     """Processes the JSON file and outputs a CSV"""
     working_dir = get_working_directory(output)
     config = Configuration(
@@ -74,7 +80,7 @@ def digest_file(json_file, output, extended):
         logic_order=DEFAULT_ORDER,
     )
     util = Utils(config)
-    formulas = util.read_formulas_from_json(extended=extended)
+    formulas = util.read_formulas_from_json(extended=extended, verbose=verbose)
     if extended and util.warnings:
         for warning in util.warnings:
             click.echo(warning, err=True)
@@ -90,12 +96,18 @@ def digest_file(json_file, output, extended):
     help="Include Spot-based extended columns when Spot CLI tools are available.",
 )
 @click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    help="Show Spot CLI progress when using --extended.",
+)
+@click.option(
     "--text",
     "requirement_text",
     default=None,
     help="Optional requirement text to include when computing stats.",
 )
-def evaluate_formula(formula_tokens, extended, requirement_text):
+def evaluate_formula(formula_tokens, extended, verbose, requirement_text):
     """Analyze a single formula and print the statistics."""
     if not formula_tokens:
         raise click.UsageError("Provide a formula to evaluate.")
@@ -108,6 +120,7 @@ def evaluate_formula(formula_tokens, extended, requirement_text):
         formula,
         extended=extended,
         requirement_text=requirement_text,
+        verbose=verbose,
     )
 
     click.echo("Digest results for provided formula:\n")

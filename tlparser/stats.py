@@ -23,6 +23,7 @@ class Stats:
         *,
         extended: bool = False,
         spot_analyzer: "SpotAnalyzer" | None = None,
+        spot_verbose: bool = False,
     ):
         self.formula_raw = formula_str
         self.formula_parsable = None
@@ -83,7 +84,7 @@ class Stats:
             if extended:
                 analyzer = spot_analyzer
                 if analyzer is None and _SpotAnalyzer is not None:
-                    analyzer = _SpotAnalyzer()
+                    analyzer = _SpotAnalyzer(verbose=spot_verbose)
                 if analyzer is not None:
                     self.spot = analyzer.classify(self.formula_raw)
 

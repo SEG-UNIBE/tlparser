@@ -9,10 +9,11 @@ from typing import Any, List, Optional
 class SpotAnalyzer:
     """Lazily perform Spot-powered analysis and collect diagnostics."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, verbose: bool = False) -> None:
         self._available: Optional[bool] = None
         self._diagnostics: List[str] = []
         self._classify = None
+        self._verbose = verbose
         self._token_patterns = (
             (re.compile(r"-->", re.IGNORECASE), "->"),
             (re.compile(r"\bnot\b", re.IGNORECASE), "!"),
@@ -81,7 +82,7 @@ class SpotAnalyzer:
         assert self._classify is not None  # For type checkers
         spot_formula = self._to_spot_syntax(formula)
         try:
-            result = self._classify(spot_formula)
+            result = self._classify(spot_formula, verbose=self._verbose)
             if isinstance(result, dict):
                 original_spot = result.get("formula", spot_formula)
                 result["spot_formula"] = original_spot

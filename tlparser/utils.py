@@ -16,10 +16,10 @@ class Utils:
         self.config = config
         self.warnings: list[str] = []
 
-    def read_formulas_from_json(self, *, extended: bool = False):
+    def read_formulas_from_json(self, *, extended: bool = False, verbose: bool = False):
         self.warnings.clear()
 
-        spot_analyzer = self._create_spot_analyzer(extended)
+        spot_analyzer = self._create_spot_analyzer(extended, verbose)
 
         with open(self.config.file_data_in, "r") as file:
             data = json.load(file)
@@ -37,6 +37,7 @@ class Utils:
                         req_text=entry["text"],
                         extended=extended,
                         spot_analyzer=spot_analyzer,
+                        spot_verbose=verbose,
                     )
                     parsed_formulas.append(
                         {
@@ -58,16 +59,18 @@ class Utils:
         *,
         extended: bool = False,
         requirement_text: Optional[str] = None,
+        verbose: bool = False,
     ) -> Stats:
         self.warnings.clear()
 
-        spot_analyzer = self._create_spot_analyzer(extended)
+        spot_analyzer = self._create_spot_analyzer(extended, verbose)
 
         stats = Stats(
             formula_str=formula,
             req_text=requirement_text,
             extended=extended,
             spot_analyzer=spot_analyzer,
+            spot_verbose=verbose,
         )
 
         if spot_analyzer is not None:
@@ -75,11 +78,11 @@ class Utils:
 
         return stats
 
-    def _create_spot_analyzer(self, extended: bool) -> Optional[SpotAnalyzer]:
+    def _create_spot_analyzer(self, extended: bool, verbose: bool) -> Optional[SpotAnalyzer]:
         if not extended:
             return None
         try:
-            return SpotAnalyzer()
+            return SpotAnalyzer(verbose=verbose)
         except Exception as exc:
             self.warnings.append(
                 f"[tlparser] Spot analyzer initialization failed: {exc}"

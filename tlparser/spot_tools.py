@@ -7,10 +7,27 @@ import subprocess
 import json
 import shutil
 import os
+from typing import Optional
 
 SHOW_INVOCATIONS = False  # Set to True to print each command invoked to stderr
 
 REQUIRED_SPOT_TOOLS = ("ltl2tgba", "ltlfilt", "autfilt")
+
+_VERBOSE = False
+
+
+def set_verbose(enabled: bool) -> None:
+    global _VERBOSE
+    _VERBOSE = bool(enabled)
+
+
+def get_verbose() -> bool:
+    return _VERBOSE
+
+
+def _debug(message: str) -> None:
+    if _VERBOSE:
+        print(message, file=sys.stderr)
 
 
 def _which_all(names: list[str] | tuple[str, ...]) -> dict[str, str | None]:
@@ -141,7 +158,7 @@ def get_automaton_and_stats(ltl_formula, to_buchi=False, to_deterministic=False)
     try:
         hoa_automaton = invoke(cmd_base)
     except subprocess.CalledProcessError as e:
-        print(f"Error generating automaton: {e}", file=sys.stderr)
+        _debug(f"Error generating automaton: {e}")
         return "", {"error": str(e)}
 
     stats_dict = {}
@@ -230,9 +247,8 @@ def check_ltl_property_type(ltl_formula, check_type="syntactic_safety"):
     if not flag:
         raise ValueError(f"Unknown check_type: {check_type}")
 
-    print(
-        f"Checking if LTL '{ltl_formula}' is {check_type.replace('_', ' ')} using {flag}...",
-        file=sys.stderr,
+    _debug(
+        f"Checking if LTL '{ltl_formula}' is {check_type.replace('_', ' ')} using {flag}..."
     )
     try:
         output = invoke(["ltlfilt", "-f", ltl_formula, flag])
@@ -262,10 +278,7 @@ def get_manna_pnueli_class(ltl_formula):
     Get Manna-Pnueli hierarchy class of an LTL formula using ltlfilt.
     Return: str: The class name(s) (e.g., "Safety", "Liveness, Guarantee"), or "Error" on failure.
     """
-    print(
-        f"Determining Manna-Pnueli class for '{ltl_formula}' using %[vw]h...",
-        file=sys.stderr,
-    )
+    _debug(f"Determining Manna-Pnueli class for '{ltl_formula}' using %[vw]h...")
     try:
         output = invoke(["ltlfilt", "-f", ltl_formula, "--format=%[vw]h"])
         result = output.strip()
@@ -292,91 +305,102 @@ def get_manna_pnueli_class(ltl_formula):
         return "Error"
 
 
-def classify_ltl_property(ltl_formula):
+def classify_ltl_property(ltl_formula, *, verbose: Optional[bool] = None):
+    prev_verbose = get_verbose()
+    if verbose is not None:
+        set_verbose(verbose)
 
-    classification = {
-        "formula": ltl_formula,
-        "syntactic_safety": None,
-        "is_stutter_invariant_formula": None,
-        "manna_pnueli_class": "Unknown",
-        "tgba_analysis": {},
-        "buchi_analysis": {},
-        "deterministic_attempt": {"success": None, "automaton_analysis": {}},
-    }
+    try:
+        classification = {
+            "formula": ltl_formula,
+            "syntactic_safety": None,
+            "is_stutter_invariant_formula": None,
+            "manna_pnueli_class": "Unknown",
+            "tgba_analysis": {},
+            "buchi_analysis": {},
+            "deterministic_attempt": {"success": None, "automaton_analysis": {}},
+        }
 
-    # Check syntactic safety
-    safety_result = check_ltl_property_type(ltl_formula, "syntactic_safety")
-    classification["syntactic_safety"] = safety_result
+        # Check syntactic safety
+        safety_result = check_ltl_property_type(ltl_formula, "syntactic_safety")
+        classification["syntactic_safety"] = safety_result
 
-    # Check stutter invariance
-    stutter_invariant_formula_result = check_ltl_property_type(
-        ltl_formula, "stutter_invariant"
-    )
-    classification["is_stutter_invariant_formula"] = stutter_invariant_formula_result
-
-    # Get Manna-Pnueli Class
-    manna_pnueli_result = get_manna_pnueli_class(ltl_formula)
-    classification["manna_pnueli_class"] = manna_pnueli_result
-
-    # Translate to default TGBA and analyze
-    hoa_tgba, tgba_stats = get_automaton_and_stats(
-        ltl_formula, to_buchi=False, to_deterministic=False
-    )
-    if "error" in tgba_stats:
-        print(
-            f"Falling back to autfilt for TGBA analysis: {tgba_stats['error']}",
-            file=sys.stderr,
+        # Check stutter invariance
+        stutter_invariant_formula_result = check_ltl_property_type(
+            ltl_formula, "stutter_invariant"
         )
-        classification["tgba_analysis"] = analyze_automaton_fallback(hoa_tgba)
-    else:
-        classification["tgba_analysis"] = tgba_stats
-        tgba_automaton_stutter_check = analyze_automaton_fallback(hoa_tgba).get(
-            "is_stutter_invariant"
+        classification["is_stutter_invariant_formula"] = (
+            stutter_invariant_formula_result
         )
-        classification["tgba_analysis"][
-            "is_stutter_invariant"
-        ] = tgba_automaton_stutter_check
 
-    # Translate to Buchi (if possible) and analyze
-    hoa_buchi, buchi_stats = get_automaton_and_stats(
-        ltl_formula, to_buchi=True, to_deterministic=False
-    )
-    if "error" in buchi_stats:
-        print(
-            f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}",
-            file=sys.stderr,
+        # Get Manna-Pnueli Class
+        manna_pnueli_result = get_manna_pnueli_class(ltl_formula)
+        classification["manna_pnueli_class"] = manna_pnueli_result
+
+        # Translate to default TGBA and analyze
+        hoa_tgba, tgba_stats = get_automaton_and_stats(
+            ltl_formula, to_buchi=False, to_deterministic=False
         )
-        classification["buchi_analysis"] = analyze_automaton_fallback(hoa_buchi)
-    else:
-        classification["buchi_analysis"] = buchi_stats
-        buchi_automaton_stutter_check = analyze_automaton_fallback(hoa_buchi).get(
-            "is_stutter_invariant"
+        if "error" in tgba_stats:
+            print(
+                f"Falling back to autfilt for TGBA analysis: {tgba_stats['error']}",
+                file=sys.stderr,
+            )
+            classification["tgba_analysis"] = analyze_automaton_fallback(hoa_tgba)
+        else:
+            classification["tgba_analysis"] = tgba_stats
+            tgba_automaton_stutter_check = analyze_automaton_fallback(hoa_tgba).get(
+                "is_stutter_invariant"
+            )
+            classification["tgba_analysis"][
+                "is_stutter_invariant"
+            ] = tgba_automaton_stutter_check
+
+        # Translate to Buchi (if possible) and analyze
+        hoa_buchi, buchi_stats = get_automaton_and_stats(
+            ltl_formula, to_buchi=True, to_deterministic=False
         )
-        classification["buchi_analysis"][
-            "is_stutter_invariant"
-        ] = buchi_automaton_stutter_check
+        if "error" in buchi_stats:
+            print(
+                f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}",
+                file=sys.stderr,
+            )
+            classification["buchi_analysis"] = analyze_automaton_fallback(hoa_buchi)
+        else:
+            classification["buchi_analysis"] = buchi_stats
+            buchi_automaton_stutter_check = analyze_automaton_fallback(hoa_buchi).get(
+                "is_stutter_invariant"
+            )
+            classification["buchi_analysis"][
+                "is_stutter_invariant"
+            ] = buchi_automaton_stutter_check
 
-    # Attempt to produce a deterministic automaton and analyze
-    hoa_deterministic, deterministic_stats = get_automaton_and_stats(
-        ltl_formula, to_buchi=False, to_deterministic=True
-    )
-
-    if "error" in deterministic_stats:
-        classification["deterministic_attempt"]["success"] = False
-        classification["deterministic_attempt"]["error"] = deterministic_stats["error"]
-    else:
-        classification["deterministic_attempt"]["success"] = True
-        classification["deterministic_attempt"][
-            "automaton_analysis"
-        ] = deterministic_stats
-        det_automaton_stutter_check = analyze_automaton_fallback(hoa_deterministic).get(
-            "is_stutter_invariant"
+        # Attempt to produce a deterministic automaton and analyze
+        hoa_deterministic, deterministic_stats = get_automaton_and_stats(
+            ltl_formula, to_buchi=False, to_deterministic=True
         )
-        classification["deterministic_attempt"]["automaton_analysis"][
-            "is_stutter_invariant"
-        ] = det_automaton_stutter_check
 
-    return classification
+        if "error" in deterministic_stats:
+            classification["deterministic_attempt"]["success"] = False
+            classification["deterministic_attempt"]["error"] = deterministic_stats[
+                "error"
+            ]
+        else:
+            classification["deterministic_attempt"]["success"] = True
+            classification["deterministic_attempt"][
+                "automaton_analysis"
+            ] = deterministic_stats
+            det_automaton_stutter_check = analyze_automaton_fallback(hoa_deterministic).get(
+                "is_stutter_invariant"
+            )
+            classification["deterministic_attempt"]["automaton_analysis"][
+                "is_stutter_invariant"
+            ] = det_automaton_stutter_check
+
+        return classification
+    finally:
+        if verbose is not None:
+            set_verbose(prev_verbose)
 
 
 if __name__ == "__main__":
@@ -385,7 +409,15 @@ if __name__ == "__main__":
         code = print_spot_status()
         sys.exit(code)
 
-    formulas = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
+    verbose_flag = False
+    formulas: list[str] = []
+    for arg in sys.argv[1:]:
+        if arg in {"--verbose", "-v"}:
+            verbose_flag = True
+        elif arg.startswith("--"):
+            continue
+        else:
+            formulas.append(arg)
     if not formulas:
         print(
             "Provide one or more LTL formulas as arguments, or use --check-spot to inspect availability.",
@@ -395,7 +427,7 @@ if __name__ == "__main__":
 
     for formula_str in formulas:
         try:
-            classification = classify_ltl_property(formula_str)
+            classification = classify_ltl_property(formula_str, verbose=verbose_flag)
         except Exception as exc:
             print(
                 f"[tlparser] Failed to classify '{formula_str}': {exc}", file=sys.stderr
