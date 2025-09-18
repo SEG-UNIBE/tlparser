@@ -76,6 +76,19 @@ class Utils:
             self.spot_issues.extend(spot_analyzer.issue_entries())
         return parsed_formulas
 
+    def save_spot_issue_report(self, path: str) -> None:
+        if not self.spot_issues:
+            return
+        lines = ["# Spot Analysis Issues", ""]
+        for formula, problems in self.spot_issues:
+            lines.extend(["## Formula", "```", formula, "```", "", "### Issues"])
+            for issue in problems:
+                lines.append(f"- {issue}")
+            lines.append("")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("\n".join(lines).rstrip() + "\n")
+
     def analyze_single_formula(
         self,
         formula: str,

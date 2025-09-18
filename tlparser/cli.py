@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import sys
@@ -96,9 +97,19 @@ def digest_file(json_file, output, extended, verbose):
     if util.warnings:
         for warning in util.warnings:
             click.echo(warning, err=True)
-    util.echo_spot_summary(util.spot_issues, total=len(formulas))
     out_file = util.write_to_excel(formulas)
     click.echo(f"Processed {json_file} and saved results to {out_file}")
+
+    if util.spot_issues:
+        issue_path = os.path.splitext(out_file)[0] + "_errors.md"
+        util.save_spot_issue_report(issue_path)
+        count = len(util.spot_issues)
+        click.echo(
+            f"{count} out of {len(formulas)} formulae reported Spot issues; see {issue_path}",
+            err=True,
+        )
+
+    util.echo_spot_summary(util.spot_issues, total=len(formulas))
 
 
 @cli.command(name="evaluate")
@@ -143,7 +154,7 @@ def evaluate_formula(formula_tokens, extended, verbose, requirement_text):
         click.echo("Requirement text:")
         click.echo(requirement_text)
     click.echo("")
-    click.echo(stats)
+    click.echo(json.dumps(stats.as_serializable(), indent=2, sort_keys=True))
 
     if util.warnings:
         for warning in util.warnings:

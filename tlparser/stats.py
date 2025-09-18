@@ -196,6 +196,27 @@ class Stats:
     def get_stats(self):
         return {key: value for key, value in vars(self).items() if key not in [""]}
 
+    def as_serializable(self):
+        sanitized = self._sanitize_for_json(self.get_stats())
+        spot_data = sanitized.pop("spot", None)
+        if spot_data:
+            sanitized["z_extended"] = spot_data
+        return sanitized
+
+    @staticmethod
+    def _sanitize_for_json(value):
+        if isinstance(value, dict):
+            return {k: Stats._sanitize_for_json(v) for k, v in value.items()}
+        if isinstance(value, set):
+            return sorted(Stats._sanitize_for_json(v) for v in value)
+        if isinstance(value, tuple):
+            return [Stats._sanitize_for_json(v) for v in value]
+        if isinstance(value, list):
+            return [Stats._sanitize_for_json(v) for v in value]
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            return value
+        return str(value)
+
     def __str__(self):
         return pprint.pformat(self.get_stats(), indent=2)
 
