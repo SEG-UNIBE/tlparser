@@ -3,17 +3,24 @@ import openpyxl
 import os
 import pandas as pd
 from datetime import datetime
+from typing import Optional
 
 from tlparser.config import Configuration
 from tlparser.stats import Stats
+from tlparser.stats_ext import SpotAnalyzer
 
 
 class Utils:
 
     def __init__(self, config: Configuration):
         self.config = config
+        self.warnings: list[str] = []
 
-    def read_formulas_from_json(self):
+    def read_formulas_from_json(self, *, extended: bool = False):
+        self.warnings.clear()
+
+        spot_analyzer = self._create_spot_analyzer(extended)
+
         with open(self.config.file_data_in, "r") as file:
             data = json.load(file)
         parsed_formulas = []
@@ -25,7 +32,12 @@ class Utils:
         for entry in data:
             if entry["status"] in self.config.only_with_status:
                 for logic in entry["logics"]:
-                    s = Stats(formula_str=logic["f_code"], req_text=entry["text"])
+                    s = Stats(
+                        formula_str=logic["f_code"],
+                        req_text=entry["text"],
+                        extended=extended,
+                        spot_analyzer=spot_analyzer,
+                    )
                     parsed_formulas.append(
                         {
                             "id": entry["id"],
@@ -36,7 +48,43 @@ class Utils:
                             "stats": s.get_stats(),
                         }
                     )
+        if spot_analyzer is not None:
+            self.warnings.extend(spot_analyzer.diagnostics)
         return parsed_formulas
+
+    def analyze_single_formula(
+        self,
+        formula: str,
+        *,
+        extended: bool = False,
+        requirement_text: Optional[str] = None,
+    ) -> Stats:
+        self.warnings.clear()
+
+        spot_analyzer = self._create_spot_analyzer(extended)
+
+        stats = Stats(
+            formula_str=formula,
+            req_text=requirement_text,
+            extended=extended,
+            spot_analyzer=spot_analyzer,
+        )
+
+        if spot_analyzer is not None:
+            self.warnings.extend(spot_analyzer.diagnostics)
+
+        return stats
+
+    def _create_spot_analyzer(self, extended: bool) -> Optional[SpotAnalyzer]:
+        if not extended:
+            return None
+        try:
+            return SpotAnalyzer()
+        except Exception as exc:
+            self.warnings.append(
+                f"[tlparser] Spot analyzer initialization failed: {exc}"
+            )
+            return None
 
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
@@ -54,7 +102,8 @@ class Utils:
         headers = {key for item in flattened_data for key in item.keys()}
 
         # Sort headers according to predefined order, with any extra headers at the end
-        predefined_order = Utils.get_column_order()
+        include_extended = any("stats.spot" in entry for entry in flattened_data)
+        predefined_order = Utils.get_column_order(extended=include_extended)
         headers = [header for header in predefined_order if header in headers] + [
             header for header in headers if header not in predefined_order
         ]
@@ -129,8 +178,12 @@ class Utils:
 
     @staticmethod
     def lighten_color(hex_color, opacity=0.6):
-        hex_color = hex_color.lstrip('#')
-        r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+        hex_color = hex_color.lstrip("#")
+        r, g, b = (
+            int(hex_color[0:2], 16),
+            int(hex_color[2:4], 16),
+            int(hex_color[4:6], 16),
+        )
         white = (255, 255, 255)
         new_r = int((1 - opacity) * white[0] + opacity * r)
         new_g = int((1 - opacity) * white[1] + opacity * g)
@@ -138,8 +191,8 @@ class Utils:
         return f"#{new_r:02x}{new_g:02x}{new_b:02x}"
 
     @staticmethod
-    def get_column_order():
-        return [
+    def get_column_order(extended: bool = False):
+        base_columns = [
             "id",
             "text",
             "type",
@@ -179,3 +232,34 @@ class Utils:
             "stats.entropy.tops",
             "stats.entropy.lops_tops",
         ]
+        if not extended:
+            return base_columns
+
+        spot_columns = [
+            "stats.spot.formula",
+            "stats.spot.spot_formula",
+            "stats.spot.syntactic_safety",
+            "stats.spot.is_stutter_invariant_formula",
+            "stats.spot.manna_pnueli_class",
+            "stats.spot.tgba_analysis.state_count",
+            "stats.spot.tgba_analysis.transition_count",
+            "stats.spot.tgba_analysis.is_complete",
+            "stats.spot.tgba_analysis.is_deterministic",
+            "stats.spot.tgba_analysis.acceptance_sets",
+            "stats.spot.tgba_analysis.is_stutter_invariant",
+            "stats.spot.buchi_analysis.state_count",
+            "stats.spot.buchi_analysis.transition_count",
+            "stats.spot.buchi_analysis.is_complete",
+            "stats.spot.buchi_analysis.is_deterministic",
+            "stats.spot.buchi_analysis.acceptance_sets",
+            "stats.spot.buchi_analysis.is_stutter_invariant",
+            "stats.spot.deterministic_attempt.success",
+            "stats.spot.deterministic_attempt.error",
+            "stats.spot.deterministic_attempt.automaton_analysis.state_count",
+            "stats.spot.deterministic_attempt.automaton_analysis.transition_count",
+            "stats.spot.deterministic_attempt.automaton_analysis.is_complete",
+            "stats.spot.deterministic_attempt.automaton_analysis.is_deterministic",
+            "stats.spot.deterministic_attempt.automaton_analysis.acceptance_sets",
+            "stats.spot.deterministic_attempt.automaton_analysis.is_stutter_invariant",
+        ]
+        return base_columns + spot_columns

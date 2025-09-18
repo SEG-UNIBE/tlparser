@@ -1,15 +1,33 @@
+from __future__ import annotations
+
 from pyModelChecking import CTLS
 import re
 import pprint
 from scipy.stats import entropy
-from typing import Tuple
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tlparser.stats_ext import SpotAnalyzer
+
+try:  # pragma: no cover - guard against optional Spot dependencies missing
+    from tlparser.stats_ext import SpotAnalyzer as _SpotAnalyzer
+except Exception:  # noqa: BLE001
+    _SpotAnalyzer = None
 
 
 class Stats:
-    def __init__(self, formula_str, req_text=None):
+    def __init__(
+        self,
+        formula_str,
+        req_text=None,
+        *,
+        extended: bool = False,
+        spot_analyzer: "SpotAnalyzer" | None = None,
+    ):
         self.formula_raw = formula_str
         self.formula_parsable = None
         self.formula_parsed = None
+        self.spot = None
 
         req_text_stats = self.get_requirement_text_stats(req_text)
         self.req_len = req_text_stats[0]
@@ -61,6 +79,13 @@ class Stats:
             self.analyze_formula(self.formula_parsed)
             self.agg = self.update_aggregates()
             self.entropy = self.calc_entropy()
+
+            if extended:
+                analyzer = spot_analyzer
+                if analyzer is None and _SpotAnalyzer is not None:
+                    analyzer = _SpotAnalyzer()
+                if analyzer is not None:
+                    self.spot = analyzer.classify(self.formula_raw)
 
     @staticmethod
     def analyse_comparison_ops(formula_str):
@@ -173,7 +198,7 @@ class Stats:
     def __str__(self):
         return pprint.pformat(self.get_stats(), indent=2)
 
-    def get_requirement_text_stats(self, req_text:str) -> Tuple[int | None, int | None, int | None]:
+    def get_requirement_text_stats(self, req_text: str) -> tuple[int | None, int | None, int | None]:
         if req_text:
             cleaned_text = req_text.strip()
             if cleaned_text and cleaned_text[-1] not in '.!?':

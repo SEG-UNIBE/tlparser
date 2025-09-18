@@ -1,11 +1,12 @@
 import os
 import shutil
-
+import sys
 import click
 
 from tlparser.config import Configuration
 from tlparser.utils import Utils
 from tlparser.viz import Viz
+
 
 DEFAULT_WD = "workingdir"
 DEFAULT_STATI = ["OK"]
@@ -58,7 +59,12 @@ def cli():
     default=None,
     help="Path to the output directory.",
 )
-def digest_file(json_file, output):
+@click.option(
+    "--extended",
+    is_flag=True,
+    help="Include Spot-based extended columns when Spot CLI tools are available.",
+)
+def digest_file(json_file, output, extended):
     """Processes the JSON file and outputs a CSV"""
     working_dir = get_working_directory(output)
     config = Configuration(
@@ -68,9 +74,54 @@ def digest_file(json_file, output):
         logic_order=DEFAULT_ORDER,
     )
     util = Utils(config)
-    formulas = util.read_formulas_from_json()
+    formulas = util.read_formulas_from_json(extended=extended)
+    if extended and util.warnings:
+        for warning in util.warnings:
+            click.echo(warning, err=True)
     out_file = util.write_to_excel(formulas)
     click.echo(f"Processed {json_file} and saved results to {out_file}")
+
+
+@cli.command(name="evaluate")
+@click.argument("formula_tokens", nargs=-1)
+@click.option(
+    "--extended",
+    is_flag=True,
+    help="Include Spot-based extended columns when Spot CLI tools are available.",
+)
+@click.option(
+    "--text",
+    "requirement_text",
+    default=None,
+    help="Optional requirement text to include when computing stats.",
+)
+def evaluate_formula(formula_tokens, extended, requirement_text):
+    """Analyze a single formula and print the statistics."""
+    if not formula_tokens:
+        raise click.UsageError("Provide a formula to evaluate.")
+
+    formula = " ".join(formula_tokens).strip()
+
+    config = Configuration(logic_order=DEFAULT_ORDER)
+    util = Utils(config)
+    stats = util.analyze_single_formula(
+        formula,
+        extended=extended,
+        requirement_text=requirement_text,
+    )
+
+    click.echo("Digest results for provided formula:\n")
+    click.echo(formula)
+    if requirement_text:
+        click.echo("")
+        click.echo("Requirement text:")
+        click.echo(requirement_text)
+    click.echo("")
+    click.echo(stats)
+
+    if util.warnings:
+        for warning in util.warnings:
+            click.echo(warning, err=True)
 
 
 @cli.command(name="visualize")
@@ -185,3 +236,16 @@ def cleanup_folder():
         )
     else:
         click.echo("Cleanup operation aborted.")
+
+
+@click.command()
+def check_spot():
+    """Report Spot tool availability and exit non-zero if missing."""
+    try:
+        from tlparser.spot_tools import print_spot_status
+    except Exception:
+        click.echo(
+            "Spot status check unavailable (missing Spot helper functions).", err=True
+        )
+        sys.exit(2)
+    sys.exit(print_spot_status())
