@@ -6,6 +6,8 @@ import pprint
 from scipy.stats import entropy
 from typing import TYPE_CHECKING
 
+from tlparser.formula_utils import normalize_formula_tokens, normalize_comparison_ops
+
 if TYPE_CHECKING:
     from tlparser.stats_ext import SpotAnalyzer
 
@@ -26,6 +28,7 @@ class Stats:
         spot_verbose: bool = False,
     ):
         self.formula_raw = formula_str
+        self.formula_normalized = normalize_formula_tokens(formula_str or "")
         self.formula_parsable = None
         self.formula_parsed = None
         self.spot = None
@@ -68,10 +71,10 @@ class Stats:
         self.asth = 0
         self.ap = set()  # Atomic propositions (e.g., 'x > 5')
 
-        if len(self.formula_raw) > 0:
+        if len(self.formula_normalized) > 0:
             # Replace comparison operators
-            self.cops, self.formula_parsable = self.analyse_comparison_ops(
-                self.formula_raw
+            self.cops, self.formula_parsable = normalize_comparison_ops(
+                self.formula_normalized
             )
 
             # Parse the formula
@@ -87,51 +90,6 @@ class Stats:
                     analyzer = _SpotAnalyzer(verbose=spot_verbose)
                 if analyzer is not None:
                     self.spot = analyzer.classify(self.formula_raw)
-
-    @staticmethod
-    def analyse_comparison_ops(formula_str):
-        # Patterns for comparison operators
-        patterns = {
-            "eq": re.compile(r"=="),
-            "leq": re.compile(r"<="),
-            "geq": re.compile(r">="),
-            "neq": re.compile(r"!="),
-            "lt": re.compile(r"(?<!<)<(?![=<])"),  # Ensure it does not match <=
-            "gt": re.compile(r"(?<!>)>(?![=>])"),  # Ensure it does not match >=
-        }
-
-        # Count occurrences of each operator
-        formula_tmp = re.sub("-->", "__IMPLIES__", formula_str)
-        counts = {
-            key: len(pattern.findall(formula_tmp)) for key, pattern in patterns.items()
-        }
-
-        # Sub-function to replace comparison operators
-        def replace_comparisons(match):
-            expression = match.group().replace(" ", "")
-            expression = re.sub(r"-", "n", expression)
-            if "<=" in expression:
-                return expression.replace("<=", "_leq_")
-            elif ">=" in expression:
-                return expression.replace(">=", "_geq_")
-            elif "==" in expression:
-                return expression.replace("==", "_eq_")
-            elif "!=" in expression:
-                return expression.replace("!=", "_neq_")
-            elif "<" in expression:
-                return expression.replace("<", "_lt_")
-            elif ">" in expression:
-                return expression.replace(">", "_gt_")
-
-        # Replace comparison operators (allowing for any amount of space)
-        modified_string = re.sub(
-            r"\b[\w.]+ *[<>!=]=? *-?\w+\b", replace_comparisons, formula_str
-        )
-
-        # Add 'n' before every number
-        modified_string = re.sub(r"(\d+(\.\d+)?)", r"n\1", modified_string)
-
-        return counts, modified_string
 
     def analyze_formula(self, node, level=0):
         if level == 0:
