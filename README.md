@@ -310,4 +310,4 @@ Sample output:
 
 </br>
 
-[^spot-citation]: Alexandre Duret-Lutz et al., “[From Spot 2.0 to Spot 2.10: What’s new?](https://doi.org/10.1007/978-3-031-13188-2\_9)”, Proc. CAV 2022, LNCS 13372, pp. 174–187, Haifa, Israel, Aug. 2022.
+[^spot-citation]: Alexandre Duret-Lutz et al., “[From Spot 2.0 to Spot 2.10: What’s new?](https://doi.org/10.1007/978-3-031-13188-2_9)”, Proc. CAV 2022, LNCS 13372, pp. 174–187, Haifa, Israel, Aug. 2022.
