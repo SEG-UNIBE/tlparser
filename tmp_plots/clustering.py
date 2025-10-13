@@ -94,8 +94,9 @@ def plot_agglomerative_clustering_and_pca(
     def _fmt_label(formula, id_):
         s = str(formula) if pd.notna(formula) else ""
         s = s.strip()
-        if len(s) > 60:
-            s = s[:60] + "..."
+        max_length = 45
+        if len(s) > max_length:
+            s = s[:max_length] + "..."
         return f"{s} [{id_}]"
 
     labels_list = [_fmt_label(labels_series.loc[i], id_series.loc[i]) for i in clu_df.index]
@@ -144,7 +145,7 @@ def plot_agglomerative_clustering_and_pca(
     # Dendrogram
     n_leaves = len(labels_list)
     fig_height = max(6, 0.28 * n_leaves + 2)
-    fig = plt.figure(figsize=(12, fig_height))
+    fig = plt.figure(figsize=(6, fig_height))
     link_color_func = _make_link_color_func(Z, labels, palette_hex)
     dobj = dendrogram(
         Z,
@@ -171,7 +172,7 @@ def plot_agglomerative_clustering_and_pca(
     # PCA projection
     pca = PCA(n_components=2)
     coords = pca.fit_transform(X_scaled)
-    fig2 = plt.figure(figsize=(12, 8))
+    fig2 = plt.figure(figsize=(8, 6))
     for k in sorted(set(labels)):
         idx = labels == k
         plt.scatter(
