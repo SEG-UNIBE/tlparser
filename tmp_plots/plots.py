@@ -4,8 +4,6 @@ import pandas as pd
 import numpy as np
 from upsetplot import UpSet, from_memberships
 import seaborn as sns
-# for frequent itemset mining (Apriori algorithm based)
-from mlxtend.frequent_patterns import apriori, association_rules
 
 
 def _ensure_dir(output_dir: str) -> None:
@@ -283,7 +281,7 @@ def plot_extended_correlation_matrix(df: pd.DataFrame, output_dir: str = "output
     plt.close(fig)
 
 
-
+# This is produced and in the Confidence of the FrequentItemSetMining
 def plot_extended_conditional_probability_matrix(df: pd.DataFrame, output_dir: str = "output") -> None:
     """Extended conditional probability matrix across semantic features."""
     _ensure_dir(output_dir)
@@ -320,8 +318,6 @@ def plot_extended_conditional_probability_matrix(df: pd.DataFrame, output_dir: s
             else:
                 cond_prob_matrix.loc[col_A, col_B] = np.nan
 
-    mask = np.triu(np.ones_like(cond_prob_matrix, dtype=bool), k=1)
-
     fig = plt.figure(figsize=(10, 8))
     sns.heatmap(
         cond_prob_matrix,
@@ -330,7 +326,6 @@ def plot_extended_conditional_probability_matrix(df: pd.DataFrame, output_dir: s
         center=0.5,
         vmin=0,
         vmax=1,
-        mask=mask,
         linecolor='gray',
     )
     plt.title("Conditional probability matrix of semantic features")
@@ -421,66 +416,42 @@ def plot_frequent_itemset_mining(df: pd.DataFrame, output_dir: str = "output") -
         data[kw] = df["stats.spot.manna_pnueli_class"].apply(
             lambda x: 1 if pd.notna(x) and isinstance(x, str) and kw in x.lower() else 0
         )
-
-    frequent_itemsets = apriori(data.astype(int), min_support=0.1, use_colnames=True)
-    if frequent_itemsets.empty:
-        return
-    rules = association_rules(frequent_itemsets, metric="lift", min_threshold=0.001)
-
+    
     items = data.columns
-    metrics = [
-        "support",
-        "confidence",
-        "lift",
-        "leverage",
-        "conviction",
-        "cosine",
-        "kulczynski",
-        "all_confidence",
-    ]
+    metrics = ["support", "confidence", "lift", "conviction"]
     matrices = {m: pd.DataFrame(0.0, index=items, columns=items) for m in metrics}
-    item_supports = data.mean()
 
-    for _, row in rules.iterrows():
-        antecedents = list(row['antecedents'])
-        consequents = list(row['consequents'])
+    for a in items:
+        for b in items:
+            A = data[a]
+            B = data[b]
 
-        support = row['support']
-        confidence = row['confidence']
-        lift = row['lift']
-        leverage = row['leverage']
-        conviction = row['conviction']
+            support_A = A.mean()
+            support_B = B.mean()
+            support_AB = ((A == 1) & (B == 1)).mean()
 
-        antecedent_support = max([item_supports[a] for a in antecedents])
-        consequent_support = max([item_supports[c] for c in consequents])
+            # Support = P(A ∩ B)
+            matrices["support"].loc[a, b] = support_AB
+            # Confidence = Conditional Probability = P(B|A) = P(A ∩ B) / P(A)
+            matrices["confidence"].loc[a, b] = support_AB / support_A if support_A > 0 else np.nan
+            # Lift = P(B|A) / P(B) = P(A ∩ B) / (P(A)*P(B))
+            matrices["lift"].loc[a, b] = support_AB / (support_A * support_B) if support_A > 0 and support_B > 0 else np.nan
+            # Conviction = (1 - P(B)) / (1 - confidence)
+            conf = matrices["confidence"].loc[a, b]
+            matrices["conviction"].loc[a, b] = (1 - support_B) / (1 - conf) if conf < 1 else np.inf
 
-        cosine = support / ((antecedent_support * consequent_support) ** 0.5)
-        kulc = 0.5 * (confidence + support / consequent_support)
-        all_conf = support / max(antecedent_support, consequent_support)
+    fig, axes = plt.subplots(2, 2, figsize=(18, 12))
+    axes = axes.flatten()
 
-        for a in antecedents:
-            for c in consequents:
-                matrices["support"].loc[a, c] = support
-                matrices["confidence"].loc[a, c] = confidence
-                matrices["lift"].loc[a, c] = lift
-                matrices["leverage"].loc[a, c] = leverage
-                matrices["conviction"].loc[a, c] = conviction
-                matrices["cosine"].loc[a, c] = cosine
-                matrices["kulczynski"].loc[a, c] = kulc
-                matrices["all_confidence"].loc[a, c] = all_conf
-
-    fig, axes = plt.subplots(2, 4, figsize=(24, 12))
-    for i, (ax, metric) in enumerate(zip(axes.flatten(), metrics)):
+    for ax, metric in zip(axes, metrics):
         matrix_to_plot = matrices[metric].copy()
-        np.fill_diagonal(matrix_to_plot.values, np.nan)
         sns.heatmap(
             matrix_to_plot,
             annot=True,
             fmt=".2f",
             cmap="Blues",
             ax=ax,
-            cbar=True,
-            yticklabels=(i % 4 == 0),
+            cbar=True
         )
         ax.set_title(metric.capitalize(), pad=12, fontsize=12)
         cbar = ax.collections[0].colorbar
