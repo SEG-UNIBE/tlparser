@@ -40,3 +40,24 @@ keywords:
   - temporal logics
   - parser
 license: AGPL-3.0
+
+preferred-citation:
+  type: conference-paper
+  authors:
+    - given-names: Roman
+      family-names: Bögli
+    - given-names: Atefeh
+      family-names: Rohani
+    - given-names: Thomas
+      family-names: Studer
+    - given-names: Christos
+      family-names: Tsigkanos
+    - given-names: Timo
+      family-names: Kehrer
+  title: "Temporal Logics Meet Real-World Software Requirements: A Reality Check"
+  collection-title: "13th IEEE/ACM International Conference on Formal Methods in Software Engineering (FormaliSE@ICSE 2025)"
+  publisher: IEEE
+  year: 2025
+  pages: 74-85
+  doi: "10.1109/FormaliSE66629.2025.00014"
+  url: "https://doi.org/10.1109/FormaliSE66629.2025.00014"
