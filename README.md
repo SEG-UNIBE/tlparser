@@ -1,8 +1,8 @@
-> *This artifact extends the open-source tlparser tool [^tlparser] by adding capabilities for the automatic analysis of natural-language specifications and for supporting their quality evaluation. The codebase was obtained by cloning the upstream repository and augmenting it with these features.*
+> *This artifact extends the open-source `tlparser`[^tlparser] to automatically analyze requirements expressed in natural language and support their quality evaluation.*
+> *The codebase was obtained by forking original `tlparser` repository and augmenting it with these features.*
 
-- Direct link to Edge/IoT dataset: [Dataset.xlsx](https://github.com/SEG-UNIBE/tlparser/raw/refs/heads/extension/data/Edge_IoT/Dataset.xlsx)
+- Direct link to Edge/IoT dataset: [**Dataset.xlsx**](https://github.com/SEG-UNIBE/tlparser/raw/refs/heads/extension/data/Edge_IoT/Dataset.xlsx)
 
-</br>
 </br>
 
 # Temporal Logic Parser (Extended)
