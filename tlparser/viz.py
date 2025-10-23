@@ -730,3 +730,94 @@ class Viz:
                 outs.append(out)
 
         return outs
+
+    def plot_operator_bars(self):
+        # Summarize operator counts across self translations and plot three bar charts side-by-side
+        df = self.data[self.data["translation"] == "self"].copy()
+
+        groups = [
+            (
+                "(a) Temporal",
+                {
+                    "F": "stats.tops.F",
+                    "G": "stats.tops.G",
+                    "U": "stats.tops.U",
+                    "X": "stats.tops.X",
+                },
+            ),
+            (
+                "(b) Logical",
+                {
+                    "and": "stats.lops.and",
+                    "implies": "stats.lops.impl",
+                    "not": "stats.lops.not",
+                    "or": "stats.lops.or",
+                },
+            ),
+            (
+                "(c) Comparison",
+                {
+                    "eq": "stats.cops.eq",
+                    "geq": "stats.cops.geq",
+                    "gt": "stats.cops.gt",
+                    "leq": "stats.cops.leq",
+                    "lt": "stats.cops.lt",
+                    "neq": "stats.cops.neq",
+                },
+            ),
+        ]
+
+        # Compute data and width ratios first so we can size columns proportionally
+        bar_groups = []  # list of (title, labels, values)
+        width_ratios = []
+        for title, mapping in groups:
+            labels = []
+            values = []
+            cols = [col for col in mapping.values() if col in df.columns]
+            if cols:
+                sums = df[cols].sum()
+                for label, col in mapping.items():
+                    if col in sums.index:
+                        labels.append(label)
+                        values.append(int(sums[col]))
+            if not labels:
+                labels, values = ["n/a"], [0]
+            bar_groups.append((title, labels, values))
+            width_ratios.append(max(len(labels), 1))
+
+        fig, axes = plt.subplots(
+            1,
+            3,
+            figsize=(9, 3.5),
+            sharey=False,
+            gridspec_kw={"width_ratios": width_ratios},
+        )
+        axes = axes.flatten()
+
+        palette = sns.color_palette("tab10")
+        alpha = 0.85  # add a bit of transparency to bar faces
+
+        for ax, (title, labels, values) in zip(axes, bar_groups):
+            base_colors = palette[: len(labels)]
+            bar_colors = [(r, g, b, alpha) for (r, g, b) in base_colors]
+            bars = ax.bar(labels, values, color=bar_colors, edgecolor="black")
+            ax.set_title(title)
+            ax.set_ylabel("Count")
+            ax.set_ylim(0, max(values) * 1.15 + 1)
+
+            for rect, val in zip(bars, values):
+                ax.annotate(
+                    str(val),
+                    xy=(rect.get_x() + rect.get_width() / 2, rect.get_height()),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha="center",
+                    va="bottom",
+                    fontsize=9,
+                )
+
+        fig.tight_layout()
+        out = self.__get_file_name("ops_bars")
+        plt.savefig(out)
+        plt.close()
+        return out
