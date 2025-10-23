@@ -1,9 +1,11 @@
-# Temporal Logic Parser
+> *This artifact extends the open-source tlparser tool [^tlparser] by adding capabilities for the automatic analysis of natural-language specifications and for supporting their quality evaluation. The codebase was obtained by cloning the upstream repository and augmenting it with these features.*
 
-[![Changelog](https://img.shields.io/github/v/release/RomanBoegli/tlparser?include_prereleases&label=changelog)](https://github.com/RomanBoegli/tlparser/releases)
-[![Test](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/main/LICENSE)
-[![DOI](https://zenodo.org/badge/919931974.svg)](https://doi.org/10.5281/zenodo.14764479)
+- Direct link to Edge/IoT dataset: [Dataset.xlsx](./data/Edge_IoT/Dataset.xlsx)
+
+</br>
+</br>
+
+# Temporal Logic Parser (Extended)
 
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
@@ -199,115 +201,6 @@ source venv/bin/activate
 # venv\Scripts\activate
 ```
 
-## Extended Statistics
-
-For automaton-level insight, enable the optional Spot[^spot-citation] integration which will allow you to harvest extended statistics.
-Spot is not bundled with `tlparser`, so install the CLI tools (`ltl2tgba`, `ltlfilt`, `autfilt`) beforehand.
-You can find installation instructions on [Spot's webpage](https://spot.lre.epita.fr/).
-Homebrew users can also install it using the `brew install spot` command.
-
-With Spot on your `PATH`, add `--extended` to the `digest` or `evaluate` command:
-
-```bash
-tlparser digest ./data/spacewire.json --extended
-```
-
-Extended digests may also produce a companion `<filename>_errors.md` summarising formulas Spot could not analyse.
-You can experiment interactively as well:
-
-```bash
-tlparser evaluate "G (req --> F ack)" --extended
-```
-
-Sample output:
-
-```json
-{
-  "agg": {
-    "aps": 2,
-    "cops": 0,
-    "lops": 1,
-    "tops": 2
-  },
-  "ap": [
-    "ack",
-    "req"
-  ],
-  "asth": 3,
-  "cops": {
-    "eq": 0,
-    "geq": 0,
-    "gt": 0,
-    "leq": 0,
-    "lt": 0,
-    "neq": 0
-  },
-  "entropy": {
-    "lops": 1.0,
-    "lops_tops": 1.584962500721156,
-    "tops": 0.0
-  },
-  "formula_parsable": "G (req --> F ack)",
-  "formula_parsed": "G((req --> F(ack)))",
-  "formula_raw": "G (req --> F ack)",
-  "lops": {
-    "and": 0,
-    "impl": 1,
-    "not": 0,
-    "or": 0
-  },
-  "req_len": null,
-  "req_sentence_count": null,
-  "req_word_count": null,
-  "tops": {
-    "A": 0,
-    "E": 0,
-    "F": 1,
-    "G": 1,
-    "R": 0,
-    "U": 0,
-    "X": 0
-  },
-  "z_extended": {
-    "buchi_analysis": {
-      "acceptance_sets": 1,
-      "analysis_source": "ltl2tgba_stats",
-      "is_complete": true,
-      "is_deterministic": true,
-      "is_stutter_invariant": true,
-      "state_count": 2,
-      "transition_count": 8
-    },
-    "deterministic_attempt": {
-      "automaton_analysis": {
-        "acceptance_sets": 1,
-        "analysis_source": "ltl2tgba_stats",
-        "is_complete": true,
-        "is_deterministic": true,
-        "is_stutter_invariant": true,
-        "state_count": 2,
-        "transition_count": 8
-      },
-      "success": true
-    },
-    "formula": "G (req --> F ack)",
-    "is_stutter_invariant_formula": true,
-    "manna_pnueli_class": "recurrence reactivity",
-    "spot_formula": "G (req -> F ack)",
-    "syntactic_safety": false,
-    "tgba_analysis": {
-      "acceptance_sets": 1,
-      "analysis_source": "ltl2tgba_stats",
-      "is_complete": true,
-      "is_deterministic": true,
-      "is_stutter_invariant": true,
-      "state_count": 2,
-      "transition_count": 8
-    }
-  }
-}
-```
-
 </br>
 
-[^spot-citation]: Alexandre Duret-Lutz et al., “[From Spot 2.0 to Spot 2.10: What’s new?](https://doi.org/10.1007/978-3-031-13188-2_9)”, Proc. CAV 2022, LNCS 13372, pp. 174–187, Haifa, Israel, Aug. 2022.
+> [^tlparser] Bögli, R., Rohani, A., Studer, T., Tsigkanos, C., & Kehrer, T. tlparser [Computer software]. <https://github.com/SEG-UNIBE/tlparser>
