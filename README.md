@@ -203,4 +203,4 @@ source venv/bin/activate
 
 </br>
 
-> [^tlparser] Bögli, R., Rohani, A., Studer, T., Tsigkanos, C., & Kehrer, T. tlparser [Computer software]. <https://github.com/SEG-UNIBE/tlparser>
+[^tlparser]: Bögli, R., Rohani, A., Studer, T., Tsigkanos, C., & Kehrer, T. tlparser [Computer software]. <https://github.com/SEG-UNIBE/tlparser>
