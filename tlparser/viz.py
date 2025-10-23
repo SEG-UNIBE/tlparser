@@ -442,14 +442,7 @@ class Viz:
             nrows=3, ncols=3, figsize=(8, 7), sharey=True, sharex=False
         )
         axes = axes.flatten()
-
-        # Choose a pleasant uniform color; prefer the 2nd color from palette
-        palette_vals = list(self.config.color_palette.values())
-        base_color = (
-            palette_vals[1]
-            if len(palette_vals) > 1
-            else (palette_vals[0] if palette_vals else "#56ac67")
-        )
+        base_color = "#ffaf2d"
 
         for ax, x in zip(axes, available):
             ax.scatter(
