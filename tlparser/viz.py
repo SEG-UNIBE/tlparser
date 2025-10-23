@@ -358,7 +358,7 @@ class Viz:
             palette_index,
         )
 
-    def plot_pairplot(self):
+    def plot_pairplot(self, include_trend: bool = False):
         type_palette = self.config.color_palette
         df = self.data[self.data["translation"] == "self"]
         metrics = df.filter(like=".agg.").columns.tolist()
@@ -387,8 +387,133 @@ class Viz:
                 artist.set_edgecolor("black")
                 artist.set_alpha(0.6)
 
+        if include_trend:
+            # Overlay a single overall linear trend per subplot (off-diagonal only)
+            for r, row in enumerate(g.axes):
+                for c, ax in enumerate(row):
+                    xvar = g.x_vars[c]
+                    yvar = g.y_vars[r]
+                    if xvar == yvar:
+                        continue
+                    if df_pairplot[xvar].nunique() <= 1:
+                        continue
+                    sns.regplot(
+                        data=df_pairplot,
+                        x=xvar,
+                        y=yvar,
+                        scatter=False,
+                        ax=ax,
+                        color="black",
+                        line_kws={"linewidth": 1.2, "alpha": 0.8, "zorder": 5},
+                    )
+                    # Restore pretty labels (regplot resets them)
+                    ax.set_xlabel(self.title_map.get(xvar, [xvar, ""])[0])
+                    ax.set_ylabel(self.title_map.get(yvar, [yvar, ""])[0])
+
         g._legend.set_title("")
         out = self.__get_file_name("pairp")
+        plt.savefig(out)
+        plt.close()
+        return out
+
+    def plot_pairplot_reqwords(self, include_trend: bool = False):
+        # Scatter grids with Requirement Words on the Y-axis for selected X metrics
+        df = self.data[self.data["translation"] == "self"].copy()
+
+        x_metrics = [
+            "stats.agg.aps",
+            "stats.agg.cops",
+            "stats.agg.lops",
+            "stats.agg.tops",
+            "stats.asth",
+            "stats.entropy.lops_tops",
+            "stats.req_sentence_count",
+            "stats.req_len",
+        ]
+        y_metric = "stats.req_word_count"
+
+        available = [m for m in x_metrics if m in df.columns]
+        if y_metric not in df.columns or not available:
+            # Nothing to plot
+            return ""
+
+        # Build figure 3x3
+        fig, axes = plt.subplots(
+            nrows=3, ncols=3, figsize=(8, 7), sharey=True, sharex=False
+        )
+        axes = axes.flatten()
+
+        # Choose a pleasant uniform color; prefer the 2nd color from palette
+        palette_vals = list(self.config.color_palette.values())
+        base_color = (
+            palette_vals[1]
+            if len(palette_vals) > 1
+            else (palette_vals[0] if palette_vals else "#56ac67")
+        )
+
+        for ax, x in zip(axes, available):
+            ax.scatter(
+                df[x],
+                df[y_metric],
+                s=28,
+                c=base_color,
+                alpha=0.55,
+                edgecolors="black",
+                linewidths=0.5,
+            )
+            x_label = self.title_map.get(x, [x, ""])[0]
+            y_label = "Requirement Words"
+            ax.set_xlabel(x_label)
+            ax.set_ylabel(y_label)
+
+            if include_trend and df[x].nunique() > 1:
+                sns.regplot(
+                    data=df,
+                    x=x,
+                    y=y_metric,
+                    scatter=False,
+                    ax=ax,
+                    color="black",
+                    line_kws={"linewidth": 1.2, "alpha": 0.8, "zorder": 5},
+                )
+                # Restore labels after regplot overlay
+                ax.set_xlabel(x_label)
+                ax.set_ylabel(y_label)
+
+        # Hide any unused axes (if fewer than 9 x metrics are available)
+        for j in range(len(available), len(axes)):
+            axes[j].set_visible(False)
+
+        fig.tight_layout()
+        # Center items in the last row without stretching when not all columns are used
+        n = len(available)
+        if n > 0 and n % 3 != 0:
+            r = n % 3  # 1 or 2 items in the last row
+            last_row_start = (n // 3) * 3
+            # Reference positions for the three columns in the last row
+            left_pos = axes[last_row_start].get_position()
+            mid_pos = axes[last_row_start + 1].get_position()
+            right_pos = axes[last_row_start + 2].get_position()
+
+            if r == 1:
+                # Move the single plot to the middle column
+                axes[last_row_start].set_position(
+                    [mid_pos.x0, mid_pos.y0, mid_pos.width, mid_pos.height]
+                )
+            elif r == 2:
+                # Place the two plots adjacent and centered as a group.
+                W = left_pos.width
+                # spacing between adjacent columns (gap between left and middle)
+                S = mid_pos.x0 - (left_pos.x0 + left_pos.width)
+                total = 2 * W + S
+                left_x = 0.5 - total / 2
+                axes[last_row_start].set_position(
+                    [left_x, left_pos.y0, W, left_pos.height]
+                )
+                axes[last_row_start + 1].set_position(
+                    [left_x + W + S, left_pos.y0, W, left_pos.height]
+                )
+        out = self.__get_file_name("pair_reqw")
         plt.savefig(out)
         plt.close()
         return out
