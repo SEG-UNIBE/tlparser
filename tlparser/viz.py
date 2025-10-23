@@ -124,30 +124,76 @@ class Viz:
         return out
 
     def _plot_violin(
-        self, df_long, stats_values, metrics, title_map, out_prefix, include_strip=False
+        self,
+        df_long,
+        stats_values,
+        metrics,
+        title_map,
+        out_prefix,
+        include_strip=False,
+        palette_index=0,
     ):
         type_palette = self.config.color_palette
+        # Build a palette for the present types, optionally rotated by palette_index.
+        present_types = list(df_long["type"].unique())
+        ordered_present_types = [
+            t for t in self.__get_reduced_logic_order() if t in present_types
+        ] or present_types
+
+        plot_palette = Utils.rotate_palette_map(
+            type_palette, ordered_present_types, index=palette_index
+        )
+
+        # Special case: if only one type is present, allow selecting a different
+        # color by index across the full configured palette, so different
+        # violin plots can visually alternate even for the same type.
+        if (
+            len(ordered_present_types) == 1
+            and isinstance(type_palette, dict)
+            and isinstance(palette_index, int)
+        ):
+            only_type = ordered_present_types[0]
+            full_order = self.config.logic_order or list(type_palette.keys())
+            if not full_order:
+                full_colors = list(type_palette.values())
+            else:
+                full_colors = [type_palette.get(t, "#808080") for t in full_order]
+            if len(full_colors) > 0:
+                idx = palette_index % len(full_colors)
+                plot_palette = {only_type: full_colors[idx]}
+
         number_of_types = df_long["type"].unique().size
 
-        fig, axes = plt.subplots(
-            nrows=2 if len(metrics) > 3 else 1,
-            ncols=3,
-            figsize=(11, 8) if len(metrics) > 3 else (11, 4),
-            sharex=False,
-            sharey=False,
-        )
-        axes = axes.flatten()
-        plt.subplots_adjust(hspace=0.05, wspace=0.05)
+        if len(metrics) == 3:
+            # Create a layout with the third plot centered by spanning both columns
+            fig = plt.figure(figsize=(8, 8))
+            gs = fig.add_gridspec(nrows=2, ncols=2)
+            axes_list = [
+                fig.add_subplot(gs[0, 0]),
+                fig.add_subplot(gs[0, 1]),
+                fig.add_subplot(gs[1, :]),
+            ]
+            fig.subplots_adjust(hspace=0.05, wspace=0.05)
+        else:
+            fig, axes = plt.subplots(
+                nrows=3 if len(metrics) > 3 else 2,
+                ncols=2,
+                figsize=(8, 11) if len(metrics) > 3 else (8, 7),
+                sharex=False,
+                sharey=False,
+            )
+            axes_list = axes.flatten().tolist()
+            plt.subplots_adjust(hspace=0.05, wspace=0.05)
         i = 1
 
-        for ax, agg in zip(axes, metrics):
+        for ax, agg in zip(axes_list, metrics):
             y_max = df_long[df_long["aggregation"] == agg]["value"].max() * 1.8
             violin = sns.violinplot(
                 x="type",
                 y="value",
                 data=df_long[df_long["aggregation"] == agg],
                 hue="type",
-                palette=type_palette,
+                palette=plot_palette,
                 bw_method=0.5,
                 edgecolor="black",
                 linewidth=1,
@@ -160,7 +206,7 @@ class Viz:
                 x="type",
                 y="value",
                 hue="type",
-                palette=type_palette,
+                palette=plot_palette,
                 data=df_long[df_long["aggregation"] == agg],
                 width=0.12,
                 showcaps=True,
@@ -181,7 +227,7 @@ class Viz:
                     hue="type",
                     data=df_long[df_long["aggregation"] == agg],
                     alpha=0.3,
-                    palette=type_palette,
+                    palette=plot_palette,
                     size=3,
                     marker="d",
                     edgecolor="black",
@@ -241,16 +287,24 @@ class Viz:
                 minor_tick_interval = major_interval / 5
                 ax.yaxis.set_minor_locator(ticker.MultipleLocator(minor_tick_interval))
 
-        for j in range(len(metrics), len(axes)):
-            axes[j].set_visible(False)
+        for j in range(len(metrics), len(axes_list)):
+            axes_list[j].set_visible(False)
 
         fig.tight_layout()
+        # If exactly 3 metrics, keep the third axis centered without stretching.
+        if len(metrics) == 3:
+            ref = axes_list[0].get_position()
+            bottom = axes_list[2].get_position()
+            w = ref.width
+            h = ref.height
+            x = 0.5 - w / 2
+            axes_list[2].set_position([x, bottom.y0, w, h])
         out = self.__get_file_name(out_prefix)
         plt.savefig(out)
         plt.close()
         return out
 
-    def plot_violin_engcompl(self, include_strip=False):
+    def plot_violin_engcompl(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
         metrics = df_filtered.filter(like=".agg.").columns.tolist()
         metrics = metrics + ["stats.asth", "stats.entropy.lops_tops"]
@@ -274,11 +328,13 @@ class Viz:
             self.title_map,
             "viol_engcompl",
             include_strip,
+            palette_index,
         )
 
-    def plot_violin_reqtext(self, include_strip=False):
+    def plot_violin_reqtext(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
-        metrics = df_filtered.filter(like=".req_").columns.tolist()
+        # metrics = df_filtered.filter(like=".req_").columns.tolist()
+        metrics = ["stats.req_word_count", "stats.req_sentence_count"]
         df_long = pd.melt(
             df_filtered,
             id_vars=["id", "type"],
@@ -293,7 +349,13 @@ class Viz:
             .reset_index()
         )
         return self._plot_violin(
-            df_long, stats_values, metrics, self.title_map, "viol_req", include_strip
+            df_long,
+            stats_values,
+            metrics,
+            self.title_map,
+            "viol_req",
+            include_strip,
+            palette_index,
         )
 
     def plot_pairplot(self):
@@ -301,6 +363,9 @@ class Viz:
         df = self.data[self.data["translation"] == "self"]
         metrics = df.filter(like=".agg.").columns.tolist()
         df_pairplot = df[metrics + ["type", "stats.asth", "stats.entropy.lops_tops"]]
+        req_metrics = df.filter(like=".req_").columns.tolist()
+        if req_metrics:
+            df_pairplot = pd.concat([df_pairplot, df[req_metrics]], axis=1)
 
         unique_types = df_pairplot["type"].nunique()
         markers = ["o", "s", "D", "^", "v", "P"][:unique_types]

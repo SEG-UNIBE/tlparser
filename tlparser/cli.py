@@ -226,7 +226,7 @@ def visualize_data(file, latest, selfonly, plot):
     plot_methods = {
         "hist": viz.plot_histogram,
         "viol": viz.plot_violin_engcompl,
-        "viol_req": viz.plot_violin_reqtext,
+        "viol_req": viz.plot_violin_reqtext(palette_index=2),
         "pair": viz.plot_pairplot,
         "chord": viz.plot_chord,
         "sankey": viz.plot_sankey,
