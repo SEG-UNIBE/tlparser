@@ -11,7 +11,7 @@ _COMMON_ABBREV_RE = re.compile(
     re.IGNORECASE,
 )
 _NUMERIC_DOTTED_RE = re.compile(r"\b\d+(?:\.\d+)+\.?")
-_SENTENCE_BOUNDARY_RE = re.compile(r"[.!?]+(?=(?:\s|$|[\"'\)\]]))")
+_SENTENCE_BOUNDARY_RE = re.compile(r"[.!?;:]+(?=(?:\s|$|[\"'\)\]]))")
 
 
 def _replace_dots(match: Match[str]) -> str:
