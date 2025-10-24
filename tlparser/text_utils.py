@@ -33,7 +33,7 @@ def _replace_time_abbrev(match: Match[str]) -> str:
     if not text:
         return text
 
-    next_segment = match.string[match.end():]
+    next_segment = match.string[match.end() :]
     next_char = ""
     if next_segment:
         idx = 0
@@ -42,7 +42,7 @@ def _replace_time_abbrev(match: Match[str]) -> str:
             if ch.isspace():
                 idx += 1
                 continue
-            if ch in {'"', "'", ')', ']'} and idx + 1 < len(next_segment):
+            if ch in {'"', "'", ")", "]"} and idx + 1 < len(next_segment):
                 idx += 1
                 continue
             next_char = ch
@@ -77,6 +77,11 @@ def count_sentences(text: str) -> int:
         if segment.strip():
             segments.append(segment)
         start = end
+
+    if start < len(masked):
+        tail = masked[start:]
+        if tail.strip():
+            segments.append(tail)
 
     eligible = 0
     for segment in segments:
