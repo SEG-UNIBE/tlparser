@@ -1,6 +1,6 @@
 import json
-import openpyxl
 import os
+import openpyxl
 import pandas as pd
 from contextlib import nullcontext
 from datetime import datetime
@@ -11,6 +11,7 @@ import click
 from tlparser.config import Configuration
 from tlparser.stats import Stats
 from tlparser.stats_ext import SpotAnalyzer
+from tlparser.text_utils import count_sentences
 
 
 class Utils:
@@ -158,6 +159,10 @@ class Utils:
         click.echo(f"{styled_label} {first}", err=True)
         for line in rest:
             click.echo(f"{indent} {line}", err=True)
+
+    @staticmethod
+    def count_sentences(text: str) -> int:
+        return count_sentences(text)
 
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
