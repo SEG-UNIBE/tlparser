@@ -334,7 +334,7 @@ class Viz:
     def plot_violin_reqtext(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
         # metrics = df_filtered.filter(like=".req_").columns.tolist()
-        metrics = ["stats.req_word_count", "stats.req_sentence_count"]
+        metrics = ["stats.req_word_count", "stats.req_sentence_count", "stats.req_len"]
         df_long = pd.melt(
             df_filtered,
             id_vars=["id", "type"],
