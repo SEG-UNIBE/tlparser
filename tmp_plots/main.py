@@ -8,10 +8,8 @@ from plots import (
     plot_stacked_barchart,
     plot_correlation_matrix,
     plot_extended_correlation_matrix,
-    plot_extended_conditional_probability_matrix,
     plot_extended_jaccard_similarity_matrix,
     plot_frequent_itemset_mining,
-    plot_semantic_features_frequency,
 )
 from clustering import plot_agglomerative_clustering_and_pca
 
@@ -31,10 +29,8 @@ def main():
     plot_stacked_barchart(df, OUTPUT_DIR)
     plot_correlation_matrix(df, OUTPUT_DIR)
     plot_extended_correlation_matrix(df, OUTPUT_DIR)
-    plot_extended_conditional_probability_matrix(df, OUTPUT_DIR)
     plot_extended_jaccard_similarity_matrix(df, OUTPUT_DIR)
     plot_frequent_itemset_mining(df, OUTPUT_DIR)
-    plot_semantic_features_frequency(df, OUTPUT_DIR)
 
     # Clustering and PCA plots are in a separate module
     plot_agglomerative_clustering_and_pca(df, OUTPUT_DIR, manual_n_clusters=5)

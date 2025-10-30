@@ -168,7 +168,6 @@ def plot_stacked_barchart(df: pd.DataFrame, output_dir: str = "output") -> None:
         "persistence",
         "recurrence",
         "reactivity",
-        "guarantee",
     ]
 
     counts = {}
@@ -189,10 +188,9 @@ def plot_stacked_barchart(df: pd.DataFrame, output_dir: str = "output") -> None:
         return
 
     count_df = pd.DataFrame(counts).T
-    colors = ["#6EA68A", "#3E9388", "#24687C", "#E18330", "#E5AE1F", "#0F3866"]
+    colors = ["#6EA68A", "#3E9388", "#24687C", "#E18330", "#E5AE1F"]
     ax = count_df.plot(kind="bar", stacked=True, figsize=(10, 6), color=colors)
 
-    plt.title("Stacked counts by boolean semantic feature for each Manna-Pnueli class")
     plt.ylabel("Count")
     plt.xticks(rotation=20, ha="right")
     plt.legend(title="Manna-Pnueli class", bbox_to_anchor=(1.05, 1), loc="upper left")
@@ -243,7 +241,7 @@ def plot_extended_correlation_matrix(df: pd.DataFrame, output_dir: str = "output
         "stats.spot.tgba_analysis.is_complete": "tgba_analysis_complete",
         "stats.spot.tgba_analysis.is_deterministic": "tgba_analysis_deterministic",
     }
-    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity", "guarantee"]
+    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity"]
 
     data = df[list(bool_cols.keys())].rename(columns=bool_cols).copy()
     data = data.replace({
@@ -281,59 +279,6 @@ def plot_extended_correlation_matrix(df: pd.DataFrame, output_dir: str = "output
     plt.close(fig)
 
 
-# This is produced and in the Confidence of the FrequentItemSetMining
-def plot_extended_conditional_probability_matrix(df: pd.DataFrame, output_dir: str = "output") -> None:
-    """Extended conditional probability matrix across semantic features."""
-    _ensure_dir(output_dir)
-    bool_cols = {
-        "stats.spot.syntactic_safety": "syntactic_safety",
-        "stats.spot.is_stutter_invariant_formula": "stutter_invariant",
-        "stats.spot.tgba_analysis.is_complete": "tgba_analysis_complete",
-        "stats.spot.tgba_analysis.is_deterministic": "tgba_analysis_deterministic",
-    }
-    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity", "guarantee"]
-
-    data = df[list(bool_cols.keys())].rename(columns=bool_cols).copy()
-    data = data.replace({
-        "TRUE": 1, "FALSE": 0,
-        "WAHR": 1, "FALSCH": 0,
-        True: 1, False: 0,
-        "Error": pd.NA, "error": pd.NA,
-    })
-    for c in data.columns:
-        data[c] = pd.to_numeric(data[c], errors="coerce")
-    data = data.dropna()
-
-    for kw in keywords:
-        data[kw] = df["stats.spot.manna_pnueli_class"].apply(
-            lambda x: 1 if pd.notna(x) and isinstance(x, str) and kw in x.lower() else 0
-        )
-
-    cond_prob_matrix = pd.DataFrame(index=data.columns, columns=data.columns, dtype=float)
-    for col_A in data.columns:
-        for col_B in data.columns:
-            A_positive = data[col_A] == 1
-            if A_positive.sum() > 0:
-                cond_prob_matrix.loc[col_A, col_B] = data.loc[A_positive, col_B].mean()
-            else:
-                cond_prob_matrix.loc[col_A, col_B] = np.nan
-
-    fig = plt.figure(figsize=(10, 8))
-    sns.heatmap(
-        cond_prob_matrix,
-        annot=True,
-        cmap="coolwarm",
-        center=0.5,
-        vmin=0,
-        vmax=1,
-        linecolor='gray',
-    )
-    plt.title("Conditional probability matrix of semantic features")
-    plt.tight_layout()
-    plt.savefig(f"{output_dir}/ConditionalProbabilityExtended.pdf", format="pdf", bbox_inches="tight")
-    plt.close(fig)
-
-
 
 def plot_extended_jaccard_similarity_matrix(df: pd.DataFrame, output_dir: str = "output") -> None:
     """Extended Jaccard similarity matrix across semantic features."""
@@ -344,7 +289,7 @@ def plot_extended_jaccard_similarity_matrix(df: pd.DataFrame, output_dir: str = 
         "stats.spot.tgba_analysis.is_complete": "tgba_analysis_complete",
         "stats.spot.tgba_analysis.is_deterministic": "tgba_analysis_deterministic",
     }
-    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity", "guarantee"]
+    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity"]
 
     data = df[list(bool_cols.keys())].rename(columns=bool_cols).copy()
     data = data.replace({
@@ -400,7 +345,7 @@ def plot_frequent_itemset_mining(df: pd.DataFrame, output_dir: str = "output") -
         "stats.spot.tgba_analysis.is_complete": "tgba_analysis_complete",
         "stats.spot.tgba_analysis.is_deterministic": "tgba_analysis_deterministic",
     }
-    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity", "guarantee"]
+    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity"]
 
     data = df[list(bool_cols.keys())].rename(columns=bool_cols).copy()
     data = data.replace({
@@ -463,60 +408,4 @@ def plot_frequent_itemset_mining(df: pd.DataFrame, output_dir: str = "output") -
 
 
 
-def plot_semantic_features_frequency(df: pd.DataFrame, output_dir: str = "output") -> None:
-    """Table-style frequency of semantic features."""
-    _ensure_dir(output_dir)
-    bool_cols = {
-        "stats.spot.syntactic_safety": "syntactic_safety",
-        "stats.spot.is_stutter_invariant_formula": "stutter_invariant",
-        "stats.spot.tgba_analysis.is_complete": "tgba_analysis_complete",
-        "stats.spot.tgba_analysis.is_deterministic": "tgba_analysis_deterministic",
-    }
-    keywords = ["safety", "obligation", "persistence", "recurrence", "reactivity", "guarantee"]
-
-    data = df[list(bool_cols.keys())].rename(columns=bool_cols).copy()
-    data = data.replace({
-        "TRUE": 1, "FALSE": 0,
-        "WAHR": 1, "FALSCH": 0,
-        True: 1, False: 0,
-        "Error": pd.NA,
-    })
-    for c in data.columns:
-        data[c] = pd.to_numeric(data[c], errors="coerce")
-    data = data.dropna()
-    for kw in keywords:
-        data[kw] = df["stats.spot.manna_pnueli_class"].apply(
-            lambda x: 1 if pd.notna(x) and isinstance(x, str) and kw in x.lower() else 0
-        )
-
-    freq = data.sum() / len(data)
-
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.axis('off')
-    table_data = [[feature, f"{value:.2f}"] for feature, value in freq.items()]
-
-    table = ax.table(
-        cellText=table_data,
-        colLabels=["Semantic Feature", "Frequency"],
-        cellLoc='center',
-        colWidths=[0.6, 0.2],
-        loc='center',
-    )
-    table.auto_set_font_size(False)
-    table.set_fontsize(12)
-
-    for key, cell in table.get_celld().items():
-        cell.get_text().set_color('black')
-
-    for col in range(len(table_data[0])):
-        cell = table[(0, col)]
-        cell.set_facecolor('#FFF8DC')
-
-    plt.tight_layout()
-    plt.savefig(f"{output_dir}/SemanticFeaturesFrequency.pdf", format="pdf", bbox_inches="tight")
-    plt.close(fig)
-
-
-
-
-# clustering-related plots are moved to clustering.py
+    # clustering-related plots are moved to clustering.py
