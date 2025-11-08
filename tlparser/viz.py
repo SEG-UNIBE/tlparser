@@ -166,7 +166,7 @@ class Viz:
 
         if len(metrics) == 3:
             # Create a layout with the third plot centered by spanning both columns
-            fig = plt.figure(figsize=(8, 8))
+            fig = plt.figure(figsize=(7, 8))
             gs = fig.add_gridspec(nrows=2, ncols=2)
             axes_list = [
                 fig.add_subplot(gs[0, 0]),
@@ -176,9 +176,9 @@ class Viz:
             fig.subplots_adjust(hspace=0.05, wspace=0.05)
         else:
             fig, axes = plt.subplots(
-                nrows=3 if len(metrics) > 3 else 2,
+                nrows=3 if len(metrics) > 3 else 1,
                 ncols=2,
-                figsize=(8, 11) if len(metrics) > 3 else (8, 7),
+                figsize=(7, 12) if len(metrics) > 3 else (7, 4),
                 sharex=False,
                 sharey=False,
             )
@@ -248,7 +248,7 @@ class Viz:
                 )
                 ax.text(
                     x_shift,
-                    0.83,
+                    0.80,
                     annotation_text,
                     color="black",
                     ha="center",
@@ -334,7 +334,7 @@ class Viz:
     def plot_violin_reqtext(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
         # metrics = df_filtered.filter(like=".req_").columns.tolist()
-        metrics = ["stats.req_word_count", "stats.req_sentence_count", "stats.req_len"]
+        metrics = ["stats.req_word_count", "stats.req_sentence_count"]
         df_long = pd.melt(
             df_filtered,
             id_vars=["id", "type"],
@@ -427,8 +427,8 @@ class Viz:
             "stats.agg.tops",
             "stats.asth",
             "stats.entropy.lops_tops",
-            "stats.req_sentence_count",
             "stats.req_len",
+            "stats.req_sentence_count",
         ]
         y_metric = "stats.req_word_count"
 
@@ -437,11 +437,22 @@ class Viz:
             # Nothing to plot
             return ""
 
-        # Build figure 3x3
+        # Build figure with 2 columns and dynamic rows
+        ncols = 2
+        n = len(available)
+        nrows = math.ceil(n / ncols)
+        fig_height = max(3, nrows * 3)
         fig, axes = plt.subplots(
-            nrows=3, ncols=3, figsize=(8, 7), sharey=True, sharex=False
+            nrows=nrows, ncols=ncols, figsize=(7, fig_height), sharey=True, sharex=False
         )
-        axes = axes.flatten()
+        # Match _plot_violin spacing
+        plt.subplots_adjust(hspace=0.05, wspace=0.05)
+
+        if nrows * ncols == 1:
+            axes = [axes]
+        else:
+            axes = axes.flatten()
+
         base_color = "#ffaf2d"
 
         for ax, x in zip(axes, available):
@@ -454,10 +465,12 @@ class Viz:
                 edgecolors="black",
                 linewidths=0.5,
             )
-            x_label = self.title_map.get(x, [x, ""])[0]
-            y_label = "Requirement Words"
-            ax.set_xlabel(x_label)
-            ax.set_ylabel(y_label)
+
+            # Match _plot_violin: use subplot title above, empty x-label
+            x_title = self.title_map.get(x, [x, ""])[0]
+            ax.set_title(x_title, fontsize=plt.rcParams.get("axes.titlesize", 10))
+            ax.set_xlabel("")
+            ax.set_ylabel("Requirement Words")
 
             if include_trend and df[x].nunique() > 1:
                 sns.regplot(
@@ -469,43 +482,33 @@ class Viz:
                     color="black",
                     line_kws={"linewidth": 1.2, "alpha": 0.8, "zorder": 5},
                 )
-                # Restore labels after regplot overlay
-                ax.set_xlabel(x_label)
-                ax.set_ylabel(y_label)
+                # Keep labels consistent after regplot overlay
+                ax.set_title(x_title, fontsize=plt.rcParams.get("axes.titlesize", 10))
+                ax.set_xlabel("")
+                ax.set_ylabel("Requirement Words")
 
-        # Hide any unused axes (if fewer than 9 x metrics are available)
+        fig.tight_layout()
+
+        # If the last row contains a single plot, center it within the bottom-row span (no stretching)
+        if n % ncols == 1 and len(axes) >= (nrows * ncols):
+            idx = (nrows - 1) * ncols  # first axis in the last row
+            # Use both bottom axes to compute true span, even if the second is empty
+            left_pos = axes[idx].get_position()
+            right_pos = axes[idx + 1].get_position()
+            left_edge = left_pos.x0
+            right_edge = right_pos.x0 + right_pos.width
+            x_center = (left_edge + right_edge) / 2.0
+
+            W = left_pos.width
+            H = left_pos.height
+            Y0 = left_pos.y0
+            X0 = x_center - W / 2.0
+            axes[idx].set_position([X0, Y0, W, H])
+
+        # Hide any unused axes (if the grid is larger than available metrics)
         for j in range(len(available), len(axes)):
             axes[j].set_visible(False)
 
-        fig.tight_layout()
-        # Center items in the last row without stretching when not all columns are used
-        n = len(available)
-        if n > 0 and n % 3 != 0:
-            r = n % 3  # 1 or 2 items in the last row
-            last_row_start = (n // 3) * 3
-            # Reference positions for the three columns in the last row
-            left_pos = axes[last_row_start].get_position()
-            mid_pos = axes[last_row_start + 1].get_position()
-            right_pos = axes[last_row_start + 2].get_position()
-
-            if r == 1:
-                # Move the single plot to the middle column
-                axes[last_row_start].set_position(
-                    [mid_pos.x0, mid_pos.y0, mid_pos.width, mid_pos.height]
-                )
-            elif r == 2:
-                # Place the two plots adjacent and centered as a group.
-                W = left_pos.width
-                # spacing between adjacent columns (gap between left and middle)
-                S = mid_pos.x0 - (left_pos.x0 + left_pos.width)
-                total = 2 * W + S
-                left_x = 0.5 - total / 2
-                axes[last_row_start].set_position(
-                    [left_x, left_pos.y0, W, left_pos.height]
-                )
-                axes[last_row_start + 1].set_position(
-                    [left_x + W + S, left_pos.y0, W, left_pos.height]
-                )
         out = self.__get_file_name("pair_reqw")
         plt.savefig(out)
         plt.close()
@@ -725,7 +728,8 @@ class Viz:
         return outs
 
     def plot_operator_bars(self):
-        # Summarize operator counts across self translations and plot three bar charts side-by-side
+        # Summarize operator counts across self translations and plot three bar charts:
+        # (a) Temporal, (b) Logical on the first row, and (c) Comparison centered in the second row.
         df = self.data[self.data["translation"] == "self"].copy()
 
         groups = [
@@ -760,12 +764,10 @@ class Viz:
             ),
         ]
 
-        # Compute data and width ratios first so we can size columns proportionally
-        bar_groups = []  # list of (title, labels, values)
-        width_ratios = []
+        # Prepare data per group
+        bar_groups = []
         for title, mapping in groups:
-            labels = []
-            values = []
+            labels, values = [], []
             cols = [col for col in mapping.values() if col in df.columns]
             if cols:
                 sums = df[cols].sum()
@@ -776,27 +778,40 @@ class Viz:
             if not labels:
                 labels, values = ["n/a"], [0]
             bar_groups.append((title, labels, values))
-            width_ratios.append(max(len(labels), 1))
 
-        fig, axes = plt.subplots(
-            1,
-            3,
-            figsize=(9, 3.5),
-            sharey=False,
-            gridspec_kw={"width_ratios": width_ratios},
+        # Compute separate y-limits: shared for first row, independent for third plot
+        first_row_max = max(
+            (max(vals) for _, _, vals in bar_groups[:2] if vals), default=0
         )
-        axes = axes.flatten()
+        third_max = max(bar_groups[2][2]) if bar_groups[2][2] else 0
+        y_top_first = max(1, int(first_row_max * 1.15) + 1)
+        y_top_third = max(1, int(third_max * 1.15) + 1)
+
+        # Make second row shorter
+        second_row_ratio = 0.7  # < 1.0 makes the second row less high than the first
+        fig = plt.figure(figsize=(6, 5))
+        gs = fig.add_gridspec(nrows=2, ncols=2, height_ratios=[1.0, second_row_ratio])
+
+        ax00 = fig.add_subplot(gs[0, 0])
+        ax01 = fig.add_subplot(gs[0, 1], sharey=ax00)  # share y only within first row
+        ax10 = fig.add_subplot(gs[1, 0])  # independent y
+        ax11 = fig.add_subplot(gs[1, 1])  # placeholder to compute span
+        axes = [ax00, ax01, ax10, ax11]
 
         palette = sns.color_palette("tab10")
-        alpha = 0.85  # add a bit of transparency to bar faces
+        alpha = 0.85
 
-        for ax, (title, labels, values) in zip(axes, bar_groups):
+        # Plot the three groups on the first three axes
+        for idx, (ax, (title, labels, values)) in enumerate(zip(axes[:3], bar_groups)):
             base_colors = palette[: len(labels)]
             bar_colors = [(r, g, b, alpha) for (r, g, b) in base_colors]
             bars = ax.bar(labels, values, color=bar_colors, edgecolor="black")
             ax.set_title(title)
             ax.set_ylabel("Count")
-            ax.set_ylim(0, max(values) * 1.15 + 1)
+            if idx < 2:
+                ax.set_ylim(0, y_top_first)
+            else:
+                ax.set_ylim(0, y_top_third)
 
             for rect, val in zip(bars, values):
                 ax.annotate(
@@ -810,6 +825,34 @@ class Viz:
                 )
 
         fig.tight_layout()
+
+        # Stretch the third plot to match bar pixel width of first row and center within bottom-row span
+        n_bars = [len(labels) for _, labels, _ in bar_groups]
+        if n_bars[2] > 0 and max(n_bars[0], n_bars[1]) > 0:
+            top_left = axes[0].get_position()
+
+            # Use both bottom axes to get the true span of the second row
+            bottom_left = axes[2].get_position()
+            bottom_right = axes[3].get_position()
+            left_edge = bottom_left.x0
+            right_edge = bottom_right.x0 + bottom_right.width
+            span_total = right_edge - left_edge
+
+            W_ref = top_left.width
+            N_ref = max(n_bars[0], n_bars[1])
+            desired_W3 = W_ref * (n_bars[2] / N_ref)
+
+            W3 = min(desired_W3, span_total)
+            H3 = bottom_left.height
+            Y3 = bottom_left.y0
+
+            X_center = (left_edge + right_edge) / 2.0
+            X3 = X_center - W3 / 2.0
+            axes[2].set_position([X3, Y3, W3, H3])
+
+        # Hide the unused 4th axis after layout adjustments
+        axes[3].set_visible(False)
+
         out = self.__get_file_name("ops_bars")
         plt.savefig(out)
         plt.close()
