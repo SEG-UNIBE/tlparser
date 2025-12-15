@@ -137,7 +137,11 @@ def invoke(command, input_data=None):
     return stdout.strip()
 
 
-def get_automaton_and_stats(ltl_formula, to_buchi=False, to_deterministic=False):
+def get_automaton_and_stats(
+    ltl_formula,
+    to_buchi=False,
+    to_deterministic=False,
+):
     """
     Translates LTL and attempts to get basic automaton statistics directly from ltl2tgba
     Returns: (hoa_automaton_string, stats_dict)
@@ -147,11 +151,14 @@ def get_automaton_and_stats(ltl_formula, to_buchi=False, to_deterministic=False)
     cmd_stats = ["ltl2tgba", "-f", ltl_formula]
 
     if to_buchi:
-        cmd_base.append("-B")
-        cmd_stats.append("-B")
+        cmd_base.extend(["--ba"])
+        cmd_stats.extend(["--ba"])
     if to_deterministic:
         cmd_base.append("-D")
         cmd_stats.append("-D")
+
+    cmd_base.extend(["--complete", "--low"])
+    cmd_stats.extend(["--complete", "--low"])
 
     hoa_automaton = ""
     try:
@@ -162,17 +169,69 @@ def get_automaton_and_stats(ltl_formula, to_buchi=False, to_deterministic=False)
 
     stats_dict = {}
     try:
-        stats_output = invoke(cmd_stats + ["--stats=%s %t %p %d %a"])
+        # Output: states, edges, transitions, is_complete, is_deterministic, acceptance_sets
+        stats_output = invoke(cmd_stats + ["--stats=%s %e %t %p %d %a"])
         parts = stats_output.split()
-        if len(parts) == 5:
+        if len(parts) == 6:
             stats_dict["state_count"] = int(parts[0])
-            stats_dict["transition_count"] = int(parts[1])
-            stats_dict["is_complete"] = parts[2] == "1"
-            stats_dict["is_deterministic"] = parts[3] == "1"
-            stats_dict["acceptance_sets"] = int(parts[4])
+            stats_dict["edge_count"] = int(parts[1])
+            stats_dict["transition_count"] = int(parts[2])
+            stats_dict["is_complete"] = parts[3] == "1"
+            stats_dict["is_deterministic"] = parts[4] == "1"
+            stats_dict["acceptance_sets"] = int(parts[5])
             stats_dict["analysis_source"] = "ltl2tgba_stats"
         else:
             stats_dict["error"] = "Unexpected stats output format from ltl2tgba."
+
+        # Syntactic-Future Hierarchy (Σ₁, Π₁, Σ₂, Π₂, Δ₁, Δ₂)
+        def get_syntactic_future_hierarchy(formula):
+            try:
+                # Order: sigma1, pi1, sigma2, pi2, delta1, delta2
+                if invoke(["ltlfilt", "-f", formula, "--sigma1"]):
+                    return "Σ₁ (syntactic-guarantee)"
+                if invoke(["ltlfilt", "-f", formula, "--pi1"]):
+                    return "Π₁ (syntactic-safety)"
+                if invoke(["ltlfilt", "-f", formula, "--sigma2"]):
+                    return "Σ₂"
+                if invoke(["ltlfilt", "-f", formula, "--pi2"]):
+                    return "Π₂"
+                if invoke(["ltlfilt", "-f", formula, "--delta1"]):
+                    return "Δ₁"
+                if invoke(["ltlfilt", "-f", formula, "--delta2"]):
+                    return "Δ₂"
+                return "Unclassified"
+            except Exception:
+                return "Error"
+
+        stats_dict["syntactic_future_hierarchy"] = get_syntactic_future_hierarchy(
+            ltl_formula
+        )
+
+        # Safety-Liveness classification (safety, liveness, guarantee, obligation, persistence, recurrence, universal, eventual)
+        def get_safety_liveness_class(formula):
+            try:
+                if invoke(["ltlfilt", "-f", formula, "--safety"]):
+                    return "safety"
+                if invoke(["ltlfilt", "-f", formula, "--liveness"]):
+                    return "liveness"
+                if invoke(["ltlfilt", "-f", formula, "--guarantee"]):
+                    return "guarantee"
+                if invoke(["ltlfilt", "-f", formula, "--obligation"]):
+                    return "obligation"
+                if invoke(["ltlfilt", "-f", formula, "--persistence"]):
+                    return "persistence"
+                if invoke(["ltlfilt", "-f", formula, "--recurrence"]):
+                    return "recurrence"
+                if invoke(["ltlfilt", "-f", formula, "--universal"]):
+                    return "universal"
+                if invoke(["ltlfilt", "-f", formula, "--eventual"]):
+                    return "eventual"
+                return "Unclassified"
+            except Exception:
+                return "Error"
+
+        stats_dict["safety_liveness_class"] = get_safety_liveness_class(ltl_formula)
+
     except (subprocess.CalledProcessError, ValueError) as e:
         stats_dict["error"] = f"Failed to get direct stats from ltl2tgba: {e}"
 
@@ -294,9 +353,7 @@ def get_manna_pnueli_class(ltl_formula):
         )
         return "Error"
     except Exception as e:
-        _debug(
-            f"An unexpected error occurred during Manna-Pnueli class check: {e}"
-        )
+        _debug(f"An unexpected error occurred during Manna-Pnueli class check: {e}")
         return "Error"
 
 
@@ -331,7 +388,8 @@ def classify_ltl_property(ltl_formula, *, verbose: bool | None = None):
 
         # Translate to default TGBA and analyze
         hoa_tgba, tgba_stats = get_automaton_and_stats(
-            ltl_formula, to_buchi=False, to_deterministic=False
+            ltl_formula,
+            to_buchi=False,
         )
         if "error" in tgba_stats:
             _debug(f"Falling back to autfilt for TGBA analysis: {tgba_stats['error']}")
@@ -341,42 +399,49 @@ def classify_ltl_property(ltl_formula, *, verbose: bool | None = None):
             tgba_automaton_stutter_check = analyze_automaton_fallback(hoa_tgba).get(
                 "is_stutter_invariant"
             )
-            classification["tgba_analysis"]["is_stutter_invariant"] = (
-                tgba_automaton_stutter_check
-            )
+            classification["tgba_analysis"][
+                "is_stutter_invariant"
+            ] = tgba_automaton_stutter_check
 
         # Translate to Buchi (if possible) and analyze
         hoa_buchi, buchi_stats = get_automaton_and_stats(
-            ltl_formula, to_buchi=True, to_deterministic=False
+            ltl_formula,
+            to_buchi=True,
         )
         if "error" in buchi_stats:
-            _debug(f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}")
+            _debug(
+                f"Falling back to autfilt for Buchi analysis: {buchi_stats['error']}"
+            )
             classification["buchi_analysis"] = analyze_automaton_fallback(hoa_buchi)
         else:
             classification["buchi_analysis"] = buchi_stats
             buchi_automaton_stutter_check = analyze_automaton_fallback(hoa_buchi).get(
                 "is_stutter_invariant"
             )
-            classification["buchi_analysis"]["is_stutter_invariant"] = (
-                buchi_automaton_stutter_check
-            )
+            classification["buchi_analysis"][
+                "is_stutter_invariant"
+            ] = buchi_automaton_stutter_check
 
         # Attempt to produce a deterministic automaton and analyze
         hoa_deterministic, deterministic_stats = get_automaton_and_stats(
-            ltl_formula, to_buchi=False, to_deterministic=True
+            ltl_formula,
+            to_buchi=False,
+            to_deterministic=True,
         )
 
         if "error" in deterministic_stats:
             classification["deterministic_attempt"]["success"] = False
-            classification["deterministic_attempt"]["error"] = deterministic_stats["error"]
+            classification["deterministic_attempt"]["error"] = deterministic_stats[
+                "error"
+            ]
         else:
             classification["deterministic_attempt"]["success"] = True
             classification["deterministic_attempt"][
                 "automaton_analysis"
             ] = deterministic_stats
-            det_automaton_stutter_check = analyze_automaton_fallback(hoa_deterministic).get(
-                "is_stutter_invariant"
-            )
+            det_automaton_stutter_check = analyze_automaton_fallback(
+                hoa_deterministic
+            ).get("is_stutter_invariant")
             classification["deterministic_attempt"]["automaton_analysis"][
                 "is_stutter_invariant"
             ] = det_automaton_stutter_check
