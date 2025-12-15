@@ -124,30 +124,76 @@ class Viz:
         return out
 
     def _plot_violin(
-        self, df_long, stats_values, metrics, title_map, out_prefix, include_strip=False
+        self,
+        df_long,
+        stats_values,
+        metrics,
+        title_map,
+        out_prefix,
+        include_strip=False,
+        palette_index=0,
     ):
         type_palette = self.config.color_palette
+        # Build a palette for the present types, optionally rotated by palette_index.
+        present_types = list(df_long["type"].unique())
+        ordered_present_types = [
+            t for t in self.__get_reduced_logic_order() if t in present_types
+        ] or present_types
+
+        plot_palette = Utils.rotate_palette_map(
+            type_palette, ordered_present_types, index=palette_index
+        )
+
+        # Special case: if only one type is present, allow selecting a different
+        # color by index across the full configured palette, so different
+        # violin plots can visually alternate even for the same type.
+        if (
+            len(ordered_present_types) == 1
+            and isinstance(type_palette, dict)
+            and isinstance(palette_index, int)
+        ):
+            only_type = ordered_present_types[0]
+            full_order = self.config.logic_order or list(type_palette.keys())
+            if not full_order:
+                full_colors = list(type_palette.values())
+            else:
+                full_colors = [type_palette.get(t, "#808080") for t in full_order]
+            if len(full_colors) > 0:
+                idx = palette_index % len(full_colors)
+                plot_palette = {only_type: full_colors[idx]}
+
         number_of_types = df_long["type"].unique().size
 
-        fig, axes = plt.subplots(
-            nrows=2 if len(metrics) > 3 else 1,
-            ncols=3,
-            figsize=(11, 8) if len(metrics) > 3 else (11, 4),
-            sharex=False,
-            sharey=False,
-        )
-        axes = axes.flatten()
-        plt.subplots_adjust(hspace=0.05, wspace=0.05)
+        if len(metrics) == 3:
+            # Create a layout with the third plot centered by spanning both columns
+            fig = plt.figure(figsize=(7, 8))
+            gs = fig.add_gridspec(nrows=2, ncols=2)
+            axes_list = [
+                fig.add_subplot(gs[0, 0]),
+                fig.add_subplot(gs[0, 1]),
+                fig.add_subplot(gs[1, :]),
+            ]
+            fig.subplots_adjust(hspace=0.05, wspace=0.05)
+        else:
+            fig, axes = plt.subplots(
+                nrows=3 if len(metrics) > 3 else 1,
+                ncols=2,
+                figsize=(7, 12) if len(metrics) > 3 else (7, 4),
+                sharex=False,
+                sharey=False,
+            )
+            axes_list = axes.flatten().tolist()
+            plt.subplots_adjust(hspace=0.05, wspace=0.05)
         i = 1
 
-        for ax, agg in zip(axes, metrics):
+        for ax, agg in zip(axes_list, metrics):
             y_max = df_long[df_long["aggregation"] == agg]["value"].max() * 1.8
             violin = sns.violinplot(
                 x="type",
                 y="value",
                 data=df_long[df_long["aggregation"] == agg],
                 hue="type",
-                palette=type_palette,
+                palette=plot_palette,
                 bw_method=0.5,
                 edgecolor="black",
                 linewidth=1,
@@ -160,7 +206,7 @@ class Viz:
                 x="type",
                 y="value",
                 hue="type",
-                palette=type_palette,
+                palette=plot_palette,
                 data=df_long[df_long["aggregation"] == agg],
                 width=0.12,
                 showcaps=True,
@@ -181,7 +227,7 @@ class Viz:
                     hue="type",
                     data=df_long[df_long["aggregation"] == agg],
                     alpha=0.3,
-                    palette=type_palette,
+                    palette=plot_palette,
                     size=3,
                     marker="d",
                     edgecolor="black",
@@ -202,7 +248,7 @@ class Viz:
                 )
                 ax.text(
                     x_shift,
-                    0.83,
+                    0.80,
                     annotation_text,
                     color="black",
                     ha="center",
@@ -241,16 +287,24 @@ class Viz:
                 minor_tick_interval = major_interval / 5
                 ax.yaxis.set_minor_locator(ticker.MultipleLocator(minor_tick_interval))
 
-        for j in range(len(metrics), len(axes)):
-            axes[j].set_visible(False)
+        for j in range(len(metrics), len(axes_list)):
+            axes_list[j].set_visible(False)
 
         fig.tight_layout()
+        # If exactly 3 metrics, keep the third axis centered without stretching.
+        if len(metrics) == 3:
+            ref = axes_list[0].get_position()
+            bottom = axes_list[2].get_position()
+            w = ref.width
+            h = ref.height
+            x = 0.5 - w / 2
+            axes_list[2].set_position([x, bottom.y0, w, h])
         out = self.__get_file_name(out_prefix)
         plt.savefig(out)
         plt.close()
         return out
 
-    def plot_violin_engcompl(self, include_strip=False):
+    def plot_violin_engcompl(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
         metrics = df_filtered.filter(like=".agg.").columns.tolist()
         metrics = metrics + ["stats.asth", "stats.entropy.lops_tops"]
@@ -274,11 +328,13 @@ class Viz:
             self.title_map,
             "viol_engcompl",
             include_strip,
+            palette_index,
         )
 
-    def plot_violin_reqtext(self, include_strip=False):
+    def plot_violin_reqtext(self, include_strip=False, palette_index=0):
         df_filtered = self.data[self.data["translation"] == "self"]
-        metrics = df_filtered.filter(like=".req_").columns.tolist()
+        # metrics = df_filtered.filter(like=".req_").columns.tolist()
+        metrics = ["stats.req_word_count", "stats.req_sentence_count"]
         df_long = pd.melt(
             df_filtered,
             id_vars=["id", "type"],
@@ -293,14 +349,23 @@ class Viz:
             .reset_index()
         )
         return self._plot_violin(
-            df_long, stats_values, metrics, self.title_map, "viol_req", include_strip
+            df_long,
+            stats_values,
+            metrics,
+            self.title_map,
+            "viol_req",
+            include_strip,
+            palette_index,
         )
 
-    def plot_pairplot(self):
+    def plot_pairplot(self, include_trend: bool = False):
         type_palette = self.config.color_palette
         df = self.data[self.data["translation"] == "self"]
         metrics = df.filter(like=".agg.").columns.tolist()
         df_pairplot = df[metrics + ["type", "stats.asth", "stats.entropy.lops_tops"]]
+        req_metrics = df.filter(like=".req_").columns.tolist()
+        if req_metrics:
+            df_pairplot = pd.concat([df_pairplot, df[req_metrics]], axis=1)
 
         unique_types = df_pairplot["type"].nunique()
         markers = ["o", "s", "D", "^", "v", "P"][:unique_types]
@@ -322,8 +387,129 @@ class Viz:
                 artist.set_edgecolor("black")
                 artist.set_alpha(0.6)
 
+        if include_trend:
+            # Overlay a single overall linear trend per subplot (off-diagonal only)
+            for r, row in enumerate(g.axes):
+                for c, ax in enumerate(row):
+                    xvar = g.x_vars[c]
+                    yvar = g.y_vars[r]
+                    if xvar == yvar:
+                        continue
+                    if df_pairplot[xvar].nunique() <= 1:
+                        continue
+                    sns.regplot(
+                        data=df_pairplot,
+                        x=xvar,
+                        y=yvar,
+                        scatter=False,
+                        ax=ax,
+                        color="black",
+                        line_kws={"linewidth": 1.2, "alpha": 0.8, "zorder": 5},
+                    )
+                    # Restore pretty labels (regplot resets them)
+                    ax.set_xlabel(self.title_map.get(xvar, [xvar, ""])[0])
+                    ax.set_ylabel(self.title_map.get(yvar, [yvar, ""])[0])
+
         g._legend.set_title("")
         out = self.__get_file_name("pairp")
+        plt.savefig(out)
+        plt.close()
+        return out
+
+    def plot_pairplot_reqwords(self, include_trend: bool = False):
+        # Scatter grids with Requirement Words on the Y-axis for selected X metrics
+        df = self.data[self.data["translation"] == "self"].copy()
+
+        x_metrics = [
+            "stats.agg.aps",
+            "stats.agg.cops",
+            "stats.agg.lops",
+            "stats.agg.tops",
+            "stats.asth",
+            "stats.entropy.lops_tops",
+            "stats.req_len",
+            "stats.req_sentence_count",
+        ]
+        y_metric = "stats.req_word_count"
+
+        available = [m for m in x_metrics if m in df.columns]
+        if y_metric not in df.columns or not available:
+            # Nothing to plot
+            return ""
+
+        # Build figure with 2 columns and dynamic rows
+        ncols = 2
+        n = len(available)
+        nrows = math.ceil(n / ncols)
+        fig_height = max(3, nrows * 3)
+        fig, axes = plt.subplots(
+            nrows=nrows, ncols=ncols, figsize=(7, fig_height), sharey=True, sharex=False
+        )
+        # Match _plot_violin spacing
+        plt.subplots_adjust(hspace=0.05, wspace=0.05)
+
+        if nrows * ncols == 1:
+            axes = [axes]
+        else:
+            axes = axes.flatten()
+
+        base_color = "#ffaf2d"
+
+        for ax, x in zip(axes, available):
+            ax.scatter(
+                df[x],
+                df[y_metric],
+                s=28,
+                c=base_color,
+                alpha=0.55,
+                edgecolors="black",
+                linewidths=0.5,
+            )
+
+            # Match _plot_violin: use subplot title above, empty x-label
+            x_title = self.title_map.get(x, [x, ""])[0]
+            ax.set_title(x_title, fontsize=plt.rcParams.get("axes.titlesize", 10))
+            ax.set_xlabel("")
+            ax.set_ylabel("Requirement Words")
+
+            if include_trend and df[x].nunique() > 1:
+                sns.regplot(
+                    data=df,
+                    x=x,
+                    y=y_metric,
+                    scatter=False,
+                    ax=ax,
+                    color="black",
+                    line_kws={"linewidth": 1.2, "alpha": 0.8, "zorder": 5},
+                )
+                # Keep labels consistent after regplot overlay
+                ax.set_title(x_title, fontsize=plt.rcParams.get("axes.titlesize", 10))
+                ax.set_xlabel("")
+                ax.set_ylabel("Requirement Words")
+
+        fig.tight_layout()
+
+        # If the last row contains a single plot, center it within the bottom-row span (no stretching)
+        if n % ncols == 1 and len(axes) >= (nrows * ncols):
+            idx = (nrows - 1) * ncols  # first axis in the last row
+            # Use both bottom axes to compute true span, even if the second is empty
+            left_pos = axes[idx].get_position()
+            right_pos = axes[idx + 1].get_position()
+            left_edge = left_pos.x0
+            right_edge = right_pos.x0 + right_pos.width
+            x_center = (left_edge + right_edge) / 2.0
+
+            W = left_pos.width
+            H = left_pos.height
+            Y0 = left_pos.y0
+            X0 = x_center - W / 2.0
+            axes[idx].set_position([X0, Y0, W, H])
+
+        # Hide any unused axes (if the grid is larger than available metrics)
+        for j in range(len(available), len(axes)):
+            axes[j].set_visible(False)
+
+        out = self.__get_file_name("pair_reqw")
         plt.savefig(out)
         plt.close()
         return out
@@ -540,3 +726,134 @@ class Viz:
                 outs.append(out)
 
         return outs
+
+    def plot_operator_bars(self):
+        # Summarize operator counts across self translations and plot three bar charts:
+        # (a) Temporal, (b) Logical on the first row, and (c) Comparison centered in the second row.
+        df = self.data[self.data["translation"] == "self"].copy()
+
+        groups = [
+            (
+                "(a) Temporal",
+                {
+                    "F": "stats.tops.F",
+                    "G": "stats.tops.G",
+                    "U": "stats.tops.U",
+                    "X": "stats.tops.X",
+                },
+            ),
+            (
+                "(b) Logical",
+                {
+                    "and": "stats.lops.and",
+                    "implies": "stats.lops.impl",
+                    "not": "stats.lops.not",
+                    "or": "stats.lops.or",
+                },
+            ),
+            (
+                "(c) Comparison",
+                {
+                    "eq": "stats.cops.eq",
+                    "geq": "stats.cops.geq",
+                    "gt": "stats.cops.gt",
+                    "leq": "stats.cops.leq",
+                    "lt": "stats.cops.lt",
+                    "neq": "stats.cops.neq",
+                },
+            ),
+        ]
+
+        # Prepare data per group
+        bar_groups = []
+        for title, mapping in groups:
+            labels, values = [], []
+            cols = [col for col in mapping.values() if col in df.columns]
+            if cols:
+                sums = df[cols].sum()
+                for label, col in mapping.items():
+                    if col in sums.index:
+                        labels.append(label)
+                        values.append(int(sums[col]))
+            if not labels:
+                labels, values = ["n/a"], [0]
+            bar_groups.append((title, labels, values))
+
+        # Compute separate y-limits: shared for first row, independent for third plot
+        first_row_max = max(
+            (max(vals) for _, _, vals in bar_groups[:2] if vals), default=0
+        )
+        third_max = max(bar_groups[2][2]) if bar_groups[2][2] else 0
+        y_top_first = max(1, int(first_row_max * 1.15) + 1)
+        y_top_third = max(1, int(third_max * 1.15) + 1)
+
+        # Make second row shorter
+        second_row_ratio = 0.7  # < 1.0 makes the second row less high than the first
+        fig = plt.figure(figsize=(6, 5))
+        gs = fig.add_gridspec(nrows=2, ncols=2, height_ratios=[1.0, second_row_ratio])
+
+        ax00 = fig.add_subplot(gs[0, 0])
+        ax01 = fig.add_subplot(gs[0, 1], sharey=ax00)  # share y only within first row
+        ax10 = fig.add_subplot(gs[1, 0])  # independent y
+        ax11 = fig.add_subplot(gs[1, 1])  # placeholder to compute span
+        axes = [ax00, ax01, ax10, ax11]
+
+        palette = sns.color_palette("tab10")
+        alpha = 0.85
+
+        # Plot the three groups on the first three axes
+        for idx, (ax, (title, labels, values)) in enumerate(zip(axes[:3], bar_groups)):
+            base_colors = palette[: len(labels)]
+            bar_colors = [(r, g, b, alpha) for (r, g, b) in base_colors]
+            bars = ax.bar(labels, values, color=bar_colors, edgecolor="black")
+            ax.set_title(title)
+            ax.set_ylabel("Count")
+            if idx < 2:
+                ax.set_ylim(0, y_top_first)
+            else:
+                ax.set_ylim(0, y_top_third)
+
+            for rect, val in zip(bars, values):
+                ax.annotate(
+                    str(val),
+                    xy=(rect.get_x() + rect.get_width() / 2, rect.get_height()),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha="center",
+                    va="bottom",
+                    fontsize=9,
+                )
+
+        fig.tight_layout()
+
+        # Stretch the third plot to match bar pixel width of first row and center within bottom-row span
+        n_bars = [len(labels) for _, labels, _ in bar_groups]
+        if n_bars[2] > 0 and max(n_bars[0], n_bars[1]) > 0:
+            top_left = axes[0].get_position()
+
+            # Use both bottom axes to get the true span of the second row
+            bottom_left = axes[2].get_position()
+            bottom_right = axes[3].get_position()
+            left_edge = bottom_left.x0
+            right_edge = bottom_right.x0 + bottom_right.width
+            span_total = right_edge - left_edge
+
+            W_ref = top_left.width
+            N_ref = max(n_bars[0], n_bars[1])
+            desired_W3 = W_ref * (n_bars[2] / N_ref)
+
+            W3 = min(desired_W3, span_total)
+            H3 = bottom_left.height
+            Y3 = bottom_left.y0
+
+            X_center = (left_edge + right_edge) / 2.0
+            X3 = X_center - W3 / 2.0
+            axes[2].set_position([X3, Y3, W3, H3])
+
+        # Hide the unused 4th axis after layout adjustments
+        axes[3].set_visible(False)
+
+        out = self.__get_file_name("ops_bars")
+        plt.savefig(out)
+        plt.close()
+        return out
