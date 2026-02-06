@@ -14,7 +14,7 @@ from plots import (
 from clustering import plot_agglomerative_clustering_and_pca
 
 
-DATA_FILE = "spacewire_250919215922.xlsx"
+DATA_FILE = "spacewire_251215172724.xlsx"
 OUTPUT_DIR = "output"
 
 
