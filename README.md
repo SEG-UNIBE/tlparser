@@ -1,11 +1,9 @@
-> *This artifact extends the open-source `tlparser`[^tlparser] to automatically analyze requirements expressed in natural language and support their quality evaluation.*
-> *The codebase was obtained by forking original `tlparser` repository and augmenting it with these features.*
+# Temporal Logic Parser
 
-- Direct link to Edge/IoT dataset: [**Dataset.xlsx**](https://gitlab.com/formalise26/tlparser-extended/-/raw/main/data/Edge_IoT/Dataset.xlsx?ref_type=heads)
-
-</br>
-
-# Temporal Logic Parser (Extended)
+[![Changelog](https://img.shields.io/github/v/release/RomanBoegli/tlparser?include_prereleases&label=changelog)](https://github.com/RomanBoegli/tlparser/releases)
+[![Test](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml/badge.svg)](https://github.com/RomanBoegli/tlparser/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/RomanBoegli/tlparser/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/919931974.svg)](https://doi.org/10.5281/zenodo.14764479)
 
 The Temporal Logic Parser or `tlparser` takes something like this as input:
 
@@ -130,8 +128,19 @@ All plots are saved to `./tlparser/workingdir/`.
 You can parse the `spacewire` requirements using the following command:
 
 ```bash
-tlparser digest ./data/spacewire.json
+tlparser digest ./data/SpaceWire/spacewire.json
 ```
+
+You can parse the `Edge_IoT` requirements using the following command:
+
+```bash
+tlparser digest ./data/Edge_IoT/iot.json
+```
+
+> [!NOTE]  
+> So far, two data sets are available:
+> - Direct link to Spacewire dataset: [**JSON**](tbd) or [**PDF**](tbd)
+> - Direct link to Edge/IoT dataset: [**JSON**](tbd) or [**XLSX**](tbd)
 
 The resulting Excel file serves as basis for generating the plots.
 It contains the following columns:
@@ -200,7 +209,3 @@ source venv/bin/activate
 # or on Windows:
 # venv\Scripts\activate
 ```
-
-</br>
-
-[^tlparser]: Bögli, R., Rohani, A., Studer, T., Tsigkanos, C., & Kehrer, T. tlparser [Computer software]. <https://github.com/SEG-UNIBE/tlparser>
