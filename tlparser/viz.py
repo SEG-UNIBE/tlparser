@@ -242,9 +242,9 @@ class Viz:
             x_shift = 1 / number_of_types / 2
             for _, row in stats_values[stats_values["aggregation"] == agg].iterrows():
                 annotation_text = (
-                    f"$\mu={row['mean']:.1f}$\n"
-                    f"$M={row['median']:.1f}$\n"
-                    f"$\sigma={row['std']:.1f}$"
+                    rf"$\mu={row['mean']:.1f}$\n"
+                    rf"$M={row['median']:.1f}$\n"
+                    rf"$\sigma={row['std']:.1f}$"
                 )
                 ax.text(
                     x_shift,

@@ -217,7 +217,7 @@ Homebrew users can also install it using the `brew install spot` command.
 With Spot on your `PATH`, add `--extended` to the `digest` or `evaluate` command:
 
 ```bash
-tlparser digest ./data/spacewire.json --extended
+tlparser digest ./data/SpaceWire/spacewire.json --extended
 ```
 
 Extended digests may also produce a companion `<filename>_errors.md` summarising formulas Spot could not analyse.
