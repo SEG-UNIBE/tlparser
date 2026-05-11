@@ -1,6 +1,6 @@
 import json
-import openpyxl
 import os
+import openpyxl
 import pandas as pd
 from contextlib import nullcontext
 from datetime import datetime
@@ -11,6 +11,7 @@ import click
 from tlparser.config import Configuration
 from tlparser.stats import Stats
 from tlparser.stats_ext import SpotAnalyzer
+from tlparser.text_utils import count_sentences
 
 
 class Utils:
@@ -159,6 +160,10 @@ class Utils:
         for line in rest:
             click.echo(f"{indent} {line}", err=True)
 
+    @staticmethod
+    def count_sentences(text: str) -> int:
+        return count_sentences(text)
+
     def write_to_excel(self, data):
         flattened_data = [self.flatten_dict(item) for item in data]
 
@@ -250,6 +255,45 @@ class Utils:
         return file
 
     @staticmethod
+    def rotate_palette_map(
+        palette,
+        types,
+        *,
+        index: int = 0,
+        default_color: str = "#808080",
+    ):
+        """Return a dict mapping of types to colors, rotated by index.
+
+        - palette: mapping type -> color (preferred). If not a dict, attempts to
+          treat it as a sequence of colors aligned to the provided types.
+        - types: ordered sequence of type labels to include.
+        - index: rotation amount (wraps; negative allowed). 0 keeps original.
+        - default_color: color used when a type is missing from palette.
+        """
+        types = list(types)
+        if not types:
+            return {}
+
+        # Build color list aligned to the given types
+        if isinstance(palette, dict):
+            colors = [palette.get(t, default_color) for t in types]
+        else:
+            # Fallback: assume palette is a sequence of colors
+            palette_seq = list(palette or [])
+            if not palette_seq:
+                palette_seq = [default_color] * len(types)
+            # Repeat or trim to match types length
+            times = (len(types) + len(palette_seq) - 1) // len(palette_seq)
+            colors = (palette_seq * times)[: len(types)]
+
+        if len(colors) > 0 and isinstance(index, int):
+            k = index % len(colors)
+            if k:
+                colors = colors[k:] + colors[:k]
+
+        return dict(zip(types, colors))
+
+    @staticmethod
     def lighten_color(hex_color, opacity=0.6):
         hex_color = hex_color.lstrip("#")
         r, g, b = (
@@ -314,13 +358,17 @@ class Utils:
             "stats.spot.syntactic_safety",
             "stats.spot.is_stutter_invariant_formula",
             "stats.spot.manna_pnueli_class",
+            "stats.spot.tgba_analysis.syntactic_future_hierarchy",
+            "stats.spot.tgba_analysis.safety_liveness_class",
             "stats.spot.tgba_analysis.state_count",
+            "stats.spot.tgba_analysis.edge_count",
             "stats.spot.tgba_analysis.transition_count",
             "stats.spot.tgba_analysis.is_complete",
             "stats.spot.tgba_analysis.is_deterministic",
             "stats.spot.tgba_analysis.acceptance_sets",
             "stats.spot.tgba_analysis.is_stutter_invariant",
             "stats.spot.buchi_analysis.state_count",
+            "stats.spot.buchi_analysis.edge_count",
             "stats.spot.buchi_analysis.transition_count",
             "stats.spot.buchi_analysis.is_complete",
             "stats.spot.buchi_analysis.is_deterministic",
@@ -329,6 +377,7 @@ class Utils:
             "stats.spot.deterministic_attempt.success",
             "stats.spot.deterministic_attempt.error",
             "stats.spot.deterministic_attempt.automaton_analysis.state_count",
+            "stats.spot.deterministic_attempt.automaton_analysis.edge_count",
             "stats.spot.deterministic_attempt.automaton_analysis.transition_count",
             "stats.spot.deterministic_attempt.automaton_analysis.is_complete",
             "stats.spot.deterministic_attempt.automaton_analysis.is_deterministic",

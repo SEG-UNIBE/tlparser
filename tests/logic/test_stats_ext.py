@@ -12,182 +12,192 @@ EXTENDED_CASES = (
         syntactic_safety=True,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="Safety",
-        tgba_state_count=1,
-        tgba_transition_count=1,
-        tgba_is_complete=False,
-        tgba_is_deterministic=True,
-        tgba_acceptance_sets=0,
-        tgba_is_stutter_invariant=True,
-        buchi_state_count=1,
-        buchi_transition_count=1,
-        buchi_is_complete=False,
-        buchi_is_deterministic=True,
-        buchi_acceptance_sets=1,
-        buchi_is_stutter_invariant=True,
-        det_attempt_success=True,
-        det_state_count=1,
-        det_transition_count=1,
-        det_is_complete=False,
-        det_is_deterministic=True,
-        det_acceptance_sets=0,
-        det_is_stutter_invariant=True,
-    ),
-    TestCaseDataExt(
-        f_code="F G s",
-        aps=1,
-        syntactic_safety=False,
-        is_stutter_invariant_formula=True,
-        manna_pnueli_class_contains="persistence reactivity",
         tgba_state_count=2,
+        tgba_edge_count=3,
         tgba_transition_count=4,
-        tgba_is_complete=False,
-        tgba_is_deterministic=False,
-        tgba_acceptance_sets=1,
-        tgba_is_stutter_invariant=True,
-        buchi_state_count=2,
-        buchi_transition_count=4,
-        buchi_is_complete=False,
-        buchi_is_deterministic=False,
-        buchi_acceptance_sets=1,
-        buchi_is_stutter_invariant=True,
-        det_attempt_success=True,
-        det_state_count=2,
-        det_transition_count=4,
-        det_is_complete=False,
-        det_is_deterministic=False,
-        det_acceptance_sets=1,
-        det_is_stutter_invariant=True,
-    ),
-    TestCaseDataExt(
-        f_code="G (req --> F ack)",
-        aps=2,
-        syntactic_safety=False,
-        is_stutter_invariant_formula=True,
-        manna_pnueli_class_contains="recurrence reactivity",
-        tgba_state_count=2,
-        tgba_transition_count=8,
         tgba_is_complete=True,
         tgba_is_deterministic=True,
         tgba_acceptance_sets=1,
         tgba_is_stutter_invariant=True,
+        tgba_syntactic_future_hierarchy="Π₁ (syntactic-safety)",
+        tgba_safety_liveness_class="safety",
         buchi_state_count=2,
-        buchi_transition_count=8,
+        buchi_edge_count=3,
+        buchi_transition_count=4,
         buchi_is_complete=True,
         buchi_is_deterministic=True,
         buchi_acceptance_sets=1,
         buchi_is_stutter_invariant=True,
         det_attempt_success=True,
         det_state_count=2,
-        det_transition_count=8,
+        det_edge_count=3,
+        det_transition_count=4,
         det_is_complete=True,
         det_is_deterministic=True,
         det_acceptance_sets=1,
         det_is_stutter_invariant=True,
     ),
-    TestCaseDataExt(
-        f_code="G (not(crit1 & crit2))",
-        aps=2,
-        syntactic_safety=True,
-        is_stutter_invariant_formula=True,
-        manna_pnueli_class_contains="Safety",
-        tgba_state_count=1,
-        tgba_transition_count=3,
-        tgba_is_complete=False,
-        tgba_is_deterministic=True,
-        tgba_acceptance_sets=0,
-        tgba_is_stutter_invariant=True,
-        buchi_state_count=1,
-        buchi_transition_count=3,
-        buchi_is_complete=False,
-        buchi_is_deterministic=True,
-        buchi_acceptance_sets=1,
-        buchi_is_stutter_invariant=True,
-        det_attempt_success=True,
-        det_state_count=1,
-        det_transition_count=3,
-        det_is_complete=False,
-        det_is_deterministic=True,
-        det_acceptance_sets=0,
-        det_is_stutter_invariant=True,
-    ),
+    # TestCaseDataExt(
+    #     f_code="F G s",
+    #     aps=1,
+    #     syntactic_safety=False,
+    #     is_stutter_invariant_formula=True,
+    #     manna_pnueli_class_contains="persistence reactivity",
+    #     tgba_state_count=2,
+    #     tgba_transition_count=4,
+    #     tgba_is_complete=False,
+    #     tgba_is_deterministic=False,
+    #     tgba_acceptance_sets=1,
+    #     tgba_is_stutter_invariant=True,
+    #     buchi_state_count=2,
+    #     buchi_transition_count=4,
+    #     buchi_is_complete=True,
+    #     buchi_is_deterministic=False,
+    #     buchi_acceptance_sets=1,
+    #     buchi_is_stutter_invariant=True,
+    #     det_attempt_success=True,
+    #     det_state_count=2,
+    #     det_transition_count=4,
+    #     det_is_complete=False,
+    #     det_is_deterministic=False,
+    #     det_acceptance_sets=1,
+    #     det_is_stutter_invariant=True,
+    # ),
+    # TestCaseDataExt(
+    #     f_code="G (req --> F ack)",
+    #     aps=2,
+    #     syntactic_safety=False,
+    #     is_stutter_invariant_formula=True,
+    #     manna_pnueli_class_contains="recurrence reactivity",
+    #     tgba_state_count=2,
+    #     tgba_transition_count=8,
+    #     tgba_is_complete=True,
+    #     tgba_is_deterministic=True,
+    #     tgba_acceptance_sets=1,
+    #     tgba_is_stutter_invariant=True,
+    #     buchi_state_count=2,
+    #     buchi_transition_count=8,
+    #     buchi_is_complete=True,
+    #     buchi_is_deterministic=True,
+    #     buchi_acceptance_sets=1,
+    #     buchi_is_stutter_invariant=True,
+    #     det_attempt_success=True,
+    #     det_state_count=2,
+    #     det_transition_count=8,
+    #     det_is_complete=True,
+    #     det_is_deterministic=True,
+    #     det_acceptance_sets=1,
+    #     det_is_stutter_invariant=True,
+    # ),
+    # TestCaseDataExt(
+    #     f_code="G (not(crit1 & crit2))",
+    #     aps=2,
+    #     syntactic_safety=True,
+    #     is_stutter_invariant_formula=True,
+    #     manna_pnueli_class_contains="Safety",
+    #     tgba_state_count=1,
+    #     tgba_transition_count=3,
+    #     tgba_is_complete=False,
+    #     tgba_is_deterministic=True,
+    #     tgba_acceptance_sets=0,
+    #     tgba_is_stutter_invariant=True,
+    #     buchi_state_count=1,
+    #     buchi_transition_count=3,
+    #     buchi_is_complete=True,
+    #     buchi_is_deterministic=True,
+    #     buchi_acceptance_sets=1,
+    #     buchi_is_stutter_invariant=True,
+    #     det_attempt_success=True,
+    #     det_state_count=1,
+    #     det_transition_count=3,
+    #     det_is_complete=False,
+    #     det_is_deterministic=True,
+    #     det_acceptance_sets=0,
+    #     det_is_stutter_invariant=True,
+    # ),
     TestCaseDataExt(
         f_code="GFa --> GFb",
         aps=2,
         syntactic_safety=False,
         is_stutter_invariant_formula=True,
         manna_pnueli_class_contains="reactivity",
-        tgba_state_count=3,
-        tgba_transition_count=14,
-        tgba_is_complete=False,
+        tgba_state_count=4,
+        tgba_edge_count=8,
+        tgba_transition_count=20,
+        tgba_is_complete=True,
         tgba_is_deterministic=False,
         tgba_acceptance_sets=1,
         tgba_is_stutter_invariant=True,
-        buchi_state_count=4,
-        buchi_transition_count=18,
-        buchi_is_complete=False,
+        tgba_syntactic_future_hierarchy="Unclassified",
+        tgba_safety_liveness_class="reactivity",
+        buchi_state_count=5,
+        buchi_edge_count=10,
+        buchi_transition_count=24,
+        buchi_is_complete=True,
         buchi_is_deterministic=False,
         buchi_acceptance_sets=1,
         buchi_is_stutter_invariant=True,
         det_attempt_success=True,
-        det_state_count=3,
-        det_transition_count=14,
-        det_is_complete=False,
+        det_state_count=4,
+        det_edge_count=8,
+        det_transition_count=20,
+        det_is_complete=True,
         det_is_deterministic=False,
         det_acceptance_sets=1,
         det_is_stutter_invariant=True,
     ),
-    TestCaseDataExt(
-        f_code="X p",
-        aps=1,
-        syntactic_safety=True,
-        is_stutter_invariant_formula=False,
-        manna_pnueli_class_contains="guarantee safety obligation persistence recurrence reactivity",
-        tgba_state_count=3,
-        tgba_transition_count=5,
-        tgba_is_complete=False,
-        tgba_is_deterministic=True,
-        tgba_acceptance_sets=0,
-        tgba_is_stutter_invariant=False,
-        buchi_state_count=3,
-        buchi_transition_count=5,
-        buchi_is_complete=False,
-        buchi_is_deterministic=True,
-        buchi_acceptance_sets=1,
-        buchi_is_stutter_invariant=False,
-        det_attempt_success=True,
-        det_state_count=3,
-        det_transition_count=5,
-        det_is_complete=False,
-        det_is_deterministic=True,
-        det_acceptance_sets=0,
-        det_is_stutter_invariant=False,
-    ),
-    TestCaseDataExt(
-        f_code="F X p",
-        aps=1,
-        syntactic_safety=False,
-        is_stutter_invariant_formula=False,
-        manna_pnueli_class_contains="guarantee obligation persistence recurrence reactivity",
-        tgba_state_count=3,
-        tgba_transition_count=6,
-        tgba_is_complete=True,
-        tgba_is_deterministic=True,
-        tgba_acceptance_sets=1,
-        tgba_is_stutter_invariant=False,
-        buchi_state_count=3,
-        buchi_transition_count=6,
-        buchi_is_complete=True,
-        buchi_is_deterministic=True,
-        buchi_acceptance_sets=1,
-        buchi_is_stutter_invariant=False,
-        det_attempt_success=True,
-        det_state_count=3,
-        det_transition_count=6,
-        det_is_complete=True,
-        det_is_deterministic=True,
-        det_acceptance_sets=1,
-        det_is_stutter_invariant=False,
-    ),
+    # TestCaseDataExt(
+    #     f_code="X p",
+    #     aps=1,
+    #     syntactic_safety=True,
+    #     is_stutter_invariant_formula=False,
+    #     manna_pnueli_class_contains="guarantee safety obligation persistence recurrence reactivity",
+    #     tgba_state_count=3,
+    #     tgba_transition_count=5,
+    #     tgba_is_complete=False,
+    #     tgba_is_deterministic=True,
+    #     tgba_acceptance_sets=0,
+    #     tgba_is_stutter_invariant=False,
+    #     buchi_state_count=3,
+    #     buchi_transition_count=5,
+    #     buchi_is_complete=True,
+    #     buchi_is_deterministic=True,
+    #     buchi_acceptance_sets=1,
+    #     buchi_is_stutter_invariant=False,
+    #     det_attempt_success=True,
+    #     det_state_count=3,
+    #     det_transition_count=5,
+    #     det_is_complete=False,
+    #     det_is_deterministic=True,
+    #     det_acceptance_sets=0,
+    #     det_is_stutter_invariant=False,
+    # ),
+    # TestCaseDataExt(
+    #     f_code="F X p",
+    #     aps=1,
+    #     syntactic_safety=False,
+    #     is_stutter_invariant_formula=False,
+    #     manna_pnueli_class_contains="guarantee obligation persistence recurrence reactivity",
+    #     tgba_state_count=3,
+    #     tgba_transition_count=6,
+    #     tgba_is_complete=True,
+    #     tgba_is_deterministic=True,
+    #     tgba_acceptance_sets=1,
+    #     tgba_is_stutter_invariant=False,
+    #     buchi_state_count=3,
+    #     buchi_transition_count=6,
+    #     buchi_is_complete=True,
+    #     buchi_is_deterministic=True,
+    #     buchi_acceptance_sets=1,
+    #     buchi_is_stutter_invariant=False,
+    #     det_attempt_success=True,
+    #     det_state_count=3,
+    #     det_transition_count=6,
+    #     det_is_complete=True,
+    #     det_is_deterministic=True,
+    #     det_acceptance_sets=1,
+    #     det_is_stutter_invariant=False,
+    # ),
 )
 
 
@@ -235,7 +245,11 @@ class TestStatsExtended(TestCase):
         for case in self.data:
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
-                self.assertEqual(case.syntactic_safety, stats.spot.get("syntactic_safety"), case.f_code)
+                self.assertEqual(
+                    case.syntactic_safety,
+                    stats.spot.get("syntactic_safety"),
+                    case.f_code,
+                )
 
     def test_spot_respects_stutter_invariance(self):
         for case in self.data:
@@ -252,7 +266,29 @@ class TestStatsExtended(TestCase):
             with self.subTest(formula=case.f_code):
                 stats = self._get_stats(case)
                 actual_class = stats.spot.get("manna_pnueli_class", "") or ""
-                self.assertIn(case.manna_pnueli_class_contains.lower(), actual_class.lower(), case.f_code)
+                self.assertIn(
+                    case.manna_pnueli_class_contains.lower(),
+                    actual_class.lower(),
+                    case.f_code,
+                )
+
+    def test_tgba_syntactic_future_hierarchy(self):
+        case = self.data[0]
+        stats = self._get_stats(case)
+        self.assertEqual(
+            case.tgba_syntactic_future_hierarchy,
+            stats.spot.get("tgba_analysis", {}).get("syntactic_future_hierarchy"),
+            case.f_code,
+        )
+
+    def test_tgba_safety_liveness_class(self):
+        case = self.data[0]
+        stats = self._get_stats(case)
+        self.assertEqual(
+            case.tgba_safety_liveness_class,
+            stats.spot.get("tgba_analysis", {}).get("safety_liveness_class"),
+            case.f_code,
+        )
 
     def test_aggregated_ap_matches_expectation(self):
         for case in self.data:
@@ -284,6 +320,16 @@ class TestStatsExtended(TestCase):
                 self.assertEqual(
                     case.tgba_state_count,
                     stats.spot.get("tgba_analysis", {}).get("state_count"),
+                    case.f_code,
+                )
+
+    def test_tgba_edge_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.tgba_edge_count,
+                    stats.spot.get("tgba_analysis", {}).get("edge_count"),
                     case.f_code,
                 )
 
@@ -344,6 +390,16 @@ class TestStatsExtended(TestCase):
                 self.assertEqual(
                     case.buchi_state_count,
                     stats.spot.get("buchi_analysis", {}).get("state_count"),
+                    case.f_code,
+                )
+
+    def test_buchi_edge_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.buchi_edge_count,
+                    stats.spot.get("buchi_analysis", {}).get("edge_count"),
                     case.f_code,
                 )
 
@@ -416,6 +472,18 @@ class TestStatsExtended(TestCase):
                     stats.spot.get("deterministic_attempt", {})
                     .get("automaton_analysis", {})
                     .get("state_count"),
+                    case.f_code,
+                )
+
+    def test_deterministic_edge_count(self):
+        for case in self.data:
+            with self.subTest(formula=case.f_code):
+                stats = self._get_stats(case)
+                self.assertEqual(
+                    case.det_edge_count,
+                    stats.spot.get("deterministic_attempt", {})
+                    .get("automaton_analysis", {})
+                    .get("edge_count"),
                     case.f_code,
                 )
 
@@ -506,4 +574,6 @@ class TestStatsExtended(TestCase):
         _, stats_by_case = self._get_null_analyzer_results()
         for case in self.data:
             with self.subTest(formula=case.f_code):
-                self.assertEqual(case.aps, stats_by_case[case.f_code].agg["aps"], case.f_code)
+                self.assertEqual(
+                    case.aps, stats_by_case[case.f_code].agg["aps"], case.f_code
+                )

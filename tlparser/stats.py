@@ -5,6 +5,8 @@ import re
 import pprint
 from scipy.stats import entropy
 from typing import TYPE_CHECKING
+from tlparser.text_utils import count_sentences
+
 
 if TYPE_CHECKING:
     from tlparser.stats_ext import SpotAnalyzer
@@ -220,14 +222,28 @@ class Stats:
     def __str__(self):
         return pprint.pformat(self.get_stats(), indent=2)
 
-    def get_requirement_text_stats(self, req_text: str) -> tuple[int | None, int | None, int | None]:
+    def get_requirement_text_stats(
+        self, req_text: str
+    ) -> tuple[int | None, int | None, int | None]:
         if req_text:
             cleaned_text = req_text.strip()
-            if cleaned_text and cleaned_text[-1] not in '.!?':
-                cleaned_text += '.'
+            if not cleaned_text:
+                return 0, 0, 0
+
+            base_text = cleaned_text
+            appended_terminal = False
+            if base_text[-1] not in ".!?":
+                cleaned_text = base_text + "."
+                appended_terminal = True
+
             char_count = len(cleaned_text)
             word_count = len(cleaned_text.split())
-            sentence_count = len(re.findall(r'[.!?]+(?:\s|$)', cleaned_text))
+
+            sentence_source = base_text if appended_terminal else cleaned_text
+            sentence_count = count_sentences(sentence_source)
+            if sentence_count == 0 and appended_terminal:
+                sentence_count = 1
+
             return char_count, word_count, sentence_count
         else:
             return None, None, None

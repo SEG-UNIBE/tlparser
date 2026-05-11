@@ -185,7 +185,10 @@ def evaluate_formula(formula_tokens, extended, verbose, requirement_text):
         [
             "hist",
             "viol",
+            "viol_req",
             "pair",
+            "pair_req",
+            "ops",
             "chord",
             "sankey",
             "dag",
@@ -225,9 +228,11 @@ def visualize_data(file, latest, selfonly, plot):
     viz = Viz(config, file, selfonly)
     plot_methods = {
         "hist": viz.plot_histogram,
-        "viol": viz.plot_violin_engcompl,
-        "viol_req": viz.plot_violin_reqtext,
+        "viol": lambda: viz.plot_violin_engcompl(palette_index=1),
+        "viol_req": lambda: viz.plot_violin_reqtext(palette_index=0),
         "pair": viz.plot_pairplot,
+        "pair_req": lambda: viz.plot_pairplot_reqwords(include_trend=True),
+        "ops": viz.plot_operator_bars,
         "chord": viz.plot_chord,
         "sankey": viz.plot_sankey,
         "dag": viz.plot_dag_interactive,
